@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import type { Content } from "./content";
 
-export const SITE = process.env.NEXT_PUBLIC_SITE_URL ?? "https://gravityystudio.com";
+// Canonical origin: explicit env → the Vercel project's production domain (set by Vercel on every build, follows a
+// custom domain once added) → the planned domain. Server-only: used by metadata, sitemap, robots and auth/payment redirects.
+const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL;
+export const SITE = (process.env.NEXT_PUBLIC_SITE_URL || (vercelProd ? `https://${vercelProd}` : "https://gravityystudio.com")).replace(/\/$/, "");
 export const TITLE = "Gravityy Studio — We design. We build. We automate.";
 export const DESC =
   "Gravityy Studio designs, builds and automates digital systems: websites, apps, automation and analytics.";

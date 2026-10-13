@@ -50,7 +50,7 @@ First run of the Playwright scripts: `npx playwright install chromium`.
 
 | Var | Purpose |
 |---|---|
-| `NEXT_PUBLIC_SITE_URL` | Canonical URL for metadata, sitemap, robots, OG (default `https://gravityystudio.com`). |
+| `NEXT_PUBLIC_SITE_URL` | Canonical URL for metadata, sitemap, robots, OG and auth/payment redirects. Optional on Vercel: if unset, the project's production domain (`VERCEL_PROJECT_PRODUCTION_URL`) is used, else `https://gravityystudio.com`. |
 | `NEXT_PUBLIC_GA_ID` | GA4 measurement ID. GA loads via `next/script` (`afterInteractive`) only when this is set. |
 | `RESEND_API_KEY` | Email provider. When unset, form submissions are validated and **logged to the server console** (stub). When set, sent via Resend's REST API. |
 | `EMAIL_FROM` / `EMAIL_TO` | Sender / recipient for form emails. |
