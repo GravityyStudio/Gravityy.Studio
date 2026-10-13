@@ -25,6 +25,7 @@
     "@gsap/react": "^2.1.2",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.117.3",
+    "@vercel/analytics": "^2.0.1",
     "chart.js": "^4.5.0",
     "framer-motion": "^12.23.0",
     "gsap": "^3.13.0",
