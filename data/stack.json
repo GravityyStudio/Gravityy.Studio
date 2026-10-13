@@ -1,0 +1,8 @@
+[
+  { "group": "Design", "icon": "brush", "items": ["Figma", "Framer", "Rive"] },
+  { "group": "Frontend", "icon": "web", "items": ["Next.js", "React", "TypeScript", "Tailwind"] },
+  { "group": "Backend", "icon": "dns", "items": ["Node.js", "PostgreSQL", "Supabase", "Prisma"] },
+  { "group": "Cloud", "icon": "cloud", "items": ["Vercel", "AWS", "Cloudflare", "Docker"] },
+  { "group": "Automation", "icon": "bolt", "items": ["n8n", "Zapier", "HubSpot", "Zoho"] },
+  { "group": "Analytics", "icon": "analytics", "items": ["GA4", "Mixpanel", "Looker Studio", "Hotjar"] }
+]

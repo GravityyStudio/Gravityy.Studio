@@ -1,0 +1,13 @@
+{
+  "SCOPES": [
+    { "id": "lean", "label": "Lean", "hint": "MVP, core flows", "m": 0.75 },
+    { "id": "standard", "label": "Standard", "hint": "Full feature set", "m": 1 },
+    { "id": "advanced", "label": "Advanced", "hint": "Custom, integrations", "m": 1.5 }
+  ],
+  "TIMELINES": [
+    { "id": "flexible", "label": "Flexible", "hint": "10+ weeks", "m": 0.9 },
+    { "id": "standard", "label": "Standard", "hint": "6–8 weeks", "m": 1 },
+    { "id": "rush", "label": "Rush", "hint": "Under 4 weeks", "m": 1.3 }
+  ],
+  "defaults": { "sel": ["web", "seo"], "scope": "standard", "timeline": "standard" }
+}

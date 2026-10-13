@@ -1,0 +1,56 @@
+{
+  "home": {
+    "heroLines": ["WE DESIGN.", "WE BUILD.", "WE AUTOMATE."],
+    "heroSub": "From idea to interface. From code to cloud. From data to growth.",
+    "ctaPrimary": "Start a Project",
+    "ctaSecondary": "See our work"
+  },
+  "services": {
+    "eyebrow": "11 services · one team",
+    "title": "Services",
+    "lede": "Everything your digital system needs, under one roof. Pick one, or combine them and see the estimate update live.",
+    "metaDescription": "Brand, UI/UX, websites, web apps, mobile apps, e-commerce, automation, CRM, cloud, SEO and analytics — delivered by one team that owns the outcome."
+  },
+  "solutions": {
+    "eyebrow": "Systems, not services",
+    "title": "Solutions",
+    "lede": "Each engagement is scoped around a business result, then built from the services that get you there, measured end to end.",
+    "metaDescription": "Launch systems, lead engines, sales ops, commerce stacks and data layers — engagements scoped around a business result, with live analytics and an engineered growth funnel."
+  },
+  "work": {
+    "eyebrow": "Selected work",
+    "title": "Work",
+    "lede": "Live client sites and the systems behind them. Open any project to see it running.",
+    "metaDescription": "Live projects and case studies by Gravityy Studio: Viara Studios, ATHLEX, D2C commerce, B2B logistics, EdTech and fintech builds, and the results they produced."
+  },
+  "process": {
+    "eyebrow": "How we work",
+    "title": "Process",
+    "lede": "A fixed, visible process so you always know what ships next, built on tools we know deeply and trust in production.",
+    "metaDescription": "Eight steps from idea to scale (discover, define, design, build, automate, launch, measure, scale) on a modern, proven stack."
+  },
+  "pricing": {
+    "eyebrow": "Build & grow",
+    "title": "Pricing",
+    "lede": "Fixed-price builds and monthly growth plans, priced for India and international clients. Need something custom? Build an estimate below.",
+    "metaDescription": "Fixed-price website builds and monthly Grow plans for India (₹) and international (USD) clients, plus a live estimate for any combination of services."
+  },
+  "faq": {
+    "eyebrow": "Help",
+    "title": "FAQ",
+    "lede": "The things clients usually ask before we start. Can’t find yours? Write to hello@gravityystudio.com.",
+    "metaDescription": "Timelines, pricing, international clients, ownership, post-launch support and working with your existing team: answers to common questions about working with Gravityy Studio."
+  },
+  "blog": {
+    "eyebrow": "Growth notes",
+    "title": "Blog",
+    "lede": "What we learn shipping and growing client systems: design, engineering, automation and analytics.",
+    "metaDescription": "Articles from Gravityy Studio on web design, Next.js engineering, marketing automation, CRM integration and analytics."
+  },
+  "contact": {
+    "eyebrow": "Contact",
+    "title": "Contact",
+    "lede": "Start a project or request a free audit.",
+    "metaDescription": "Start a project with Gravityy Studio or request a free audit of your site's speed, SEO and conversion path, with a written report within 3 working days."
+  }
+}

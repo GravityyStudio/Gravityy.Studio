@@ -1,0 +1,7 @@
+{
+  "weeks": 12,
+  "sessions": [2600, 2850, 2790, 3100, 3380, 3300, 3720, 3960, 4210, 4480, 4950, 5400],
+  "leads": [70, 74, 78, 86, 92, 95, 104, 110, 118, 126, 139, 150],
+  "channels": { "labels": ["Organic", "Paid social", "Referral", "Email", "Direct"], "data": [4.2, 2.9, 6.1, 7.9, 3.6] },
+  "sources": { "labels": ["Organic search", "Paid social", "Referral", "Email", "Direct"], "data": [38, 24, 16, 12, 10] }
+}

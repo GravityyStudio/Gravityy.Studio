@@ -1,0 +1,278 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- Theme tokens (RGB triplets) ---------- */
+/* Dark is the default; html.light switches; .theme-dark forces dark inside media-heavy areas (hero, video panels). */
+:root,
+.theme-dark {
+  --bg: 10 10 10;
+  --surface: 17 17 17;
+  --surface-2: 20 20 20;
+  --raised: 23 23 23;
+  --sunken: 5 5 5;
+  --line: 34 34 34;
+  --line-strong: 58 58 58;
+  --fg: 245 245 242;
+  --muted: 163 163 163;
+  --accent: 168 240 30; /* lime */
+  --hi: 16 20 10;
+  --danger: 255 156 138;
+  --placeholder: 138 138 138;
+}
+html.light {
+  --bg: 250 250 247;
+  --surface: 242 242 237;
+  --surface-2: 255 255 255;
+  --raised: 238 238 232;
+  --sunken: 236 236 230;
+  --line: 226 226 220;
+  --line-strong: 196 196 190;
+  --fg: 14 14 14;
+  --muted: 86 86 82;
+  --accent: 77 124 15; /* deep lime: ≥4.5:1 as text on light surfaces and under light text */
+  --hi: 243 249 230;
+  --danger: 185 28 28;
+  --placeholder: 120 120 115;
+}
+.theme-dark {
+  color: rgb(var(--fg));
+}
+/* Theme-aware logo (see components/ui/BrandMark.tsx) */
+html.light .brand-white {
+  display: none;
+}
+html.light .brand-black {
+  display: block;
+}
+html.light .theme-dark .brand-white {
+  display: block;
+}
+html.light .theme-dark .brand-black {
+  display: none;
+}
+
+@layer base {
+  html {
+    background: rgb(var(--bg));
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+  html.light {
+    color-scheme: light;
+  }
+  body {
+    @apply bg-bg font-sans text-fg antialiased;
+    overflow-x: clip;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  ::selection {
+    background: rgb(var(--accent));
+    color: rgb(var(--bg));
+  }
+  :focus-visible {
+    outline: 2px solid rgb(var(--accent));
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: rgb(var(--placeholder));
+  }
+  [id] {
+    scroll-margin-top: 88px;
+  }
+  /* Sections focused programmatically after in-page navigation shouldn't draw a ring. */
+  [tabindex="-1"]:focus {
+    outline: none;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-container px-4 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply relative py-section;
+  }
+  /* Skip layout/paint of far-off sections until they approach the viewport. Not used on pinned/sticky/modal sections. */
+  .cv {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1100px;
+  }
+  /* Set briefly during in-page navigation so scroll targets are measured against real section heights. */
+  .cv-off .cv,
+  .cv-off [class*="content-visibility"] {
+    content-visibility: visible !important;
+  }
+  .card {
+    @apply rounded-card border border-line bg-surface-2;
+  }
+  /* Light glass is more opaque: it often floats over the always-dark hero and must keep text contrast. */
+  html.light .glass {
+    background: rgb(var(--surface-2) / 0.86);
+  }
+  .glass {
+    background: rgb(var(--surface) / 0.65);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+  }
+  .field {
+    @apply min-h-[48px] w-full rounded-2xl border border-line-strong bg-bg px-4 py-3 text-base text-fg transition-colors focus:border-fg/50 aria-[invalid=true]:border-danger;
+  }
+}
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Film grain + one soft lime glow */
+.grain {
+  position: fixed;
+  inset: -50%;
+  z-index: 90;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.glow {
+  background: radial-gradient(closest-side, rgba(168, 240, 30, 0.16), rgba(168, 240, 30, 0) 70%);
+}
+
+/* Tilt cards (±8deg via CSS vars set in Tilt.tsx) */
+.tilt {
+  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
+}
+
+/* Preloader: pure CSS so it can never trap the page, even without JS */
+.preloader {
+  animation: preloader-out 0.3s ease 0.55s forwards;
+}
+.preloader > div {
+  animation: preloader-mark 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes preloader-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+@keyframes preloader-mark {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+}
+
+/* Printing an invoice: only the document. */
+@media print {
+  header.nav-intro,
+  footer,
+  .grain,
+  .preloader,
+  .print\:hidden {
+    display: none !important;
+  }
+  html,
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+}
+
+/* App screens (portal / admin / checkout): soft rise-in; stagger with style={{ animationDelay }} */
+.rise {
+  animation: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Process: step counter swap */
+.step-swap {
+  animation: step-swap 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes step-swap {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* Marquee */
+.marquee-track {
+  animation: marquee 40s linear infinite;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Initial states for the hero intro, only when JS + motion are on (otherwise content is static and visible) */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-hero-media] {
+    clip-path: inset(30% 22% 30% 22% round 32px);
+  }
+  .js .hero-line > span {
+    transform: translateY(110%);
+  }
+  .js .hero-fade {
+    opacity: 0;
+  }
+  .js .nav-intro {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+  .js[data-ready] .nav-intro {
+    opacity: 1;
+    transform: none;
+    transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+/* Custom cursor hides the native one only where we draw our own */
+html.has-cursor,
+html.has-cursor a,
+html.has-cursor button {
+  cursor: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .preloader {
+    display: none;
+  }
+  .tilt {
+    transform: none !important;
+  }
+  .marquee-track {
+    animation: none;
+  }
+}

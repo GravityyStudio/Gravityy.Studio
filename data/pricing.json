@@ -1,0 +1,10 @@
+{
+  "india": [
+    { "planId": "build-in", "name": "Build Websites", "tag": "One-time", "desc": "Design and development of a fast, SEO-ready website your team can edit.", "price": "₹59,999", "unit": "per project", "features": ["Up to 8 custom-designed pages", "CMS setup and training", "Mobile-first, Lighthouse 90+", "On-page SEO and analytics", "30 days post-launch support"], "cta": "Start a website", "hi": false },
+    { "planId": "grow-in", "name": "Grow", "tag": "Monthly", "desc": "An ongoing growth team for SEO, automation, analytics and iteration.", "price": "₹24,999", "unit": "per month", "features": ["Monthly SEO and content plan", "Lead capture and nurture automations", "Live analytics dashboard", "Conversion experiments", "Fortnightly strategy call"], "cta": "Start growing", "hi": true }
+  ],
+  "intl": [
+    { "planId": "build-global", "name": "Build Websites", "tag": "One-time", "desc": "Design and development of a fast, SEO-ready website your team can edit.", "price": "$1,490", "unit": "per project", "features": ["Up to 8 custom-designed pages", "CMS setup and training", "Mobile-first, Lighthouse 90+", "On-page SEO and analytics", "30 days post-launch support"], "cta": "Start a website", "hi": false },
+    { "planId": "grow-global", "name": "Grow", "tag": "Monthly", "desc": "An ongoing growth team for SEO, automation, analytics and iteration.", "price": "$590", "unit": "per month", "features": ["Monthly SEO and content plan", "Lead capture and nurture automations", "Live analytics dashboard", "Conversion experiments", "Fortnightly strategy call"], "cta": "Start growing", "hi": true }
+  ]
+}

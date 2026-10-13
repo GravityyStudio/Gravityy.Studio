@@ -1,0 +1,6 @@
+[
+  { "id": "build-in", "name": "Build Websites", "region": "IN", "currency": "INR", "amount_minor": 5999900, "interval": "one_time", "gst_rate": 0.18, "active": true, "sort": 1 },
+  { "id": "grow-in", "name": "Grow", "region": "IN", "currency": "INR", "amount_minor": 2499900, "interval": "month", "gst_rate": 0.18, "active": true, "sort": 2 },
+  { "id": "build-global", "name": "Build Websites", "region": "GLOBAL", "currency": "USD", "amount_minor": 149000, "interval": "one_time", "gst_rate": 0, "active": true, "sort": 3 },
+  { "id": "grow-global", "name": "Grow", "region": "GLOBAL", "currency": "USD", "amount_minor": 59000, "interval": "month", "gst_rate": 0, "active": true, "sort": 4 }
+]

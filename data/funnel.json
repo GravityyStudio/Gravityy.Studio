@@ -1,0 +1,9 @@
+[
+  { "name": "Attract", "desc": "SEO, content and paid campaigns bring the right visitors.", "width": 100, "icon": "campaign" },
+  { "name": "Capture", "desc": "Landing pages and forms turn visits into contacts.", "width": 88, "icon": "ads_click" },
+  { "name": "Nurture", "desc": "Email and WhatsApp sequences build trust automatically.", "width": 76, "icon": "mail" },
+  { "name": "Qualify", "desc": "Lead scoring routes hot leads to sales first.", "width": 64, "icon": "filter_alt" },
+  { "name": "Convert", "desc": "Proposals, checkout and payments with no friction.", "width": 54, "icon": "payments" },
+  { "name": "Onboard", "desc": "Welcome flows and portals get customers to value fast.", "width": 46, "icon": "waving_hand" },
+  { "name": "Retain", "desc": "Reviews, referrals and renewals keep revenue compounding.", "width": 40, "icon": "autorenew" }
+]

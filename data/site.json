@@ -1,0 +1,33 @@
+{
+  "NAV": [
+    { "label": "Home", "href": "/" },
+    { "label": "Services", "href": "/services" },
+    { "label": "Solutions", "href": "/solutions" },
+    { "label": "Work", "href": "/work" },
+    { "label": "Process", "href": "/process" },
+    { "label": "Pricing", "href": "/pricing" },
+    { "label": "FAQ", "href": "/faq" }
+  ],
+  "FOOTER": [
+    { "title": "Services", "links": [{ "label": "Websites", "href": "/services/web" }, { "label": "Web & mobile apps", "href": "/services/app" }, { "label": "Automation", "href": "/services/auto" }, { "label": "Analytics", "href": "/services/data" }] },
+    { "title": "Company", "links": [{ "label": "Work", "href": "/work" }, { "label": "Process", "href": "/process" }, { "label": "Pricing", "href": "/pricing" }, { "label": "FAQ", "href": "/faq" }, { "label": "Blog", "href": "/blog" }] },
+    { "title": "Contact", "links": [{ "label": "hello@gravityystudio.com", "href": "mailto:hello@gravityystudio.com" }, { "label": "Get a free audit", "href": "/contact#audit" }] }
+  ],
+  "social": [
+    { "label": "LinkedIn", "href": "https://www.linkedin.com" },
+    { "label": "Instagram", "href": "https://www.instagram.com" }
+  ],
+  "email": "hello@gravityystudio.com",
+  "clientLoginHref": "/login",
+  "metrics": [
+    { "label": "Sessions", "value": 48920, "decimals": 0, "prefix": "", "suffix": "", "delta": "+38% vs. previous" },
+    { "label": "Leads", "value": 1284, "decimals": 0, "prefix": "", "suffix": "", "delta": "+52% vs. previous" },
+    { "label": "Conversion rate", "value": 4.7, "decimals": 1, "prefix": "", "suffix": "%", "delta": "+1.3 pts" },
+    { "label": "Pipeline value", "value": 18.6, "decimals": 1, "prefix": "₹", "suffix": "L", "delta": "+41% vs. previous" }
+  ],
+  "stats": [
+    { "label": "Products shipped", "value": 120, "decimals": 0, "suffix": "+" },
+    { "label": "Client retention", "value": 98, "decimals": 0, "suffix": "%" },
+    { "label": "Avg. lead uplift", "value": 3.2, "decimals": 1, "suffix": "×" }
+  ]
+}

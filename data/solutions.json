@@ -1,0 +1,7 @@
+[
+  { "name": "Launch system", "icon": "rocket_launch", "stat": "6 wks", "label": "Average time from signed brief to live product." },
+  { "name": "Lead engine", "icon": "trending_up", "stat": "3.2×", "label": "Average lift in qualified leads after rebuild." },
+  { "name": "Sales ops", "icon": "sync_alt", "stat": "40%", "label": "Less manual data entry once CRM and forms connect." },
+  { "name": "Commerce stack", "icon": "storefront", "stat": "2.1×", "label": "Checkout conversion versus the previous store." },
+  { "name": "Data layer", "icon": "insights", "stat": "1", "label": "Dashboard for every number the team reports on." }
+]

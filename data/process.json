@@ -1,0 +1,10 @@
+[
+  { "name": "Discover", "desc": "Workshops, audits and interviews to find what actually limits growth.", "icon": "search" },
+  { "name": "Define", "desc": "Scope, success metrics and a fixed plan everyone signs off on.", "icon": "edit_note" },
+  { "name": "Design", "desc": "Wireframes to high-fidelity UI, prototyped and tested.", "icon": "draw" },
+  { "name": "Build", "desc": "Weekly releases to a staging link you can click through.", "icon": "code" },
+  { "name": "Automate", "desc": "Connect CRM, email, payments and ops so work runs itself.", "icon": "settings_suggest" },
+  { "name": "Launch", "desc": "QA, performance and SEO checks, then a calm go-live.", "icon": "rocket_launch" },
+  { "name": "Measure", "desc": "Tracking and dashboards from day one, reviewed every fortnight.", "icon": "query_stats" },
+  { "name": "Scale", "desc": "Iterate on what the numbers say, add channels, grow the system.", "icon": "trending_up" }
+]

@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "viara",
+    "video": false,
+    "sector": "Luxury real estate · Website",
+    "title": "Viara Studios: where architecture becomes home",
+    "summary": "A scroll-built story site for a luxury residential developer, from groundbreaking to handover, with a signature-residence showcase, a filterable home finder and an EMI calculator.",
+    "tags": ["Scroll storytelling", "Home finder", "EMI calculator", "Lead capture"],
+    "url": "https://viara-studios.vercel.app/",
+    "alt": "Viara Studios website hero: a construction site at dusk with the headline “Every legacy begins with ground.”"
+  },
+  {
+    "slug": "athlex",
+    "video": false,
+    "sector": "Fitness club · Website",
+    "title": "ATHLEX: a performance club built to show up",
+    "summary": "A bold, high-energy site for a Bengaluru strength and performance club, covering programs, trainers, memberships and gallery, with free-trial booking one tap away.",
+    "tags": ["Brand-led design", "Programs & trainers", "Memberships", "Trial booking"],
+    "url": "https://athlex-delta.vercel.app/",
+    "alt": "ATHLEX website hero: a gym with dumbbell racks and the headline “Build your strongest self.”"
+  },
+  { "slug": "case-1", "video": true, "sector": "D2C skincare · E-commerce", "title": "A storefront rebuilt around repeat orders", "summary": "Moved from a template theme to a custom Shopify build with subscription checkout and automated replenishment emails.", "metrics": [{ "v": "+64%", "l": "Repeat purchase rate" }, { "v": "1.4s", "l": "Largest contentful paint" }], "url": "https://gravityystudio.com", "alt": "Skincare and beauty products arranged in a clear acrylic organiser" },
+  { "slug": "case-2", "video": true, "sector": "B2B logistics · Web app", "title": "Quote-to-dispatch in one portal", "summary": "Replaced spreadsheets and email threads with a customer portal for quotes, tracking and invoices.", "metrics": [{ "v": "−52%", "l": "Time to quote" }, { "v": "3,800", "l": "Monthly active users" }], "url": "https://gravityystudio.com", "alt": "Warehouse worker labelling cartons in front of fully stocked shelves" },
+  { "slug": "case-3", "video": true, "sector": "EdTech · Website + automation", "title": "Enrolments without the phone tag", "summary": "New site, lead scoring and WhatsApp follow-ups wired into the admissions CRM.", "metrics": [{ "v": "3.2×", "l": "Qualified leads" }, { "v": "−70%", "l": "Response time" }], "url": "https://gravityystudio.com", "alt": "Two students working together on a laptop at a wooden desk" },
+  { "slug": "case-4", "video": true, "sector": "Fintech · Mobile app", "title": "An expense app finance teams adopt", "summary": "Cross-platform app with receipt capture, approval flows and accounting sync, shipped in 11 weeks.", "metrics": [{ "v": "4.8", "l": "App store rating" }, { "v": "11 wks", "l": "Brief to both stores" }], "url": "https://gravityystudio.com", "alt": "Hands holding a bank card and a smartphone during a mobile payment" }
+]
