@@ -14,7 +14,11 @@ const opts = { auth: { persistSession: false } };
  */
 export async function GET() {
   const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  const out: Record<string, unknown> = { supabaseUrlSet: Boolean(SUPABASE_URL), serviceKeySet: Boolean(serviceKey) };
+  const out: Record<string, unknown> = {
+    supabaseUrlSet: Boolean(SUPABASE_URL),
+    projectRef: SUPABASE_URL.match(/^https:\/\/([a-z0-9]+)\.supabase\.co/)?.[1] ?? null, // which Supabase project this deployment talks to
+    serviceKeySet: Boolean(serviceKey),
+  };
 
   if (SUPABASE_URL && SUPABASE_ANON_KEY) {
     const { error } = await createClient(SUPABASE_URL, SUPABASE_ANON_KEY, opts).rpc("cms_published_all");
