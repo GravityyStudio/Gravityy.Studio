@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/Providers";
 import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
@@ -67,6 +68,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </Providers>
         </ContentProvider>
         <div className="grain" aria-hidden="true" />
+        <Analytics />
         {GA && (
           <>
             <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA}`} strategy="afterInteractive" />
