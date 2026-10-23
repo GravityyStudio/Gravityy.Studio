@@ -1,4 +1,4 @@
-// Generated from the live Supabase schema (project uuolkaqaeibiwqunnwwe) after the CRM migrations.
+// Generated from the live Supabase schema (project uuolkaqaeibiwqunnwwe). Do not edit by hand.
 // Regenerate after every migration: Supabase MCP `generate_typescript_types`, or
 //   npx supabase gen types typescript --project-id uuolkaqaeibiwqunnwwe > lib/supabase/database.types.ts
 export type Json =
@@ -345,6 +345,7 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          duplicate_count: number
           error: string | null
           finished_at: string | null
           found_count: number
@@ -353,6 +354,7 @@ export type Database = {
           legal_basis: string
           max_results: number
           query: Json
+          rejected_count: number
           source: string
           source_name: string
           started_at: string | null
@@ -364,6 +366,7 @@ export type Database = {
         Insert: {
           created_at?: string
           created_by?: string | null
+          duplicate_count?: number
           error?: string | null
           finished_at?: string | null
           found_count?: number
@@ -372,6 +375,7 @@ export type Database = {
           legal_basis: string
           max_results?: number
           query?: Json
+          rejected_count?: number
           source: string
           source_name: string
           started_at?: string | null
@@ -383,6 +387,7 @@ export type Database = {
         Update: {
           created_at?: string
           created_by?: string | null
+          duplicate_count?: number
           error?: string | null
           finished_at?: string | null
           found_count?: number
@@ -391,6 +396,7 @@ export type Database = {
           legal_basis?: string
           max_results?: number
           query?: Json
+          rejected_count?: number
           source?: string
           source_name?: string
           started_at?: string | null
@@ -404,6 +410,35 @@ export type Database = {
             foreignKeyName: "discovery_jobs_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      discovery_settings: {
+        Row: {
+          scoring: Json
+          updated_at: string
+          updated_by: string | null
+          workspace_id: string
+        }
+        Insert: {
+          scoring: Json
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id: string
+        }
+        Update: {
+          scoring?: Json
+          updated_at?: string
+          updated_by?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discovery_settings_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: true
             referencedRelation: "workspaces"
             referencedColumns: ["id"]
           },
@@ -1070,6 +1105,124 @@ export type Database = {
           },
         ]
       }
+      prospects: {
+        Row: {
+          category: string | null
+          city: string | null
+          company_id: string | null
+          country: string | null
+          created_at: string
+          created_by: string | null
+          discovery_job_id: string | null
+          domain: string | null
+          expires_at: string | null
+          id: string
+          industry: string | null
+          intent_signals: string[]
+          name: string
+          notes: string | null
+          provider: string
+          provider_ref: string | null
+          region: string | null
+          research_status: string
+          review_status: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          score: number | null
+          score_breakdown: Json | null
+          scored_at: string | null
+          size_band: string | null
+          source: string
+          updated_at: string
+          website: string | null
+          workspace_id: string
+        }
+        Insert: {
+          category?: string | null
+          city?: string | null
+          company_id?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          discovery_job_id?: string | null
+          domain?: string | null
+          expires_at?: string | null
+          id?: string
+          industry?: string | null
+          intent_signals?: string[]
+          name: string
+          notes?: string | null
+          provider?: string
+          provider_ref?: string | null
+          region?: string | null
+          research_status?: string
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number | null
+          score_breakdown?: Json | null
+          scored_at?: string | null
+          size_band?: string | null
+          source: string
+          updated_at?: string
+          website?: string | null
+          workspace_id: string
+        }
+        Update: {
+          category?: string | null
+          city?: string | null
+          company_id?: string | null
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          discovery_job_id?: string | null
+          domain?: string | null
+          expires_at?: string | null
+          id?: string
+          industry?: string | null
+          intent_signals?: string[]
+          name?: string
+          notes?: string | null
+          provider?: string
+          provider_ref?: string | null
+          region?: string | null
+          research_status?: string
+          review_status?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score?: number | null
+          score_breakdown?: Json | null
+          scored_at?: string | null
+          size_band?: string | null
+          source?: string
+          updated_at?: string
+          website?: string | null
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospects_company_id_workspace_id_fkey"
+            columns: ["company_id", "workspace_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id", "workspace_id"]
+          },
+          {
+            foreignKeyName: "prospects_discovery_job_id_workspace_id_fkey"
+            columns: ["discovery_job_id", "workspace_id"]
+            isOneToOne: false
+            referencedRelation: "discovery_jobs"
+            referencedColumns: ["id", "workspace_id"]
+          },
+          {
+            foreignKeyName: "prospects_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           amount_minor: number
@@ -1239,6 +1392,75 @@ export type Database = {
         }
         Relationships: []
       }
+      website_analyses: {
+        Row: {
+          bytes: number | null
+          confirmed_count: number
+          created_at: string
+          duration_ms: number | null
+          error: string | null
+          final_url: string | null
+          findings: Json
+          http_status: number | null
+          id: string
+          inferred_count: number
+          prospect_id: string
+          signals: Json
+          status: string
+          url: string
+          workspace_id: string
+        }
+        Insert: {
+          bytes?: number | null
+          confirmed_count?: number
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          final_url?: string | null
+          findings?: Json
+          http_status?: number | null
+          id?: string
+          inferred_count?: number
+          prospect_id: string
+          signals?: Json
+          status: string
+          url: string
+          workspace_id: string
+        }
+        Update: {
+          bytes?: number | null
+          confirmed_count?: number
+          created_at?: string
+          duration_ms?: number | null
+          error?: string | null
+          final_url?: string | null
+          findings?: Json
+          http_status?: number | null
+          id?: string
+          inferred_count?: number
+          prospect_id?: string
+          signals?: Json
+          status?: string
+          url?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "website_analyses_prospect_id_workspace_id_fkey"
+            columns: ["prospect_id", "workspace_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id", "workspace_id"]
+          },
+          {
+            foreignKeyName: "website_analyses_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workspace_members: {
         Row: {
           created_at: string
@@ -1303,22 +1525,26 @@ export type Database = {
       cms_published_all: { Args: never; Returns: Json }
       crm_intake: {
         Args: {
-          p_company_name: string | null
-          p_domain: string | null
+          p_company_name: string
+          p_domain: string
           p_email: string
           p_factors: Json
-          p_ip_hash: string | null
-          p_message: string | null
-          p_name: string | null
+          p_ip_hash: string
+          p_message: string
+          p_name: string
           p_qualification: string
           p_score: number
           p_source: string
-          p_user_agent: string | null
-          p_website: string | null
+          p_user_agent: string
+          p_website: string
         }
         Returns: Json
       }
       crm_purge_expired: { Args: never; Returns: Json }
+      prospect_add_to_crm: {
+        Args: { p_company: Json; p_prospect: string; p_qualification: string }
+        Returns: Json
+      }
       rate_limit_hit: {
         Args: { p_bucket: string; p_max: number; p_window_s: number }
         Returns: boolean

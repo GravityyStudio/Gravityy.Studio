@@ -55,6 +55,7 @@ First run of the Playwright scripts: `npx playwright install chromium`.
 | `RESEND_API_KEY` | Email provider. When unset, form submissions are validated and **logged to the server console** (stub). When set, sent via Resend's REST API. |
 | `EMAIL_FROM` / `EMAIL_TO` | Sender / recipient for form emails. |
 | `IP_HASH_SECRET` | Optional. Random string (e.g. `openssl rand -hex 32`). When set, consent records store an HMAC of the visitor IP; when unset, no IP is stored. Server-only. |
+| `GOOGLE_PLACES_API_KEY` | Optional, **paid**. Enables "Run discovery" with Google Places. Off by default; add only after approving the cost and Google's terms. Server-only. |
 
 To use another provider, replace the body of `lib/email.ts` (`sendEmail(subject, fields)`). That's the only place to change.
 
@@ -194,6 +195,40 @@ Phases 1–3 of the lead platform (see `supabase/migrations/202610230*`). Databa
 
 **Not built yet (later phases):** admin CRM screens, n8n outbox delivery and signed webhooks, Reoon verification,
 Gmail drafts and the approval queue UI, discovery imports, analytics. Each paid or external service needs approval first.
+
+## Outbound discovery
+
+`/admin/discovery` (admin only): find, research and qualify companies before any outreach.
+
+| Piece | Where |
+|---|---|
+| Prospects: kept apart from CRM companies until an admin approves; deduplicated by normalised domain and by provider ID (also against existing CRM companies) | `prospects` table, `supabase/migrations/20261023050000_discovery.sql` |
+| Sources: manual entry, CSV import (company columns only; files with email/phone/name/LinkedIn columns are refused), authorised APIs | `lib/discovery/prospect.ts`, `csv.ts`, `providers.ts` |
+| Provider policies: retention per provider (`expires_at`, purged by `crm_purge_expired`) and which fields may be copied to the CRM. Google Places: 30 days, only the company's own website is kept | `lib/discovery/providers.ts` |
+| Website analysis: public pages only; obeys robots.txt (RFC 9309); blocks private-network addresses; stops at logins, rate limits and challenges ("blocked", never retried); 8 s / 1.5 MB caps; no JavaScript run | `lib/discovery/fetcher.ts`, `analyze.ts` |
+| Findings: metadata, mobile, navigation (broken internal links via HEAD), calls to action, HTTPS, accessibility. Each is **confirmed** (seen in markup or an HTTP status) or **inferred** (likely, e.g. JS-rendered content) | `lib/discovery/analyze.ts` |
+| Scoring: 100 points = industry fit + website needs + project budget + purchase intent; weights, target industries and threshold editable in the dashboard; every point has a reason; unknown data scores 0 and lowers confidence | `lib/discovery/scoring.ts`, `discovery_settings` table |
+| Approval: "Approve & add to CRM" is admin-only and atomic (company dedupe, lead, activity, `crm.updated` event, audit). Nothing is emailed | `public.prospect_add_to_crm()` |
+| Optional AI summary: off until a provider is approved; never affects the score | `lib/discovery/ai.ts` |
+
+**n8n event contracts (v1)**: written to `outbox_events` (topic = type). IDs and counts only, no personal data.
+Validated with Zod in `lib/events/contracts.ts`; additive changes keep v1, breaking changes bump the version.
+
+```json
+{ "id": "uuid", "type": "lead.scored", "version": 1, "occurred_at": "2026-10-23T07:25:54.459Z", "workspace_id": "uuid",
+  "data": { "prospect_id": "uuid", "score": 78, "qualified": true, "confidence": "high", "model": "discovery-rules-v1",
+            "components": [{ "key": "industryFit", "points": 25, "max": 25, "known": true }, "…3 more"] } }
+```
+| Type | `data` |
+|---|---|
+| `discovery.completed` | `job_id, source (csv_upload/api), provider, status (completed/failed), found, imported, duplicates, rejected` |
+| `website.analyzed` | `prospect_id, analysis_id, status, confirmed_count, inferred_count, high_severity_count` |
+| `lead.scored` | `prospect_id, score, qualified, confidence, model, components[{key, points, max, known}]` |
+| `crm.updated` | `action: "prospect_added", prospect_id, company_id, lead_id` |
+
+**Tests**: `npx tsx scripts/check-discovery.mts` (SSRF guard, robots, findings, scoring, CSV, providers, contracts),
+`npx tsx scripts/check-discovery-integration.mts` (real HTTP against a local test site: robots, broken links, redirects,
+refusals, challenges, non-HTML, size cap, SSRF default), and `supabase/tests/discovery.sql` (22 checks, rolls back).
 
 ## Deploy (Vercel)
 

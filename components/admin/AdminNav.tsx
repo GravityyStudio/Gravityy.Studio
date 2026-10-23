@@ -1,7 +1,7 @@
 "use client";
 import {
   Braces, Briefcase, Columns3, ExternalLink, FileText, FolderKanban, Image, LayoutDashboard, LifeBuoy, Menu, Palette, PenLine, Puzzle,
-  Quote, Receipt, Repeat, ScrollText, Settings, Tag, Type, Users,
+  Quote, Radar, Receipt, Repeat, ScrollText, Settings, Tag, Type, Users,
 } from "lucide-react";
 import SideNav, { type NavGroup } from "@/components/app/SideNav";
 import { PAGE_KEYS } from "@/lib/page-keys";
@@ -12,6 +12,7 @@ const NAV: NavGroup[] = [
     items: [
       ["Overview", "/admin", LayoutDashboard],
       ["Leads", "/admin/leads", Columns3],
+      ["Discovery", "/admin/discovery", Radar],
       ["Clients", "/admin/clients", Users],
       ["Subscriptions", "/admin/subscriptions", Repeat],
       ["Projects", "/admin/projects", FolderKanban],
