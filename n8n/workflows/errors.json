@@ -1,0 +1,57 @@
+{
+  "name": "Gravityy · Errors",
+  "nodes": [
+    {
+      "id": "35c3fc7b-75a7-4d5e-acbc-46319a35963b",
+      "name": "On workflow error",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {}
+    },
+    {
+      "id": "4234416d-1710-4b92-ab86-bd537616a984",
+      "name": "Log + notify admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst e = $input.first().json;\nawait api(this, 'run.fail', {\n  execution_id: String(e.execution.id || ''), workflow_name: (e.workflow && e.workflow.name) || 'unknown', node: e.execution.lastNodeExecuted || undefined,\n  error: String((e.execution.error && e.execution.error.message) || 'Unknown error').slice(0, 4000), url: e.execution.url || undefined,\n});\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "On workflow error": {
+      "main": [
+        [
+          {
+            "node": "Log + notify admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

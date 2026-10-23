@@ -1,0 +1,66 @@
+{
+  "name": "Gravityy · E · Follow-up drafts",
+  "nodes": [
+    {
+      "id": "7429944d-48c9-42fd-a0a4-1ff437f09fb6",
+      "name": "Every weekday 09:30",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "30 9 * * 1-5"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "37a349a7-4691-40ff-aacc-9024905338c6",
+      "name": "Prepare follow-up drafts",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst key = 'followups-' + new Date().toISOString().slice(0, 10);\nconst run = await api(this, 'run.start', { workflow: 'E-follow-up', key, trigger: 'schedule', input: { execution_id: $execution.id } });\nif (run.duplicate) return [];\n// Sent 7+ days ago, no reply/bounce/unsubscribe, still eligible → a pending-approval draft. Never sent automatically.\nconst r = await api(this, 'followups.prepare', { days: 7, limit: 20 });\nif (r.prepared > 0) await api(this, 'notify.admin', { subject: r.prepared + ' follow-up drafts to review', fields: { Review: $env.GRAVITYY_APP_URL + '/admin/outreach' } });\nawait api(this, 'run.finish', { workflow: 'E-follow-up', key, status: 'succeeded', output: r });\nreturn [{ json: r }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "Every weekday 09:30": {
+      "main": [
+        [
+          {
+            "node": "Prepare follow-up drafts",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

@@ -57,11 +57,32 @@ export const crmUpdated = envelope(
   z.object({ action: z.literal("prospect_added"), prospect_id: id, company_id: id, lead_id: id }).strict(),
 );
 
+// Emitted by public.crm_intake() as a bare payload; toEnvelope() wraps it at dispatch (envelope id = outbox id).
+export const leadCreated = envelope(
+  "lead.created",
+  z.object({ lead_id: id, source: z.enum(["contact", "audit"]), score: z.number().int().min(0).max(100), qualification: z.enum(["unqualified", "mql"]), suppressed: z.boolean() }).strict(),
+);
+
+// Admin asked for an outreach draft (Workflow C). Emitted by the outreach page.
+export const outreachDraftRequested = envelope(
+  "outreach.draft_requested",
+  z.object({ contact_id: id, lead_id: id.nullable(), purpose: z.enum(["reply", "outreach"]) }).strict(),
+);
+
+// Admin pressed Send on an approved draft (Workflow D). Emitted inside public.outreach_request_send().
+export const outreachSendRequested = envelope(
+  "outreach.send_requested",
+  z.object({ send_id: id, draft_id: id, draft_version: z.number().int().min(1) }).strict(),
+);
+
 export const EVENTS = {
   "discovery.completed": discoveryCompleted,
   "website.analyzed": websiteAnalyzed,
   "lead.scored": leadScored,
   "crm.updated": crmUpdated,
+  "lead.created": leadCreated,
+  "outreach.draft_requested": outreachDraftRequested,
+  "outreach.send_requested": outreachSendRequested,
 } as const;
 export type EventType = keyof typeof EVENTS;
 export type EventOf<T extends EventType> = z.infer<(typeof EVENTS)[T]>;
@@ -69,6 +90,21 @@ export type EventOf<T extends EventType> = z.infer<(typeof EVENTS)[T]>;
 /** Builds and validates an envelope; throws if `data` breaks the contract (a bug, never user input). */
 export function buildEvent<T extends EventType>(type: T, workspaceId: string, data: EventOf<T>["data"], now = new Date()): EventOf<T> {
   return EVENTS[type].parse({ id: randomUUID(), type, version: 1, occurred_at: now.toISOString(), workspace_id: workspaceId, data }) as EventOf<T>;
+}
+
+type OutboxRow = { id: string; topic: string; workspace_id: string; payload: unknown; created_at: string };
+
+/** The envelope to deliver for an outbox row: enveloped payloads as-is, bare ones (lead.created) wrapped.
+ * Returns an error string for unknown topics or payloads that break their contract. */
+export function toEnvelope(row: OutboxRow): { event: EventOf<EventType> } | { error: string } {
+  const schema = EVENTS[row.topic as EventType];
+  if (!schema) return { error: `No contract for topic ${row.topic}` };
+  const p = row.payload as Record<string, unknown> | null;
+  const candidate = p && typeof p === "object" && "type" in p
+    ? p
+    : { id: row.id, type: row.topic, version: 1, occurred_at: new Date(row.created_at).toISOString(), workspace_id: row.workspace_id, data: p };
+  const parsed = schema.safeParse(candidate);
+  return parsed.success ? { event: parsed.data as EventOf<EventType> } : { error: `Contract violation: ${parsed.error.issues[0]?.path.join(".")} ${parsed.error.issues[0]?.message}` };
 }
 
 /** Validates and writes an event to the outbox (service-role client). Failures are logged, never thrown:

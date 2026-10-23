@@ -1,0 +1,198 @@
+{
+  "name": "Gravityy · C · Outreach drafts",
+  "nodes": [
+    {
+      "id": "a431f534-495e-4830-a6d3-dfea74135733",
+      "name": "Signed webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "1274438e-fb3a-4078-a968-364cecebada2",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gravityy-outreach-draft",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "9f212b6e-eef4-4ea9-a75c-47ce42ec3ef4",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst item = $input.first();\nconst header = String((item.json.headers || {})['x-gravityy-signature'] || '');\nlet raw;\ntry { raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8'); } catch (e) { raw = JSON.stringify(item.json.body); }\nconst parts = Object.fromEntries(header.split(',').map((p) => p.split('=')));\nconst t = Number(parts.t);\nif (!t || Math.abs(Date.now() / 1000 - t) > 300) throw new Error('Missing or stale signature timestamp');\nconst expected = Buffer.from(crypto.createHmac('sha256', $env.GRAVITYY_WEBHOOK_SECRET).update(t + '.' + raw).digest('hex'));\nconst given = Buffer.from(String(parts.v1 || ''));\nif (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) throw new Error('Bad signature');\nconst event = JSON.parse(raw);\nif (event.type !== 'outreach.draft_requested' || event.version !== 1) throw new Error('Unexpected event ' + event.type + ' v' + event.version);\nreturn [{ json: event }];"
+      }
+    },
+    {
+      "id": "6a116d6b-bf64-4903-af96-affd1d0ca754",
+      "name": "Deduplicate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $input.first().json;\nconst run = await api(this, 'run.start', { workflow: 'C-outreach-draft', key: event.id, trigger: 'outbox', input: { execution_id: $execution.id, event_id: event.id, data: event.data } });\nreturn [{ json: { ...event, duplicate: run.duplicate === true } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "053affa1-8b38-41cf-af97-baba9074757d",
+      "name": "Accept (202)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { accepted: true, duplicate: $json.duplicate } }}",
+        "options": {
+          "responseCode": 202
+        }
+      }
+    },
+    {
+      "id": "0bc43652-946a-495a-a1cd-3406eeaeef30",
+      "name": "Check eligibility + draft",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const event = $('Deduplicate').first().json;\nif (event.duplicate) return [];\nconst crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\n// The app checks suppression, consent / enquiry basis and the 7-day cool-down before creating a pending-approval draft.\nconst d = await api(this, 'outreach.draft', { contact_id: event.data.contact_id, lead_id: event.data.lead_id, purpose: event.data.purpose });\nreturn [{ json: d }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "d9d20dde-133d-44d7-a981-df68a25ac606",
+      "name": "Notify admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst d = $input.first().json;\nawait api(this, 'notify.admin', d.draft_id\n  ? { subject: 'Outreach draft ready for review', fields: { Draft: d.draft_id, Note: d.reason || 'New draft', Review: $env.GRAVITYY_APP_URL + '/admin/outreach' } }\n  : { subject: 'Outreach draft not created', fields: { Reasons: (d.reasons || []).join('; ') } });\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "31029eb0-b7a2-4aa1-a24c-fd3595346326",
+      "name": "Finish run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $('Deduplicate').first().json;\nawait api(this, 'run.finish', { workflow: 'C-outreach-draft', key: event.id, status: 'succeeded', output: $input.first().json });\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "Signed webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicate": {
+      "main": [
+        [
+          {
+            "node": "Accept (202)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accept (202)": {
+      "main": [
+        [
+          {
+            "node": "Check eligibility + draft",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check eligibility + draft": {
+      "main": [
+        [
+          {
+            "node": "Notify admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify admin": {
+      "main": [
+        [
+          {
+            "node": "Finish run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

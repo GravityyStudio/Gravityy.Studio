@@ -1,0 +1,195 @@
+{
+  "name": "Gravityy · B · Outbound research",
+  "nodes": [
+    {
+      "id": "265db7d9-3a0a-4b83-a583-113e583fb52a",
+      "name": "Signed webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "a0198fca-e460-4de1-a078-20d4823e1ef0",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gravityy-outbound-research",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "ecf0731d-6dfb-4288-ad83-8d356a56b2cc",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst item = $input.first();\nconst header = String((item.json.headers || {})['x-gravityy-signature'] || '');\nlet raw;\ntry { raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8'); } catch (e) { raw = JSON.stringify(item.json.body); }\nconst parts = Object.fromEntries(header.split(',').map((p) => p.split('=')));\nconst t = Number(parts.t);\nif (!t || Math.abs(Date.now() / 1000 - t) > 300) throw new Error('Missing or stale signature timestamp');\nconst expected = Buffer.from(crypto.createHmac('sha256', $env.GRAVITYY_WEBHOOK_SECRET).update(t + '.' + raw).digest('hex'));\nconst given = Buffer.from(String(parts.v1 || ''));\nif (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) throw new Error('Bad signature');\nconst event = JSON.parse(raw);\nif (event.type !== 'discovery.completed' || event.version !== 1) throw new Error('Unexpected event ' + event.type + ' v' + event.version);\nreturn [{ json: event }];"
+      }
+    },
+    {
+      "id": "ab058400-a4a6-45f7-ae27-b03acff572f4",
+      "name": "Deduplicate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $input.first().json;\nconst run = await api(this, 'run.start', { workflow: 'B-outbound-research', key: event.id, trigger: 'outbox', input: { execution_id: $execution.id, event_id: event.id, data: event.data } });\nreturn [{ json: { ...event, duplicate: run.duplicate === true } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "053affa1-8b38-41cf-af97-baba9074757d",
+      "name": "Accept (202)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { accepted: true, duplicate: $json.duplicate } }}",
+        "options": {
+          "responseCode": 202
+        }
+      }
+    },
+    {
+      "id": "fccea3ef-d609-44c7-a40c-1a4d430abb7f",
+      "name": "Analyse websites",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const event = $('Deduplicate').first().json;\nif (event.duplicate) return [];\nconst crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\n// The admin started the job in Admin → Discovery (approved sources only: CSV with a documented lawful basis, or an\n// approved provider). The app fetches public pages within robots.txt, scores, and leaves every company in the review queue.\nconst totals = { analyzed: 0, failed: 0, remaining: 0, pending_review: 0 };\nif (event.data.status !== 'completed' || event.data.imported === 0) return [{ json: { ...totals, skipped: true } }];\nfor (let i = 0; i < 40; i++) {\n  const r = await api(this, 'discovery.analyze', { job_id: event.data.job_id, limit: 5 });\n  totals.analyzed += r.analyzed; totals.failed += r.failed; totals.remaining = r.remaining; totals.pending_review = r.pending_review || 0;\n  if (!r.remaining || r.analyzed + r.failed === 0) break;\n}\nreturn [{ json: totals }];"
+      }
+    },
+    {
+      "id": "7d9e6ea4-162b-42ab-aeee-48ed04489aed",
+      "name": "Notify admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst r = $input.first().json;\nif (r.skipped) return $input.all();\nawait api(this, 'notify.admin', {\n  subject: r.pending_review + ' companies ready for review',\n  fields: { Analysed: String(r.analyzed), Failed: String(r.failed), 'Still to analyse': String(r.remaining), Review: $env.GRAVITYY_APP_URL + '/admin/discovery?review=pending' },\n});\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "cd130588-e484-4867-aeb4-106dc1567bc4",
+      "name": "Finish run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $('Deduplicate').first().json;\nawait api(this, 'run.finish', { workflow: 'B-outbound-research', key: event.id, status: 'succeeded', output: $input.first().json });\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "Signed webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicate": {
+      "main": [
+        [
+          {
+            "node": "Accept (202)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accept (202)": {
+      "main": [
+        [
+          {
+            "node": "Analyse websites",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse websites": {
+      "main": [
+        [
+          {
+            "node": "Notify admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify admin": {
+      "main": [
+        [
+          {
+            "node": "Finish run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

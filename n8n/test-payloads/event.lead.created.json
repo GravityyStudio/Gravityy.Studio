@@ -1,0 +1,8 @@
+{
+  "id": "0b6f1d2a-5c3e-4a71-9e10-000000000001",
+  "type": "lead.created",
+  "version": 1,
+  "occurred_at": "2026-10-23T09:00:00.000Z",
+  "workspace_id": "00000000-0000-4000-8000-0000000000aa",
+  "data": { "lead_id": "00000000-0000-4000-8000-0000000000b1", "source": "contact", "score": 65, "qualification": "mql", "suppressed": false }
+}
