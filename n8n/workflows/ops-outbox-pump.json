@@ -1,0 +1,63 @@
+{
+  "name": "Gravityy · Ops · Outbox pump",
+  "nodes": [
+    {
+      "id": "77533954-81c3-4179-acdf-ec68ecb6f71c",
+      "name": "Every minute",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ],
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "dee56398-a7c1-4a0d-af46-9792764e085b",
+      "name": "Dispatch outbox",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\n// The app claims due events, POSTs them signed to the A–D webhooks, and retries with backoff / dead-letters.\nreturn [{ json: await api(this, 'outbox.dispatch', { limit: 10 }) }];"
+      }
+    }
+  ],
+  "connections": {
+    "Every minute": {
+      "main": [
+        [
+          {
+            "node": "Dispatch outbox",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "none",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

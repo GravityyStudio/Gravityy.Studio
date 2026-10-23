@@ -1,0 +1,227 @@
+{
+  "name": "Gravityy · D · Gmail send",
+  "nodes": [
+    {
+      "id": "e9aa0d2e-7de9-4b61-a905-1c179321b3a0",
+      "name": "Signed webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "f9715b2b-494a-425b-a274-0b16a43edaa4",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gravityy-gmail-send",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "08b11faa-bd57-4dba-a50f-196159ffc552",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst item = $input.first();\nconst header = String((item.json.headers || {})['x-gravityy-signature'] || '');\nlet raw;\ntry { raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8'); } catch (e) { raw = JSON.stringify(item.json.body); }\nconst parts = Object.fromEntries(header.split(',').map((p) => p.split('=')));\nconst t = Number(parts.t);\nif (!t || Math.abs(Date.now() / 1000 - t) > 300) throw new Error('Missing or stale signature timestamp');\nconst expected = Buffer.from(crypto.createHmac('sha256', $env.GRAVITYY_WEBHOOK_SECRET).update(t + '.' + raw).digest('hex'));\nconst given = Buffer.from(String(parts.v1 || ''));\nif (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) throw new Error('Bad signature');\nconst event = JSON.parse(raw);\nif (event.type !== 'outreach.send_requested' || event.version !== 1) throw new Error('Unexpected event ' + event.type + ' v' + event.version);\nreturn [{ json: event }];"
+      }
+    },
+    {
+      "id": "fa894360-5011-41e1-a0c6-898b72c16c88",
+      "name": "Deduplicate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $input.first().json;\nconst run = await api(this, 'run.start', { workflow: 'D-gmail-send', key: event.id, trigger: 'outbox', input: { execution_id: $execution.id, event_id: event.id, data: event.data } });\nreturn [{ json: { ...event, duplicate: run.duplicate === true } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "053affa1-8b38-41cf-af97-baba9074757d",
+      "name": "Accept (202)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { accepted: true, duplicate: $json.duplicate } }}",
+        "options": {
+          "responseCode": 202
+        }
+      }
+    },
+    {
+      "id": "580815d0-9921-4589-a92b-776e5f145b2a",
+      "name": "Claim send (re-validates)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const event = $('Deduplicate').first().json;\nif (event.duplicate) return [];\nconst crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\n// Re-checks at send time: sending switch, approved exact version, suppression, consent, cool-down, daily limit.\nconst c = await api(this, 'outreach.claim_send', { send_id: event.data.send_id });\nif (!c.ok) {\n  await api(this, 'run.finish', { workflow: 'D-gmail-send', key: event.id, status: 'cancelled', output: c });\n  await api(this, 'notify.admin', { subject: 'Send not made: ' + c.reason, fields: { Send: event.data.send_id, Detail: JSON.stringify(c.reasons || c.limit || c.status || '') } });\n  return [];\n}\nreturn [{ json: c }];"
+      }
+    },
+    {
+      "id": "feae4608-3589-462c-a65e-dcdde06317dc",
+      "name": "Send via Gmail",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        0
+      ],
+      "disabled": true,
+      "onError": "continueRegularOutput",
+      "parameters": {
+        "sendTo": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailType": "text",
+        "message": "={{ $json.body }}",
+        "options": {
+          "appendAttribution": false
+        }
+      }
+    },
+    {
+      "id": "d5975177-0845-418c-a48f-6dfbd770745d",
+      "name": "Record result",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst claim = $('Claim send (re-validates)').first().json;\nconst out = $input.first().json;\n// A disabled Gmail node passes the claim through unchanged (no message id), which is recorded as a failure.\nconst sent = Boolean(out.id && out.threadId);\nconst r = await api(this, 'outreach.record_send', sent\n  ? { send_id: claim.send_id, status: 'sent', message_id: out.id }\n  : { send_id: claim.send_id, status: 'failed', error: (out.error && (out.error.message || String(out.error))) || 'Gmail node disabled or returned no message id' });\nif (!sent) await api(this, 'notify.admin', { subject: 'Outreach send failed', fields: { Send: claim.send_id, Error: String((out.error && out.error.message) || 'no message id') } });\nreturn [{ json: { sent, message_id: out.id || null, ...r } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "ca337aab-7058-460f-a1ea-fbe07577403c",
+      "name": "Finish run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $('Deduplicate').first().json;\nawait api(this, 'run.finish', { workflow: 'D-gmail-send', key: event.id, status: 'succeeded', output: $input.first().json });\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "Signed webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicate": {
+      "main": [
+        [
+          {
+            "node": "Accept (202)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accept (202)": {
+      "main": [
+        [
+          {
+            "node": "Claim send (re-validates)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claim send (re-validates)": {
+      "main": [
+        [
+          {
+            "node": "Send via Gmail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send via Gmail": {
+      "main": [
+        [
+          {
+            "node": "Record result",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Record result": {
+      "main": [
+        [
+          {
+            "node": "Finish run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

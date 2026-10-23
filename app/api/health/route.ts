@@ -18,6 +18,11 @@ export async function GET() {
     supabaseUrlSet: Boolean(SUPABASE_URL),
     projectRef: SUPABASE_URL.match(/^https:\/\/([a-z0-9]+)\.supabase\.co/)?.[1] ?? null, // which Supabase project this deployment talks to
     serviceKeySet: Boolean(serviceKey),
+    automation: {
+      n8nConfigured: Boolean(process.env.N8N_WEBHOOK_BASE_URL && process.env.N8N_OUTBOUND_SECRET && process.env.N8N_CALLBACK_SECRET),
+      sendingEnabled: process.env.OUTREACH_SENDING_ENABLED === "true",
+      reoonEnabled: Boolean(process.env.REOON_API_KEY),
+    },
   };
 
   if (SUPABASE_URL && SUPABASE_ANON_KEY) {

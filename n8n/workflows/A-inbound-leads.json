@@ -1,0 +1,225 @@
+{
+  "name": "Gravityy · A · Inbound leads",
+  "nodes": [
+    {
+      "id": "71c691ac-8111-479a-a748-e07a203f7aad",
+      "name": "Signed webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "e499dee5-02f9-4405-a487-6b5672bb8379",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "gravityy-inbound-lead",
+        "responseMode": "responseNode",
+        "options": {
+          "rawBody": true
+        }
+      }
+    },
+    {
+      "id": "ddb578e6-0d8c-40ef-ada1-3c5994df5c05",
+      "name": "Verify signature",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nconst item = $input.first();\nconst header = String((item.json.headers || {})['x-gravityy-signature'] || '');\nlet raw;\ntry { raw = (await this.helpers.getBinaryDataBuffer(0, 'data')).toString('utf8'); } catch (e) { raw = JSON.stringify(item.json.body); }\nconst parts = Object.fromEntries(header.split(',').map((p) => p.split('=')));\nconst t = Number(parts.t);\nif (!t || Math.abs(Date.now() / 1000 - t) > 300) throw new Error('Missing or stale signature timestamp');\nconst expected = Buffer.from(crypto.createHmac('sha256', $env.GRAVITYY_WEBHOOK_SECRET).update(t + '.' + raw).digest('hex'));\nconst given = Buffer.from(String(parts.v1 || ''));\nif (given.length !== expected.length || !crypto.timingSafeEqual(given, expected)) throw new Error('Bad signature');\nconst event = JSON.parse(raw);\nif (event.type !== 'lead.created' || event.version !== 1) throw new Error('Unexpected event ' + event.type + ' v' + event.version);\nreturn [{ json: event }];"
+      }
+    },
+    {
+      "id": "23c87cff-8586-4c4f-a308-e22c01ff4303",
+      "name": "Deduplicate",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $input.first().json;\nconst run = await api(this, 'run.start', { workflow: 'A-inbound-lead', key: event.id, trigger: 'outbox', input: { execution_id: $execution.id, event_id: event.id, data: event.data } });\nreturn [{ json: { ...event, duplicate: run.duplicate === true } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "053affa1-8b38-41cf-af97-baba9074757d",
+      "name": "Accept (202)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { accepted: true, duplicate: $json.duplicate } }}",
+        "options": {
+          "responseCode": 202
+        }
+      }
+    },
+    {
+      "id": "1000c9e9-119e-499d-a943-5d6aa9d5e333",
+      "name": "Verify email + rescore",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const event = $('Deduplicate').first().json;\nif (event.duplicate) return [];\nconst crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\n// Reoon runs inside the app and only when REOON_API_KEY is set there (paid, off by default).\nconst lead = await api(this, 'lead.enrich', { lead_id: event.data.lead_id });\nreturn [{ json: { ...lead, suppressed: event.data.suppressed } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "6ebe7117-4d93-4bc3-ae0f-7f4563d79e84",
+      "name": "Notify admin",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1200,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst l = $input.first().json;\nawait api(this, 'notify.admin', {\n  subject: 'New ' + (l.qualification === 'mql' ? 'qualified ' : '') + 'lead: ' + (l.name || 'Unnamed') + ' (' + l.score + ')',\n  fields: { Score: String(l.score), Qualification: l.qualification, Source: l.source, Company: l.company || '-', 'Email check': l.email_status + ' (' + l.verification + ')',\n    Suppressed: String(l.suppressed), Open: $env.GRAVITYY_APP_URL + '/admin/leads' },\n});\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "d21ae0a0-b27f-4c9f-a2b3-bdc65afe6770",
+      "name": "Response draft (optional)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1440,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst l = $input.first().json;\n// Optional: a reply draft for qualified, non-suppressed leads. A draft only; an admin approves and sends.\nif ($env.GRAVITYY_REPLY_DRAFTS === 'false' || l.qualification !== 'mql' || l.suppressed || !l.contact_id) return [{ json: { ...l, draft: 'skipped' } }];\nconst d = await api(this, 'outreach.draft', { contact_id: l.contact_id, lead_id: l.lead_id, purpose: 'reply' });\nreturn [{ json: { ...l, draft: d.created ? d.draft_id : (d.reason || (d.reasons || []).join('; ')) } }];"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    },
+    {
+      "id": "14744b0d-5b83-49ed-af7f-882463d42e30",
+      "name": "Finish run",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1680,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const crypto = require('crypto');\nasync function api(ctx, action, body) {\n  const raw = JSON.stringify(body);\n  const t = Math.floor(Date.now() / 1000);\n  const sig = crypto.createHmac('sha256', $env.GRAVITYY_CALLBACK_SECRET).update(t + '.' + raw).digest('hex');\n  const res = await ctx.helpers.httpRequest({\n    method: 'POST', url: $env.GRAVITYY_APP_URL.replace(/\\/+$/, '') + '/api/automation/' + action, body: raw, json: false, timeout: 30000,\n    headers: { 'Content-Type': 'application/json', 'X-Gravityy-Signature': 't=' + t + ',v1=' + sig, 'X-Request-Id': crypto.randomUUID() },\n  });\n  return typeof res === 'string' ? JSON.parse(res) : res;\n}\n\nconst event = $('Deduplicate').first().json;\nawait api(this, 'run.finish', { workflow: 'A-inbound-lead', key: event.id, status: 'succeeded', output: { score: $input.first().json.score, qualification: $input.first().json.qualification, draft: $input.first().json.draft } });\nreturn $input.all();"
+      },
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 3000
+    }
+  ],
+  "connections": {
+    "Signed webhook": {
+      "main": [
+        [
+          {
+            "node": "Verify signature",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify signature": {
+      "main": [
+        [
+          {
+            "node": "Deduplicate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Deduplicate": {
+      "main": [
+        [
+          {
+            "node": "Accept (202)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Accept (202)": {
+      "main": [
+        [
+          {
+            "node": "Verify email + rescore",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Verify email + rescore": {
+      "main": [
+        [
+          {
+            "node": "Notify admin",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify admin": {
+      "main": [
+        [
+          {
+            "node": "Response draft (optional)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Response draft (optional)": {
+      "main": [
+        [
+          {
+            "node": "Finish run",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "tags": []
+}

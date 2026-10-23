@@ -1,6 +1,3 @@
-// Generated from the live Supabase schema (project uuolkaqaeibiwqunnwwe). Do not edit by hand.
-// Regenerate after every migration: Supabase MCP `generate_typescript_types`, or
-//   npx supabase gen types typescript --project-id uuolkaqaeibiwqunnwwe > lib/supabase/database.types.ts
 export type Json =
   | string
   | number
@@ -872,55 +869,67 @@ export type Database = {
         Row: {
           approved_at: string | null
           approved_by: string | null
+          approved_version: number | null
           body: string
           channel: string
           contact_id: string
           created_at: string
           created_by: string | null
+          followup_of: string | null
           id: string
           lead_id: string | null
           provider_message_id: string | null
+          purpose: string
           rejected_reason: string | null
           sent_at: string | null
           status: string
           subject: string
           updated_at: string
+          version: number
           workspace_id: string
         }
         Insert: {
           approved_at?: string | null
           approved_by?: string | null
+          approved_version?: number | null
           body: string
           channel?: string
           contact_id: string
           created_at?: string
           created_by?: string | null
+          followup_of?: string | null
           id?: string
           lead_id?: string | null
           provider_message_id?: string | null
+          purpose?: string
           rejected_reason?: string | null
           sent_at?: string | null
           status?: string
           subject: string
           updated_at?: string
+          version?: number
           workspace_id: string
         }
         Update: {
           approved_at?: string | null
           approved_by?: string | null
+          approved_version?: number | null
           body?: string
           channel?: string
           contact_id?: string
           created_at?: string
           created_by?: string | null
+          followup_of?: string | null
           id?: string
           lead_id?: string | null
           provider_message_id?: string | null
+          purpose?: string
           rejected_reason?: string | null
           sent_at?: string | null
           status?: string
           subject?: string
           updated_at?: string
+          version?: number
           workspace_id?: string
         }
         Relationships: [
@@ -932,6 +941,13 @@ export type Database = {
             referencedColumns: ["id", "workspace_id"]
           },
           {
+            foreignKeyName: "outreach_drafts_followup_fk"
+            columns: ["followup_of", "workspace_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_drafts"
+            referencedColumns: ["id", "workspace_id"]
+          },
+          {
             foreignKeyName: "outreach_drafts_lead_id_workspace_id_fkey"
             columns: ["lead_id", "workspace_id"]
             isOneToOne: false
@@ -940,6 +956,69 @@ export type Database = {
           },
           {
             foreignKeyName: "outreach_drafts_workspace_id_fkey"
+            columns: ["workspace_id"]
+            isOneToOne: false
+            referencedRelation: "workspaces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outreach_sends: {
+        Row: {
+          claimed_at: string | null
+          created_at: string
+          draft_id: string
+          draft_version: number
+          error: string | null
+          id: string
+          provider: string
+          provider_message_id: string | null
+          requested_by: string | null
+          sent_at: string | null
+          status: string
+          updated_at: string
+          workspace_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          created_at?: string
+          draft_id: string
+          draft_version: number
+          error?: string | null
+          id?: string
+          provider?: string
+          provider_message_id?: string | null
+          requested_by?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          workspace_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          created_at?: string
+          draft_id?: string
+          draft_version?: number
+          error?: string | null
+          id?: string
+          provider?: string
+          provider_message_id?: string | null
+          requested_by?: string | null
+          sent_at?: string | null
+          status?: string
+          updated_at?: string
+          workspace_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_sends_draft_id_workspace_id_fkey"
+            columns: ["draft_id", "workspace_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_drafts"
+            referencedColumns: ["id", "workspace_id"]
+          },
+          {
+            foreignKeyName: "outreach_sends_workspace_id_fkey"
             columns: ["workspace_id"]
             isOneToOne: false
             referencedRelation: "workspaces"
@@ -1523,6 +1602,10 @@ export type Database = {
     }
     Functions: {
       cms_published_all: { Args: never; Returns: Json }
+      contact_outreach_eligibility: {
+        Args: { p_contact: string; p_purpose: string }
+        Returns: Json
+      }
       crm_intake: {
         Args: {
           p_company_name: string
@@ -1541,6 +1624,59 @@ export type Database = {
         Returns: Json
       }
       crm_purge_expired: { Args: never; Returns: Json }
+      outbox_claim: {
+        Args: { p_lease_seconds: number; p_limit: number }
+        Returns: {
+          aggregate_id: string | null
+          attempts: number
+          created_at: string
+          delivered_at: string | null
+          id: string
+          last_error: string | null
+          next_attempt_at: string
+          payload: Json
+          status: string
+          topic: string
+          workspace_id: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "outbox_events"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
+      outbox_complete: {
+        Args: { p_error: string; p_id: string; p_ok: boolean }
+        Returns: string
+      }
+      outbox_requeue: { Args: { p_id: string }; Returns: string }
+      outreach_claim_send: {
+        Args: { p_daily_limit: number; p_send: string }
+        Returns: Json
+      }
+      outreach_followups_due: {
+        Args: { p_days: number; p_limit: number }
+        Returns: {
+          contact_id: string
+          draft_id: string
+          lead_id: string
+          purpose: string
+          sent_at: string
+          subject: string
+          workspace_id: string
+        }[]
+      }
+      outreach_record_send: {
+        Args: {
+          p_error: string
+          p_message_id: string
+          p_send: string
+          p_status: string
+        }
+        Returns: Json
+      }
+      outreach_request_send: { Args: { p_draft: string }; Returns: Json }
       prospect_add_to_crm: {
         Args: { p_company: Json; p_prospect: string; p_qualification: string }
         Returns: Json

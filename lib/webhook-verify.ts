@@ -21,6 +21,12 @@ export function verifyStripeSignature(raw: string, header: string | null, secret
   return sigs.some((s) => safeEqual(s, expected));
 }
 
+/** Signs our own webhooks (app ⇄ n8n) in the same `t=…,v1=…` format, so verifyStripeSignature checks them. */
+export function signPayload(raw: string, secret: string, now = Date.now()) {
+  const t = Math.floor(now / 1000);
+  return `t=${t},v1=${createHmac("sha256", secret).update(`${t}.${raw}`).digest("hex")}`;
+}
+
 /** Razorpay webhooks: header `X-Razorpay-Signature` = hex HMAC-SHA256(webhookSecret, rawBody). */
 export function verifyRazorpaySignature(raw: string, header: string | null, secret: string) {
   if (!header) return false;

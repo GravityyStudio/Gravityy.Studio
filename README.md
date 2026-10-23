@@ -230,6 +230,15 @@ Validated with Zod in `lib/events/contracts.ts`; additive changes keep v1, break
 `npx tsx scripts/check-discovery-integration.mts` (real HTTP against a local test site: robots, broken links, redirects,
 refusals, challenges, non-HTML, size cap, SSRF default), and `supabase/tests/discovery.sql` (22 checks, rolls back).
 
+## n8n automation
+
+Workflows A–E (inbound leads, outbound research, outreach drafts, Gmail send, follow-ups) plus an outbox pump and
+an error handler, as importable JSON in `n8n/workflows/`. Full setup, env vars, verification and failure recovery:
+[n8n/README.md](n8n/README.md). Admins review, edit, approve and send drafts in **Admin → Outreach**. Sending is off
+by default (`OUTREACH_SENDING_ENABLED` + a disabled Gmail node), and Reoon (paid) is off until `REOON_API_KEY` is set.
+
+**Tests**: `npx tsx scripts/check-automation.mts` and `supabase/tests/automation.sql` (29 checks, rolls back).
+
 ## Deploy (Vercel)
 
 1. Push the repo and import it on Vercel (framework preset: Next.js, no custom build settings).
