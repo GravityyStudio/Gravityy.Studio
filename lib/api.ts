@@ -1,25 +1,25 @@
 import { NextResponse } from "next/server";
 import type { ZodType } from "zod";
 import { sendEmail } from "./email";
-import { audit } from "./audit";
-import { createSupabaseService } from "./supabase/service";
+import { allow, clientIp, hashKey } from "./rate-limit";
+import { captureLead, type IntakeInput } from "./crm/intake";
 
-export type LeadInput = { name: string; email: string; company?: string; notes: string; source: "contact" | "audit" };
+// Per-visitor limits for every site form. Real people never get near these.
+const PER_IP = { max: 5, windowSeconds: 600 };
+const PER_EMAIL = { max: 5, windowSeconds: 3600 };
+const TOO_MANY = "Too many submissions. Please wait a few minutes and try again, or email hello@gravityystudio.com.";
 
-/** Site form → Leads board (stage "new"). Service role: the visitor has no session. Never blocks the form reply. */
-async function createLead(lead: LeadInput) {
-  try {
-    const db = createSupabaseService();
-    const { data, error } = await db.from("leads").insert(lead).select("id").single<{ id: string }>();
-    if (error) throw error;
-    await audit(db, null, "create", "leads", data.id, { source: lead.source });
-  } catch (e) {
-    console.error("[leads] not recorded:", e instanceof Error ? e.message : e);
-  }
-}
-
-/** Shared POST handler: JSON body → zod → honeypot check → lead + email. Always answers JSON. */
-export async function handleForm<T extends { website?: string }>(req: Request, schema: ZodType<T>, subject: string, ok: string, lead?: (fields: Omit<T, "website">) => LeadInput) {
+/**
+ * Shared POST handler: JSON body → zod → honeypot → rate limit → CRM intake → email. Always answers JSON.
+ * Intake failures never block the reply: the enquiry still goes out by email and the error is logged.
+ */
+export async function handleForm<T extends { website?: string; email?: string }>(
+  req: Request,
+  schema: ZodType<T>,
+  subject: string,
+  ok: string,
+  intake?: (fields: Omit<T, "website">) => IntakeInput,
+) {
   let body: unknown;
   try {
     body = await req.json();
@@ -34,9 +34,26 @@ export async function handleForm<T extends { website?: string }>(req: Request, s
     );
   }
   const { website, ...fields } = parsed.data;
-  // Honeypot filled → pretend success, send nothing.
+  // Honeypot filled → pretend success, store and send nothing.
   if (website) return NextResponse.json({ ok: true, message: ok });
-  if (lead) await createLead(lead(fields));
+
+  const ip = clientIp(req);
+  const form = new URL(req.url).pathname;
+  const limited =
+    !(await allow(`form:ip:${hashKey(ip ?? "unknown")}`, PER_IP.max, PER_IP.windowSeconds)) ||
+    (fields.email !== undefined && !(await allow(`form:email:${hashKey(fields.email.toLowerCase())}`, PER_EMAIL.max, PER_EMAIL.windowSeconds)));
+  if (limited) {
+    console.warn(`[forms] rate limited ${form}`);
+    return NextResponse.json({ ok: false, error: TOO_MANY }, { status: 429, headers: { "Retry-After": String(PER_IP.windowSeconds) } });
+  }
+
+  if (intake) {
+    try {
+      await captureLead(intake(fields), { ip, userAgent: req.headers.get("user-agent") });
+    } catch (e) {
+      console.error("[crm] lead not recorded:", e instanceof Error ? e.message : e);
+    }
+  }
   try {
     await sendEmail(subject, Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, String(v)])));
   } catch (e) {

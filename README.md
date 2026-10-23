@@ -54,6 +54,7 @@ First run of the Playwright scripts: `npx playwright install chromium`.
 | `NEXT_PUBLIC_GA_ID` | GA4 measurement ID. GA loads via `next/script` (`afterInteractive`) only when this is set. |
 | `RESEND_API_KEY` | Email provider. When unset, form submissions are validated and **logged to the server console** (stub). When set, sent via Resend's REST API. |
 | `EMAIL_FROM` / `EMAIL_TO` | Sender / recipient for form emails. |
+| `IP_HASH_SECRET` | Optional. Random string (e.g. `openssl rand -hex 32`). When set, consent records store an HMAC of the visitor IP; when unset, no IP is stored. Server-only. |
 
 To use another provider, replace the body of `lib/email.ts` (`sendEmail(subject, fields)`). That's the only place to change.
 
@@ -160,6 +161,39 @@ See `public/media/README.md` for every file, its dimensions and size budget. Dro
 same names. Posters are imported statically, so `next/image` generates AVIF/WebP, sizes and blur placeholders
 at build time. If a poster's aspect ratio changes, no code change is needed (all use `fill` + `object-cover`).
 Update `alt` text in `data/cases.json` to describe the real images.
+
+## Lead generation and CRM
+
+Phases 1–3 of the lead platform (see `supabase/migrations/202610230*`). Database-first: isolation, consent and the
+"no automatic email" rule are enforced by Postgres, not only by app code.
+
+| Piece | Where |
+|---|---|
+| Schema: workspaces, members, companies, contacts, leads (existing table, extended), opportunities, activities, score history, consent records, suppression list, discovery jobs, outreach drafts, email events, automation runs, outbox | `supabase/migrations/20261023000000…030000_*.sql` |
+| Row-level security: workspace roles (viewer reads, member writes, admin deletes, owner grants owner); platform admins see everything | same migrations, helper `private.has_workspace_role()` |
+| Outreach guard: only workspace admins approve; editing approved content voids the approval; only the server can mark "sent", and only after approval | trigger `private.guard_outreach_transition()` |
+| Inbound capture, atomic: company + contact dedupe, lead, score, timeline, enquiry consent, `lead.created` outbox event, audit | `public.crm_intake()` (service role only) ← `lib/crm/intake.ts` ← `lib/api.ts` (`/api/contact`, `/api/audit`) |
+| Scoring rules-v1 (every point has a stored reason; ≥ 50 = MQL) | `lib/crm/scoring.ts` |
+| Rate limiting for every site form (5 per IP per 10 min, 5 per email per hour), shared across instances, fails open | `lib/rate-limit.ts` → `public.rate_limit_hit()` |
+| Retention purge (rate-limit buckets 1 day, delivered outbox 30 days, automation runs 180 days, email events and audit 2 years) | `public.crm_purge_expired()`: schedule daily with the service role |
+| Typed data access | `lib/supabase/database.types.ts` (regenerate after every migration) |
+
+**Tests**
+- `npx tsx scripts/check-crm.mts`: scoring, normalisation, form handler (validation, honeypot, database-down path).
+- `supabase/tests/crm_rls.sql` (27 checks) and `supabase/tests/crm_intake.sql` (15 checks): run in the Supabase SQL editor.
+  They always end with an exception so nothing persists; the message reports the result.
+
+**Deployment checklist (CRM)**
+1. Apply migrations in order (`supabase db push`, or the SQL editor), then run both SQL test files: expect `0 failed`.
+2. Regenerate `lib/supabase/database.types.ts` if the schema changed.
+3. Vercel env: `SUPABASE_SERVICE_ROLE_KEY` (Sensitive, server-only) and optionally `IP_HASH_SECRET`. Never prefix either with `NEXT_PUBLIC_`.
+4. Check `/api/health`: `public.ok` and `service.ok` must both be `true` and `projectRef` the intended project.
+5. Submit one labelled test enquiry; confirm a lead, contact, consent row and `lead.created` outbox event; delete them.
+6. Schedule `select public.crm_purge_expired();` daily (n8n or a cron) with the service role.
+7. Supabase advisors: no new security findings. Turn on leaked-password protection (Auth settings).
+
+**Not built yet (later phases):** admin CRM screens, n8n outbox delivery and signed webhooks, Reoon verification,
+Gmail drafts and the approval queue UI, discovery imports, analytics. Each paid or external service needs approval first.
 
 ## Deploy (Vercel)
 

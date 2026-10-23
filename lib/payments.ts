@@ -60,10 +60,12 @@ const plusMonth = (from: Date) => {
 
 /** A paid monthly plan starts (or extends by one month) the client's live subscription for it → MRR on the admin overview. */
 async function renewSubscription(db: ReturnType<typeof createSupabaseService>, plan: Plan, p: Paid) {
+  const clientId = p.userId;
+  if (!clientId) return;
   const { data: live } = await db
     .from("subscriptions")
     .select("id, current_period_end")
-    .eq("client_id", p.userId!)
+    .eq("client_id", clientId)
     .eq("plan_id", plan.id)
     .neq("status", "cancelled")
     .maybeSingle<{ id: string; current_period_end: string | null }>();
@@ -72,7 +74,7 @@ async function renewSubscription(db: ReturnType<typeof createSupabaseService>, p
   const row = { status: "active", amount_minor: plan.amount_minor, currency: plan.currency, provider: p.provider, provider_ref: p.providerRef, current_period_end: plusMonth(base), updated_at: now.toISOString() };
   const { data, error } = live
     ? await db.from("subscriptions").update(row).eq("id", live.id).select("id").single<{ id: string }>()
-    : await db.from("subscriptions").insert({ ...row, client_id: p.userId, plan_id: plan.id, interval: "month" }).select("id").single<{ id: string }>();
+    : await db.from("subscriptions").insert({ ...row, client_id: clientId, plan_id: plan.id, interval: "month" }).select("id").single<{ id: string }>();
   if (error) return console.error("[billing] subscription not updated", error.message);
   await audit(db, null, live ? "renew" : "create", "subscriptions", data.id, { plan: plan.id, until: row.current_period_end });
 }
