@@ -15,7 +15,6 @@ export const MOTION = {
     funnelBar: 0.7,
   },
   stagger: { hero: 0.12, lines: 0.08, cards: 0.08, funnel: 0.1 },
-  tilt: 8, // max degrees for tilted cards
 } as const;
 
 /** Framer Motion transition for UI state (menu, modals). */

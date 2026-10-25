@@ -19,8 +19,9 @@ const HEIGHTS = ["lg:h-[76svh]", "lg:h-[60svh]", "lg:h-[84svh]"];
 
 type Case = { slug: string; video?: boolean; sector: string; title: string; summary: string; url?: string; alt: string; metrics?: { v: string; l: string }[] };
 
-/** One project per block: an oversized visual on the left, a small cluster (detail, title, result, link) on the right. */
-export default function HomeWork() {
+/** One project per block: an oversized visual on the left, a small cluster (detail, title, result, link) on the right.
+ * Home shows the first three with a link to /work; /work passes `limit={0}` for all of them. */
+export default function HomeWork({ limit = 3 }: { limit?: number }) {
   const cases = useContent().cases as Case[];
   const ref = useRef<HTMLElement>(null);
   useEnter(ref);
@@ -30,20 +31,22 @@ export default function HomeWork() {
       <div className="container-x">
         <div data-enter className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="work-h" className="text-[clamp(28px,3vw,40px)] font-medium tracking-[-0.03em]">
-            Selected work
+            {limit ? "Selected work" : "Every project"}
           </h2>
+          {limit > 0 && (
           <Link href="/work" className="group inline-flex min-h-[44px] items-center gap-2 text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
             All work
             <ArrowUpRight size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
           </Link>
+          )}
         </div>
 
         <ol className="mt-12 flex flex-col gap-[88px] lg:mt-20 lg:gap-[140px]">
-          {cases.slice(0, 3).map((c, i) => {
+          {(limit ? cases.slice(0, limit) : cases).map((c, i) => {
             const poster = POSTERS[c.slug] ?? p1;
             const live = c.url && !c.url.includes("gravityystudio.com");
             return (
-              <li key={c.slug} className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-x-8">
+              <li key={c.slug} data-case className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-x-8">
                 <div data-enter data-video-host className={`relative aspect-[4/5] overflow-hidden bg-surface lg:col-span-7 lg:aspect-auto ${HEIGHTS[i % 3]}`}>
                   <Image src={poster} alt={c.alt} fill sizes="(min-width:1024px) 60vw, 100vw" placeholder="blur" className="object-cover object-top" />
                   {c.video && <LoopVideo name={c.slug} label={c.title} poster={poster.src} className="absolute inset-0 h-full w-full object-cover" />}

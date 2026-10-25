@@ -1,10 +1,12 @@
 import Link from "@/components/ui/SmartLink";
+import WorkStrip from "@/components/home/WorkStrip";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import PageHero from "@/components/PageHero";
 import QuoteButton from "@/components/QuoteButton";
+import HomeProcess from "@/components/home/HomeProcess";
+import HomeServices from "@/components/home/HomeServices";
 import JsonLd from "@/components/JsonLd";
-import Icon from "@/components/ui/Icon";
 import { estimateINR, fmtINR, fmtUSD, toUSD } from "@/lib/pricing";
 import { breadcrumbLd, pageMeta, serviceLd } from "@/lib/seo";
 import { getContent, type Content } from "@/lib/content";
@@ -26,7 +28,7 @@ export async function generateMetadata({ params }: Params) {
 
 export default async function ServicePage({ params }: Params) {
   const { slug } = await params;
-  const { services, process: steps, configurator: cfg } = await getContent();
+  const { services, configurator: cfg } = await getContent();
   const s = services.find((x) => x.id === slug);
   if (!s) notFound();
 
@@ -40,85 +42,50 @@ export default async function ServicePage({ params }: Params) {
   return (
     <main id="main">
       <JsonLd data={[breadcrumbLd([["Services", "/services"], [s.name, `/services/${s.id}`]]), serviceLd(s, standard)]} />
-      <PageHero crumbs={[["Services", "/services"], [s.name, `/services/${s.id}`]]} eyebrow={`Service · ${s.code}`} title={s.name} lede={s.desc} />
+      <PageHero crumbs={[["Services", "/services"], [s.name, `/services/${s.id}`]]} title={s.name} lede={s.desc} />
 
-      <section aria-label="Overview" className="pb-section">
-        <div className="container-x grid gap-5 lg:grid-cols-[1.2fr_1fr]">
-          <div className="card flex flex-col gap-8 p-7 sm:p-10">
-            <div className="flex items-center gap-4">
-              <span className="grid h-14 w-14 place-items-center rounded-2xl border border-line">
-                <Icon name={s.icon} size={24} />
-              </span>
-              <h2 className="text-2xl font-medium tracking-[-0.03em]">Tools we use</h2>
-            </div>
-            <ul className="flex flex-wrap gap-2">
+      <section data-chapter="dark" aria-labelledby="tools-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
+        <div className="container-x grid gap-14 lg:grid-cols-12 lg:gap-x-8">
+          <div className="flex flex-col gap-6 lg:col-span-6">
+            <h2 id="tools-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
+              Built with
+            </h2>
+            <ul className="flex flex-col gap-1 text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em] text-muted">
               {s.tags.map((t) => (
-                <li key={t} className="rounded-full border border-line px-4 py-2 text-[15px]">
-                  {t}
-                </li>
+                <li key={t}>{t}</li>
               ))}
             </ul>
-            <p className="text-[15px] leading-relaxed text-muted">
-              Every {s.name.toLowerCase()} engagement follows the same fixed, visible process below, ships with tracking from day one, and
-              you own the code, design files and accounts.
+            <p className="max-w-[48ch] text-[17px] leading-relaxed">
+              Every {s.name.toLowerCase()} engagement follows the same fixed, visible process, ships with tracking from day one, and you own the code, design files
+              and accounts.
             </p>
           </div>
 
-          <aside aria-label="Estimate" className="glass flex flex-col gap-6 rounded-card border border-line p-7 sm:p-10">
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted">Starting estimate</p>
-            <p className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-              <span className="text-[clamp(40px,5vw,60px)] font-medium leading-none tracking-[-0.04em]">{fmtINR(standard)}</span>
-              <span className="text-xl text-muted">≈ {fmtUSD(toUSD(standard))}</span>
+          <aside aria-label="Estimate" className="flex flex-col gap-5 lg:col-span-5 lg:col-start-8">
+            <p className="text-[15px] text-muted">Starting estimate, standard scope and timeline</p>
+            <p className="text-[clamp(56px,7vw,112px)] font-semibold leading-[0.9] tracking-[-0.055em] tabular-nums">{fmtINR(standard)}</p>
+            <p className="text-[20px] text-muted">≈ {fmtUSD(toUSD(standard))}</p>
+            <p className="max-w-[44ch] text-[17px] leading-relaxed">
+              From {fmtINR(low)} for a lean scope on a flexible timeline, up to {fmtINR(high)} for an advanced scope on a rush timeline.
             </p>
-            <p className="text-sm leading-relaxed text-muted">
-              Standard scope, standard timeline. Range {fmtINR(low)} (lean, flexible) to {fmtINR(high)} (advanced, rush).
-            </p>
-            <div className="flex flex-wrap gap-3">
+            <div className="mt-2 flex flex-wrap items-center gap-3">
               <QuoteButton prefill={prefill} />
-              <Link href="/pricing#configurator" className="inline-flex min-h-[48px] items-center gap-2 px-2 text-[15px] font-medium hover:text-accent">
-                Combine services <ArrowRight size={16} aria-hidden="true" />
+              <Link href="/pricing#configurator" className="group inline-flex min-h-[48px] items-center gap-2 px-2 text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
+                Combine services <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
               </Link>
             </div>
           </aside>
         </div>
       </section>
 
-      <section aria-labelledby="how-h" className="cv py-section">
-        <div className="container-x">
-          <h2 id="how-h" className="text-h2">How we deliver it</h2>
-          <ol className="mt-14 grid gap-px overflow-hidden rounded-card border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {steps.map((st, i) => (
-              <li key={st.name} className="flex flex-col gap-3 bg-surface-2 p-6">
-                <span className="flex items-center justify-between text-fg/80">
-                  <Icon name={st.icon} size={18} />
-                  <span className="font-mono text-xs text-muted">{String(i + 1).padStart(2, "0")}</span>
-                </span>
-                <h3 className="text-lg font-medium tracking-[-0.02em]">{st.name}</h3>
-                <p className="text-sm leading-relaxed text-muted">{st.desc}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section aria-labelledby="more-h" className="cv py-section">
-        <div className="container-x">
-          <h2 id="more-h" className="text-h2">Other services</h2>
-          <ul className="mt-12 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {others.map((o) => (
-              <li key={o.id}>
-                <Link href={`/services/${o.id}`} className="card group flex min-h-[72px] items-center justify-between gap-4 px-6 py-5 transition-colors hover:border-line-strong">
-                  <span className="flex items-center gap-3">
-                    <Icon name={o.icon} size={18} className="text-fg/70" />
-                    <span className="font-medium">{o.name}</span>
-                  </span>
-                  <ArrowRight size={16} aria-hidden="true" className="text-muted transition-transform duration-300 group-hover:translate-x-1 group-hover:text-fg" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+      <HomeProcess />
+      <WorkStrip />
+      <HomeServices
+        id="more"
+        heading="Other services"
+        items={others.map((o) => ({ label: o.name, desc: o.desc, href: `/services/${o.id}` }))}
+        more={{ href: "/services", label: "All services and the live estimate" }}
+      />
     </main>
   );
 }

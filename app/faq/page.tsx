@@ -1,6 +1,7 @@
 import PageHero from "@/components/PageHero";
-import FAQ from "@/components/FAQ";
-import FinalCTA from "@/components/FinalCTA";
+import WorkStrip from "@/components/home/WorkStrip";
+import HomeFaq from "@/components/home/HomeFaq";
+import HomeCta from "@/components/home/HomeCta";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { breadcrumbLd, faqLd } from "@/lib/seo";
@@ -12,9 +13,10 @@ export default async function FaqPage() {
   return (
     <main id="main">
       <JsonLd data={[breadcrumbLd([["FAQ", "/faq"]]), faqLd(content)]} />
-      <PageHero crumbs={[["FAQ", "/faq"]]} eyebrow={content.pages.faq.eyebrow} title={content.pages.faq.title} lede={content.pages.faq.lede} />
-      <FAQ />
-      <FinalCTA />
+      <PageHero crumbs={[["FAQ", "/faq"]]} title={content.pages.faq.title} lede={content.pages.faq.lede} />
+      <HomeFaq heading="Every answer" allLink={false} />
+      <HomeCta />
+      <WorkStrip />
     </main>
   );
 }

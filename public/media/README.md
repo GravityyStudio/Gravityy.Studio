@@ -12,15 +12,8 @@ to AVIF/WebP, resizes them and makes blur placeholders.
 
 | Slot | Files | Size | Source |
 |---|---|---|---|
-| Hero reel 1 | `hero.mp4` 2.0 MB / `hero-mobile.mp4` 1.0 MB / `hero-poster.jpg` | 1920×1080 + 720×1280, 5.5 s | Pexels #36703282 “Abstract black particle spiral animation loop” |
-| Hero reel 2 | `hero-2.mp4` 1.6 MB / `hero-2-mobile.mp4` 0.5 MB / poster | same | Pexels #34127918 “Futuristic black torus with iridescent effects” |
-| Hero reel 3 | `hero-3.mp4` 0.8 MB / `hero-3-mobile.mp4` 0.3 MB / poster | same, hue-shifted gold → lime | Pixabay #27669 “Particles, plexus, network” by motionstock ([Pixabay Content License](https://pixabay.com/service/license-summary/)) |
-| Hero reel 4 | `hero-4.mp4` 0.7 MB / `hero-4-mobile.mp4` 0.1 MB / poster | same, hue-shifted blue → lime | Pixabay #201735 “Particles, geometry, lines” by olenchic (Pixabay Content License) |
 
-The hero reel is mp4-only (see the main README). Its order lives in `CLIPS` at the top of `components/HeroReel.tsx`.
 | Showreel | `showreel.webm` / `.mp4` (~2.2 MB) / poster (frame at 4 s) | 1920×1080, 10 s | Pexels #29755925 “Abstract shimmering crystals in darkness” |
-| Solutions ambient | `solutions.*` + poster | 1280×720 | Pexels #30922259 “Dust particles floating in dim light” |
-| Process ambient | `process.*` + poster | 1280×720 | Pexels #9198355 “People working together on research” |
 | Case 1 (D2C skincare) | `case-1.*` + poster | 1280×720 | Pexels #5210530 “Collection of beauty products” |
 | Case 2 (B2B logistics) | `case-2.*` + poster | 1280×720 | Pexels #14910119 “Man working in a warehouse” |
 | Case 3 (EdTech) | `case-3.*` + poster | 1280×720 | Pexels #11025562 “Two boys using laptop in school” |

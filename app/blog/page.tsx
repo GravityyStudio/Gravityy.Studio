@@ -1,7 +1,9 @@
 import { ArrowUpRight } from "lucide-react";
+import WorkStrip from "@/components/home/WorkStrip";
 import Link from "@/components/ui/SmartLink";
 import PageHero from "@/components/PageHero";
-import FinalCTA from "@/components/FinalCTA";
+import FooterNewsletter from "@/components/FooterNewsletter";
+import HomeCta from "@/components/home/HomeCta";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { getPosts, postDate } from "@/lib/posts";
@@ -15,38 +17,51 @@ export default async function BlogPage() {
   return (
     <main id="main">
       <JsonLd data={breadcrumbLd([["Blog", "/blog"]])} />
-      <PageHero crumbs={[["Blog", "/blog"]]} eyebrow={pages.blog.eyebrow} title={pages.blog.title} lede={pages.blog.lede} />
-      <section aria-label="Posts" className="section pt-0">
+      <PageHero crumbs={[["Blog", "/blog"]]} title={pages.blog.title} lede={pages.blog.lede} />
+      <section data-chapter="dark" aria-labelledby="posts-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
         <div className="container-x">
+          <h2 id="posts-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
+            Latest notes
+          </h2>
           {posts.length ? (
-            <ul className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            <ul className="mt-12 flex flex-col gap-16 lg:mt-16">
               {posts.map((p, i) => (
                 <li key={p.slug} className="rise" style={{ animationDelay: `${Math.min(i, 6) * 60}ms` }}>
-                  <Link href={`/blog/${p.slug}`} className="card group flex h-full flex-col overflow-hidden transition-colors hover:border-line-strong">
-                    {p.cover_url && (
-                      <span className="block aspect-[16/9] overflow-hidden bg-raised">
-                        {/* eslint-disable-next-line @next/next/no-img-element -- covers are CMS URLs (Supabase Storage or external) */}
-                        <img src={p.cover_url} alt="" loading={i < 3 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                  <Link href={`/blog/${p.slug}`} className="group grid gap-6 lg:grid-cols-12 lg:items-center lg:gap-x-8">
+                    <span className="flex flex-col gap-3 lg:col-span-7">
+                      <span className="text-[15px] text-muted">{postDate(p)}</span>
+                      <span className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em] underline decoration-transparent underline-offset-[6px] transition-colors group-hover:decoration-accent">
+                        {p.title}
                       </span>
-                    )}
-                    <span className="flex flex-1 flex-col gap-3 p-6">
-                      <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">{postDate(p)}</span>
-                      <span className="text-xl font-medium leading-snug tracking-[-0.02em]">{p.title}</span>
-                      {p.excerpt && <span className="line-clamp-3 text-[15px] leading-relaxed text-muted">{p.excerpt}</span>}
-                      <span className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-medium group-hover:text-accent">
-                        Read <ArrowUpRight size={14} aria-hidden="true" />
+                      {p.excerpt && <span className="line-clamp-3 max-w-[60ch] text-[17px] leading-relaxed text-muted">{p.excerpt}</span>}
+                      <span className="inline-flex items-center gap-1 text-[17px] font-medium">
+                        Read <ArrowUpRight size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                       </span>
                     </span>
+                    {p.cover_url && (
+                      <span className="block aspect-[16/10] overflow-hidden bg-raised lg:col-span-5">
+                        {/* eslint-disable-next-line @next/next/no-img-element -- covers are CMS URLs (Supabase Storage or external) */}
+                        <img src={p.cover_url} alt="" loading={i < 2 ? "eager" : "lazy"} decoding="async" className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                      </span>
+                    )}
                   </Link>
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="card px-6 py-16 text-center text-muted">The first notes are on their way. Check back soon.</p>
+            <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-x-8">
+              <p className="max-w-[40ch] text-[20px] leading-snug lg:col-span-6">
+                The first notes are on their way: what we learn shipping and growing client systems, once a month.
+              </p>
+              <div className="lg:col-span-5 lg:col-start-8">
+                <FooterNewsletter />
+              </div>
+            </div>
           )}
         </div>
       </section>
-      <FinalCTA />
+      <HomeCta />
+      <WorkStrip />
     </main>
   );
 }

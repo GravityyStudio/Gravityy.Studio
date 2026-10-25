@@ -5,7 +5,7 @@ import { useEnter } from "@/hooks/useEnter";
 import { useContent } from "../ContentProvider";
 
 /** Answers as reading text: each question is the run-in opening of its paragraph, everything answered at a glance. */
-export default function HomeFaq() {
+export default function HomeFaq({ heading = "Questions", allLink = true }: { heading?: string; allLink?: boolean }) {
   const { faq, site } = useContent();
   const ref = useRef<HTMLElement>(null);
   useEnter(ref);
@@ -15,11 +15,13 @@ export default function HomeFaq() {
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-x-8">
         <div data-enter className="flex flex-col gap-4 lg:col-span-3">
           <h2 id="faq-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
-            Questions
+            {heading}
           </h2>
-          <Link href="/faq" className="w-fit text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
-            All questions
-          </Link>
+          {allLink && (
+            <Link href="/faq" className="w-fit text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
+              All questions
+            </Link>
+          )}
         </div>
         <div className="text-[17px] leading-[1.55] md:columns-2 md:gap-14 lg:col-span-8 lg:col-start-5">
           {faq.map((f) => (
