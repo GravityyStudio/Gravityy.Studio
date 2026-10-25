@@ -1,9 +1,36 @@
 {
   "home": {
-    "heroLines": ["WE DESIGN.", "WE BUILD.", "WE AUTOMATE."],
+    "heroLines": [
+      "WE DESIGN.",
+      "WE BUILD.",
+      "WE AUTOMATE."
+    ],
     "heroSub": "From idea to interface. From code to cloud. From data to growth.",
     "ctaPrimary": "Start a Project",
-    "ctaSecondary": "See our work"
+    "ctaSecondary": "See our work",
+    "statement": [
+      "Products",
+      "that land."
+    ],
+    "statementSub": "Gravityy Studio designs, builds and automates websites, apps and the systems behind them, for founders and growing teams.",
+    "steps": [
+      {
+        "line": "First we find what holds you back.",
+        "note": "Workshops, audits and interviews, so the plan fixes the real constraint."
+      },
+      {
+        "line": "Then we fix the scope and the price.",
+        "note": "Success metrics and a dated, fixed plan that everyone signs off on."
+      },
+      {
+        "line": "We ship to staging every week.",
+        "note": "Design and build in weekly releases to a link you can click through."
+      },
+      {
+        "line": "It goes live, then we measure.",
+        "note": "QA, speed and SEO checks, a calm launch, and dashboards from day one."
+      }
+    ]
   },
   "services": {
     "eyebrow": "11 services · one team",

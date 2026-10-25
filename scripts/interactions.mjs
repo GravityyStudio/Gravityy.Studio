@@ -128,7 +128,7 @@ for (const w of [390, 1440]) {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(URL, { waitUntil: "networkidle" });
   await sleep(1200);
-  const burger = page.getByRole("button", { name: "Open menu" });
+  const burger = page.getByRole("button", { name: "Menu", exact: true });
   await burger.click();
   assert.equal(await burger.getAttribute("aria-expanded"), "true");
   const menu = page.getByRole("dialog", { name: "Menu" });

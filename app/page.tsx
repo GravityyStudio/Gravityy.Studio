@@ -1,37 +1,32 @@
 import { Suspense, type ReactNode } from "react";
-import Hero from "@/components/Hero";
-import Marquee from "@/components/Marquee";
-import ServicesRail from "@/components/ServicesRail";
-import Solutions from "@/components/Solutions";
-import CaseStack from "@/components/CaseStack";
-import Showreel from "@/components/Showreel";
-import ProcessPinned from "@/components/ProcessPinned";
-import Stats from "@/components/Stats";
-import Testimonials from "@/components/Testimonials";
-import Pricing from "@/components/Pricing";
-import FAQ from "@/components/FAQ";
-import FinalCTA from "@/components/FinalCTA";
+import HomeHero from "@/components/home/HomeHero";
+import HomeWork from "@/components/home/HomeWork";
+import HomeServices from "@/components/home/HomeServices";
+import HomeProcess from "@/components/home/HomeProcess";
+import HomeReel from "@/components/home/HomeReel";
+import HomeVoices from "@/components/home/HomeVoices";
+import HomePricing from "@/components/home/HomePricing";
+import HomeFaq from "@/components/home/HomeFaq";
+import HomeCta from "@/components/home/HomeCta";
 
 // Each below-fold section is its own Suspense boundary → React hydrates them selectively and
 // interruptibly instead of in one long main-thread task.
 const Lazy = ({ children }: { children: ReactNode }) => <Suspense fallback={null}>{children}</Suspense>;
 
-// Home = the cinematic overview. Each section previews its full page (/services, /work, …) via "View all" links.
+// Home = the argument in order: what we make (work), what we do (services), how (process), the reel,
+// what clients say, what it costs (the live price), questions, then the audit. Each section links to its full page.
 export default function Home() {
   return (
     <main id="main">
-      <Hero />
-      <Lazy><Marquee /></Lazy>
-      <Lazy><ServicesRail more={{ href: "/services", label: "Explore all services" }} /></Lazy>
-      <Lazy><Solutions more={{ href: "/solutions", label: "See how we build systems" }} /></Lazy>
-      <Lazy><CaseStack limit={3} more={{ href: "/work", label: "View all work" }} /></Lazy>
-      <Lazy><Showreel /></Lazy>
-      <Lazy><ProcessPinned more={{ href: "/process", label: "Our full process" }} /></Lazy>
-      <Stats />
-      <Lazy><Testimonials /></Lazy>
-      <Lazy><Pricing more={{ href: "/pricing", label: "Pricing & estimate" }} /></Lazy>
-      <Lazy><FAQ limit={4} more={{ href: "/faq", label: "All questions" }} /></Lazy>
-      <Lazy><FinalCTA /></Lazy>
+      <HomeHero />
+      <Lazy><HomeWork /></Lazy>
+      <Lazy><HomeServices /></Lazy>
+      <Lazy><HomeProcess /></Lazy>
+      <Lazy><HomeReel /></Lazy>
+      <Lazy><HomeVoices /></Lazy>
+      <Lazy><HomePricing /></Lazy>
+      <Lazy><HomeFaq /></Lazy>
+      <Lazy><HomeCta /></Lazy>
     </main>
   );
 }
