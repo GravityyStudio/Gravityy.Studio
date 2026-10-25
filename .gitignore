@@ -12,3 +12,6 @@ next-env.d.ts
 /.claude
 /.agents
 skills-lock.json
+
+# design-taste-frontend skill working files (screenshots, direction sheet)
+.taste-skill/

@@ -15,27 +15,48 @@ import { FM } from "@/lib/motion";
 /** "/services/web" is inside "Services"; "/" only matches exactly. */
 const isActive = (path: string, href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(href + "/"));
 
+type Chapter = "dark" | "paper" | "accent";
+// The bar takes the field of the chapter beneath it (sections mark themselves with data-chapter); default is the page ground.
+const CHAPTER: Record<Chapter, string> = { dark: "bg-bg text-fg", paper: "chapter-paper", accent: "chapter-accent" };
+
 export default function Navbar() {
   const { site } = useContent();
   const { openContact, lockScroll } = useUI();
   const path = usePathname();
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
+  const [chapter, setChapter] = useState<Chapter>("dark");
   const panel = useRef<HTMLDivElement>(null);
+  const bar = useRef<HTMLElement>(null);
   const close = () => setOpen(false);
+  const links = site.NAV.filter((l) => l.href !== "/").slice(0, 5);
 
-  // Hide on scroll down, reveal on scroll up.
+  // Hide on scroll down, reveal on scroll up; read the chapter under the bar on every frame that scrolls.
   useEffect(() => {
     let last = window.scrollY;
+    let frame = 0;
+    const read = () => {
+      frame = 0;
+      const y = (bar.current?.offsetHeight ?? 64) / 2;
+      const under = document.elementsFromPoint(window.innerWidth / 2, y).find((el) => !bar.current?.contains(el));
+      setChapter(((under?.closest("[data-chapter]") as HTMLElement | null)?.dataset.chapter as Chapter) ?? "dark");
+    };
     const onScroll = () => {
+      if (!frame) frame = requestAnimationFrame(read);
       const y = window.scrollY;
       if (Math.abs(y - last) < 6) return;
       setHidden(y > last && y > 120);
       last = y;
     };
+    read();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [path]);
 
   // Close the menu and show the bar on every route change.
   useEffect(() => {
@@ -48,24 +69,28 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`nav-intro fixed inset-x-0 top-0 z-50 transition-transform duration-500 ${hidden && !open ? "-translate-y-full" : ""}`}>
-        <nav aria-label="Primary" className="glass container-x mt-3 flex h-16 items-center justify-between gap-4 rounded-full border border-line !px-3 sm:!px-4 lg:max-w-[1248px]">
-          <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2.5 pl-2 text-[17px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">
+      <header
+        ref={bar}
+        className={`nav-intro fixed inset-x-0 top-0 z-50 transition-[transform,background-color,color] duration-300 ${CHAPTER[chapter] ?? CHAPTER.dark} ${hidden && !open ? "-translate-y-full" : ""}`}
+      >
+        <nav aria-label="Primary" className="container-x flex h-16 items-center justify-between gap-4 lg:h-[72px]">
+          <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2.5 text-[17px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">
             <BrandMark height={24} priority />
-            <span aria-hidden="true">Gravityy Studio</span>
+            <span aria-hidden="true" className="hidden sm:inline">
+              Gravityy Studio
+            </span>
           </Link>
-          <ul className="hidden lg:flex">
-            {site.NAV.map((l) => {
+          <ul className="hidden items-center gap-1 lg:flex">
+            {links.map((l) => {
               const on = isActive(path, l.href);
               return (
                 <li key={l.href}>
                   <Link
                     href={l.href}
                     aria-current={on ? "page" : undefined}
-                    className={`relative rounded-full px-3 py-2.5 text-sm transition-colors xl:px-3.5 ${on ? "text-fg" : "text-muted hover:text-fg"}`}
+                    className={`inline-flex min-h-[44px] items-center px-3 text-[15px] underline-offset-[6px] transition-colors hover:underline ${on ? "underline decoration-2" : ""}`}
                   >
                     {l.label}
-                    {on && <span aria-hidden="true" className="absolute inset-x-3 -bottom-0.5 h-px bg-accent xl:inset-x-3.5" />}
                   </Link>
                 </li>
               );
@@ -73,25 +98,14 @@ export default function Navbar() {
           </ul>
           <div className="flex items-center gap-2">
             <ThemeToggle />
-            <Button href={site.clientLoginHref} variant="ghost" className="!hidden !min-h-[44px] !px-4 text-sm xl:!inline-flex">
-              Client Login
+            <Link href={site.clientLoginHref} className="hidden min-h-[44px] items-center px-3 text-[15px] hover:underline hover:underline-offset-[6px] xl:inline-flex">
+              Client login
+            </Link>
+            <Button onClick={() => openContact()} className="!min-h-[40px] !px-4 sm:!min-h-[44px] sm:!px-5">
+              Start a project
             </Button>
-            <Button onClick={() => openContact()} className="!hidden !min-h-[44px] !px-5 text-sm lg:!inline-flex">
-              Start a Project
-            </Button>
-            <button
-              type="button"
-              onClick={() => setOpen(true)}
-              aria-expanded={open}
-              aria-controls="mobile-menu"
-              aria-label="Open menu"
-              className="grid h-11 w-11 place-items-center rounded-full border border-line lg:hidden"
-            >
-              <span aria-hidden="true" className="flex flex-col gap-[5px]">
-                <span className="h-px w-[18px] bg-fg" />
-                <span className="h-px w-[18px] bg-fg" />
-                <span className="ml-auto h-px w-3 bg-fg" />
-              </span>
+            <button type="button" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="mobile-menu" className="inline-flex min-h-[44px] items-center px-2 text-[15px] font-medium lg:hidden">
+              Menu
             </button>
           </div>
         </nav>
@@ -108,19 +122,19 @@ export default function Navbar() {
               role="dialog"
               aria-modal="true"
               aria-label="Menu"
-              className="fixed inset-y-0 right-0 z-[70] flex w-[min(360px,88vw)] flex-col gap-8 overflow-y-auto border-l border-line bg-surface-2 p-6 lg:hidden"
+              className="fixed inset-y-0 right-0 z-[70] flex w-[min(380px,90vw)] flex-col gap-8 overflow-y-auto bg-surface-2 p-6 lg:hidden"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={FM.panel}
             >
-              <div className="flex justify-between">
+              <div className="flex items-center justify-between">
                 <ThemeToggle />
-                <button type="button" onClick={close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full border border-line">
+                <button type="button" onClick={close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full bg-raised">
                   <X size={18} aria-hidden="true" />
                 </button>
               </div>
-              <m.ul className="flex flex-col" initial="hide" animate="show" variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}>
+              <m.ul className="flex flex-col gap-1" initial="hide" animate="show" variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}>
                 {site.NAV.map((l) => {
                   const on = isActive(path, l.href);
                   return (
@@ -129,7 +143,7 @@ export default function Navbar() {
                         href={l.href}
                         onClick={close}
                         aria-current={on ? "page" : undefined}
-                        className={`flex items-center justify-between border-b border-line py-4 text-2xl font-medium tracking-[-0.03em] ${on ? "text-fg" : "text-fg/80"}`}
+                        className={`flex min-h-[52px] items-center justify-between text-[28px] font-medium tracking-[-0.03em] ${on ? "text-fg" : "text-fg/80"}`}
                       >
                         {l.label}
                         {on && <span aria-hidden="true" className="h-2 w-2 rounded-full bg-accent" />}
@@ -139,9 +153,9 @@ export default function Navbar() {
                 })}
               </m.ul>
               <div className="mt-auto flex flex-col gap-3">
-                <Button onClick={() => (close(), openContact())}>Start a Project</Button>
+                <Button onClick={() => (close(), openContact())}>Start a project</Button>
                 <Button href={site.clientLoginHref} variant="ghost">
-                  Client Login
+                  Client login
                 </Button>
               </div>
             </m.div>

@@ -67,7 +67,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <CustomCursor />
         </Providers>
         </ContentProvider>
-        <div className="grain" aria-hidden="true" />
         <Analytics />
         {GA && (
           <>

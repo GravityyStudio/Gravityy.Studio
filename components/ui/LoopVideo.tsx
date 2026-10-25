@@ -9,13 +9,14 @@ type Props = {
   trigger?: "view" | "hover"; // hover falls back to view on touch devices
   className?: string;
   controlClassName?: string;
+  poster?: string; // first frame shown by the <video> itself before playback
 };
 
 /**
  * Muted, looping, lazy-loaded clip layered over a next/image poster (the parent renders the poster).
  * Sources attach only near the viewport; plays in view (or on hover), fades in once playing, has a pause control.
  */
-export default function LoopVideo({ name, label, trigger = "view", className = "", controlClassName = "right-4 bottom-4" }: Props) {
+export default function LoopVideo({ name, label, trigger = "view", className = "", controlClassName = "right-4 bottom-4", poster }: Props) {
   const ref = useRef<HTMLVideoElement>(null);
   const [load, setLoad] = useState(false);
   const [paused, setPaused] = useState(false); // user intent
@@ -91,6 +92,7 @@ export default function LoopVideo({ name, label, trigger = "view", className = "
         loop
         playsInline
         preload="metadata"
+        poster={poster}
         aria-hidden="true"
         tabIndex={-1}
         onPlaying={() => setPlaying(true)}
@@ -103,7 +105,7 @@ export default function LoopVideo({ name, label, trigger = "view", className = "
         type="button"
         onClick={toggle}
         aria-label={`${paused ? "Play" : "Pause"} ${label}`}
-        className={`absolute z-10 grid h-11 w-11 place-items-center rounded-full border border-white/15 bg-black/40 text-white backdrop-blur-md transition-colors hover:bg-black/60 ${controlClassName}`}
+        className={`absolute z-10 grid h-11 w-11 place-items-center rounded-full bg-black/70 text-white transition-colors hover:bg-black/85 ${controlClassName}`}
       >
         {paused ? <Play size={16} aria-hidden="true" /> : <Pause size={16} aria-hidden="true" />}
       </button>

@@ -38,7 +38,61 @@ html.light {
 .theme-dark {
   color: rgb(var(--fg));
 }
-/* Theme-aware logo (see components/ui/BrandMark.tsx) */
+/* Chapters (home): a section's own field. `.chapter-paper` inverts the current theme; `.chapter-accent` is the lime field. */
+.chapter-paper {
+  --bg: 245 245 242;
+  --surface: 236 236 230;
+  --surface-2: 255 255 255;
+  --raised: 230 230 224;
+  --line: 214 214 208;
+  --line-strong: 180 180 174;
+  --fg: 14 14 14;
+  --muted: 74 74 70;
+  --accent: 77 124 15;
+  --placeholder: 110 110 105;
+}
+html.light .chapter-paper {
+  --bg: 14 14 14;
+  --surface: 23 23 23;
+  --surface-2: 28 28 28;
+  --raised: 34 34 34;
+  --line: 44 44 44;
+  --line-strong: 70 70 70;
+  --fg: 245 245 242;
+  --muted: 170 170 165;
+  --accent: 168 240 30;
+  --placeholder: 140 140 135;
+}
+.chapter-paper,
+.chapter-accent {
+  background: rgb(var(--bg));
+  color: rgb(var(--fg));
+}
+.chapter-accent {
+  --bg: var(--accent-field, 168 240 30);
+  --fg: 10 10 10;
+  --muted: 38 52 12;
+}
+html.light .chapter-accent {
+  --accent-field: 77 124 15;
+  --fg: 250 250 247;
+  --muted: 232 240 214;
+}
+/* Theme-aware logo (see components/ui/BrandMark.tsx); chapters with a light ground take the black mark. */
+.chapter-paper .brand-white,
+.chapter-accent .brand-white {
+  display: none;
+}
+.chapter-paper .brand-black,
+.chapter-accent .brand-black {
+  display: block;
+}
+html.light .chapter-paper .brand-white {
+  display: block;
+}
+html.light .chapter-paper .brand-black {
+  display: none;
+}
 html.light .brand-white {
   display: none;
 }
@@ -141,15 +195,7 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* Film grain + one soft lime glow */
-.grain {
-  position: fixed;
-  inset: -50%;
-  z-index: 90;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
+/* One soft lime glow (inner pages) */
 .glow {
   background: radial-gradient(closest-side, rgba(168, 240, 30, 0.16), rgba(168, 240, 30, 0) 70%);
 }
@@ -204,6 +250,43 @@ html.lenis body {
   from {
     opacity: 0;
     transform: translateY(14px);
+  }
+}
+
+/* Home hero statement, set across the seam (--seam on the section). The seam crosses the top of line two: 0.86em
+   (line one) + 0.19em, so the ascenders rise above it and the rest has landed. ::after repeats the text in the deep
+   lime ink below the seam; `/ ""` keeps that copy out of the accessible name. Fades only: a moving h1 would drift
+   off the seam. */
+.hero-statement {
+  top: calc(var(--seam) - 1.05em);
+  animation: home-fade 1.1s ease 0.6s both;
+}
+.hero-statement::after {
+  content: attr(data-text);
+  content: attr(data-text) / "";
+  position: absolute;
+  inset: 0;
+  white-space: pre-line;
+  color: rgb(38 52 12);
+  clip-path: inset(1.05em 0 0 0);
+}
+html.light .hero-statement::after {
+  color: rgb(232 240 214);
+}
+@keyframes home-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Home hero: the sentence rises once the preloader has gone (CSS only: never stuck hidden without JS). */
+.home-in {
+  animation: home-in 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
+}
+@keyframes home-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.35em);
   }
 }
 
