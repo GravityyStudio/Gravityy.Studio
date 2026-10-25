@@ -78,36 +78,36 @@ for (const w of [390, 1440]) {
   assert.equal(await page.evaluate(() => document.activeElement?.textContent?.trim()), "Get as a quote");
   ok("contact form validates, submits, Esc closes and focus returns");
 
-  // Pricing tabs
+  // Live price: region and engagement are radio groups; the figure is announced as a status
   await page.locator("#pricing").scrollIntoViewIfNeeded();
-  await page.getByRole("tab", { name: "International" }).click();
-  await page.locator("#pricing-panel").getByText("$1,490").waitFor();
+  const price = page.locator("#pricing [role=status]").first();
+  assert.match(await price.getAttribute("aria-label"), /₹59,999/);
+  await page.locator("#pricing label", { hasText: "International ($)" }).click();
+  assert.match(await price.getAttribute("aria-label"), /\$1,490/);
+  await page.locator("#pricing label", { hasText: /^Grow/ }).click();
+  assert.match(await price.getAttribute("aria-label"), /\$590/);
   await page.keyboard.press("ArrowLeft");
-  await page.locator("#pricing-panel").getByText("₹59,999").waitFor();
-  ok("pricing tabs switch by click and arrow keys");
+  assert.match(await price.getAttribute("aria-label"), /\$1,490/);
+  ok("live price switches region and plan by click and arrow keys");
 
-  // FAQ page: all questions
+  // FAQ page: every question answered as reading text
   await page.goto(URL + "/faq", { waitUntil: "networkidle" });
-  assert.equal(await page.locator("#faq button[aria-expanded]").count(), 6);
-  const q = page.getByRole("button", { name: "How is pricing calculated?" });
-  await q.click();
-  assert.equal(await q.getAttribute("aria-expanded"), "true");
-  ok("/faq lists all 6 questions; accordion toggles aria-expanded");
+  assert.equal(await page.locator("#faq p strong").count(), 7); // 6 questions + "Something else?"
+  assert.ok(await page.getByText("How is pricing calculated?").isVisible());
+  ok("/faq shows all 6 questions with their answers");
 
-  // Work page: carousel + showreel
+  // Work page: every project, client letters, showreel
   await page.goto(URL + "/work", { waitUntil: "networkidle" });
   assert.equal(await page.locator("#work [data-case]").count(), 6);
-  await page.getByRole("button", { name: "Next testimonial" }).click();
-  await sleep(600);
-  assert.equal(await page.locator('[aria-roledescription="slide"][aria-label="2 of 3"]').getAttribute("aria-hidden"), "false");
-  await page.getByRole("button", { name: /Watch the reel/ }).click();
+  assert.equal(await page.locator("#voices blockquote").count(), 3);
+  await page.getByRole("button", { name: "Play the showreel" }).click();
   const reel = page.getByRole("dialog", { name: "Gravityy Studio showreel" });
   await reel.waitFor();
   for (let i = 0; i < 6; i++) await page.keyboard.press("Tab");
   assert.ok(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')));
   await page.keyboard.press("Escape");
   await reel.waitFor({ state: "detached" });
-  ok("/work shows all 6 projects; carousel advances; showreel modal traps focus, Esc closes");
+  ok("/work shows all 6 projects and 3 client letters; showreel modal traps focus, Esc closes");
 
   // Services → detail page, footer link
   await page.goto(URL + "/services", { waitUntil: "networkidle" });

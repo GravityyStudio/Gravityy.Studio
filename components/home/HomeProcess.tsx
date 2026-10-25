@@ -9,6 +9,7 @@ import { useContent } from "../ContentProvider";
 const START = ["lg:col-start-1", "lg:col-start-3", "lg:col-start-5", "lg:col-start-7"];
 const INDENT = ["pl-0", "pl-[6vw]", "pl-[12vw]", "pl-[18vw]"];
 
+/** Four summary lines from the CMS (home, service pages), linking to the full process. */
 export default function HomeProcess() {
   const home = useContent().pages.home as typeof LOCAL.pages.home;
   const steps = home.steps ?? LOCAL.pages.home.steps;

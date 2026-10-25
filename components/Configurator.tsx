@@ -3,21 +3,17 @@ import { useMemo, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { useContent } from "./ContentProvider";
 import { estimateINR, fmtINR, fmtUSD, quoteMessage, recommend, toUSD, type Option } from "@/lib/pricing";
-import { useReveal } from "@/hooks/useReveal";
+import { useEnter } from "@/hooks/useEnter";
 import { useUI } from "./Providers";
-import SectionHeading from "./ui/SectionHeading";
 import AnimatedNumber from "./ui/AnimatedNumber";
 import Button from "./ui/Button";
 
 const usd = (n: number) => "≈ " + fmtUSD(toUSD(n));
 
-function Options({ legend, n, opts, value, onPick }: { legend: string; n: number; opts: Option[]; value: string; onPick: (id: string) => void }) {
+function Options({ legend, opts, value, onPick }: { legend: string; opts: Option[]; value: string; onPick: (id: string) => void }) {
   return (
     <fieldset>
-      <legend className="mb-4 text-[15px] font-medium">
-        <span className="mr-3 font-mono text-muted">{n}</span>
-        {legend}
-      </legend>
+      <legend className="mb-4 text-[17px] font-medium">{legend}</legend>
       <div role="radiogroup" aria-label={legend} className="grid grid-cols-3 gap-2">
         {opts.map((o) => {
           const on = value === o.id;
@@ -28,10 +24,10 @@ function Options({ legend, n, opts, value, onPick }: { legend: string; n: number
               role="radio"
               aria-checked={on}
               onClick={() => onPick(o.id)}
-              className={`min-h-[64px] rounded-2xl border p-3 text-left transition-colors duration-200 sm:p-4 ${on ? "border-fg/70 bg-fg/[0.06]" : "border-line hover:border-line-strong"}`}
+              className={`min-h-[64px] rounded-2xl p-3 text-left transition-colors duration-200 sm:p-4 ${on ? "bg-fg text-bg" : "bg-bg hover:bg-raised"}`}
             >
               <span className="block text-[15px] font-medium">{o.label}</span>
-              <span className="mt-1 block text-[13px] text-muted">{o.hint}</span>
+              <span className={`mt-1 block text-[13px] ${on ? "text-bg/70" : "text-muted"}`}>{o.hint}</span>
             </button>
           );
         })}
@@ -40,6 +36,7 @@ function Options({ legend, n, opts, value, onPick }: { legend: string; n: number
   );
 }
 
+/** Live estimate: pick services, scope and timeline; the figure updates and becomes the quote. Same math as proposals. */
 export default function Configurator() {
   const { services, configurator: cfg } = useContent();
   const ref = useRef<HTMLElement>(null);
@@ -47,7 +44,7 @@ export default function Configurator() {
   const [sel, setSel] = useState<string[]>(cfg.defaults.sel);
   const [scope, setScope] = useState(cfg.defaults.scope);
   const [timeline, setTimeline] = useState(cfg.defaults.timeline);
-  useReveal(ref);
+  useEnter(ref);
 
   const scopeO = cfg.SCOPES.find((s) => s.id === scope)!;
   const tlO = cfg.TIMELINES.find((t) => t.id === timeline)!;
@@ -59,14 +56,19 @@ export default function Configurator() {
   const quote = () => openContact(quoteMessage({ services: chosen.map((s) => s.name), scope: scopeO.label, timeline: tlO.label, inr, plan: plan.name }));
 
   return (
-    <section ref={ref} id="configurator" aria-labelledby="config-h" className="section cv">
+    <section ref={ref} id="configurator" data-chapter="dark" aria-labelledby="config-h" className="bg-surface py-[clamp(96px,14vh,180px)]">
       <div className="container-x">
-        <SectionHeading id="config-h" index="03" eyebrow="Estimate" title="Build your digital system." lede="Pick what you need. The estimate updates as you go and becomes your quote." />
-        <div className="mt-10 grid items-start gap-10 lg:grid-cols-[1.25fr_1fr] lg:gap-12">
-          <div className="flex flex-col gap-10" data-card>
+        <div data-enter className="flex flex-col gap-4">
+          <h2 id="config-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
+            Build your estimate
+          </h2>
+          <p className="max-w-[52ch] text-[17px] leading-relaxed">Pick what you need. The estimate updates as you go and becomes your quote.</p>
+        </div>
+        <div className="mt-12 grid items-start gap-10 lg:grid-cols-12 lg:gap-x-8">
+          <div className="flex flex-col gap-10 lg:col-span-7" data-enter>
             <fieldset>
-              <legend className="mb-4 text-[15px] font-medium">
-                <span className="mr-3 font-mono text-muted">1</span>Services <span className="font-normal text-muted">— pick any</span>
+              <legend className="mb-4 text-[17px] font-medium">
+                Services <span className="font-normal text-muted">(pick any)</span>
               </legend>
               <div className="flex flex-wrap gap-2">
                 {services.map((s) => {
@@ -77,7 +79,7 @@ export default function Configurator() {
                       type="button"
                       aria-pressed={on}
                       onClick={() => toggle(s.id)}
-                      className={`inline-flex min-h-[44px] items-center gap-2 rounded-full border px-4 text-sm transition-colors duration-200 ${on ? "border-fg bg-fg text-bg" : "border-line-strong hover:border-fg/60"}`}
+                      className={`inline-flex min-h-[44px] items-center gap-2 rounded-full px-4 text-[15px] transition-colors duration-200 ${on ? "bg-fg text-bg" : "bg-bg hover:bg-raised"}`}
                     >
                       {on && <Check size={14} aria-hidden="true" />}
                       {s.name}
@@ -86,28 +88,27 @@ export default function Configurator() {
                 })}
               </div>
             </fieldset>
-            <Options legend="Scope" n={2} opts={cfg.SCOPES} value={scope} onPick={setScope} />
-            <Options legend="Timeline" n={3} opts={cfg.TIMELINES} value={timeline} onPick={setTimeline} />
+            <Options legend="Scope" opts={cfg.SCOPES} value={scope} onPick={setScope} />
+            <Options legend="Timeline" opts={cfg.TIMELINES} value={timeline} onPick={setTimeline} />
           </div>
 
-          <aside aria-label="Estimate" data-card className="glass flex flex-col gap-6 rounded-card border border-line p-7 sm:p-9 lg:sticky lg:top-28">
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-muted">Live estimate</p>
+          <aside aria-label="Estimate" data-enter className="flex flex-col gap-6 rounded-card bg-bg p-7 sm:p-9 lg:sticky lg:top-28 lg:col-span-5">
             <p aria-live="polite" aria-atomic="true" className="sr-only">
               {`Estimate ${fmtINR(inr)}, ${usd(inr)}. Recommended plan: ${plan.name}.`}
             </p>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-3">
               <p aria-hidden="true" className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <AnimatedNumber value={inr} format={fmtINR} className="text-[clamp(40px,5vw,60px)] font-medium leading-none tracking-[-0.04em]" />
-                <AnimatedNumber value={inr} format={usd} className="text-xl text-muted" />
+                <AnimatedNumber value={inr} format={fmtINR} className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-none tracking-[-0.045em] tabular-nums" />
+                <AnimatedNumber value={inr} format={usd} className="text-[20px] text-muted" />
               </p>
-              <p className="text-sm text-muted">
-                {sel.length ? `${sel.length} service${sel.length > 1 ? "s" : ""} · ${scopeO.label} scope · ${tlO.label} timeline` : "No services selected"}
+              <p className="text-[15px] text-muted">
+                {sel.length ? `Your estimate: ${sel.length} service${sel.length > 1 ? "s" : ""}, ${scopeO.label.toLowerCase()} scope, ${tlO.label.toLowerCase()} timeline` : "No services selected"}
               </p>
-              <div className="border-t border-line pt-6">
-                <p className="mb-2 font-mono text-xs uppercase tracking-[0.14em] text-muted">Recommended plan</p>
-                <p className="text-xl font-medium tracking-[-0.02em]">{plan.name}</p>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{plan.why}</p>
-              </div>
+            </div>
+            <div className="rounded-2xl bg-surface p-5">
+              <p className="text-[15px] text-muted">Recommended plan</p>
+              <p className="mt-1 text-[20px] font-medium tracking-[-0.02em]">{plan.name}</p>
+              <p className="mt-2 text-[15px] leading-relaxed text-muted">{plan.why}</p>
             </div>
             <Button variant="accent" onClick={quote} disabled={!sel.length} className="w-full">
               Get as a quote

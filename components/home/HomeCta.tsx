@@ -1,4 +1,5 @@
 "use client";
+import type { ReactNode } from "react";
 import { useFormSubmit } from "@/hooks/useFormSubmit";
 import { useUI } from "../Providers";
 import Button from "../ui/Button";
@@ -6,7 +7,8 @@ import Honeypot from "../ui/Honeypot";
 
 /** The free audit as a sentence with blanks: the gaps are the fields and its last word sends it (same /api/audit).
  * Static on purpose: a form should be there the moment someone reaches it. */
-export default function HomeCta() {
+export default function HomeCta({ level = "h2", title = "Let’s see what your site can do.", aside }: { level?: "h1" | "h2"; title?: string; aside?: ReactNode }) {
+  const Heading = level;
   const { openContact } = useUI();
   const audit = useFormSubmit("/api/audit", "auditSchema");
   const blank =
@@ -15,10 +17,13 @@ export default function HomeCta() {
   return (
     <section id="contact" data-chapter="dark" aria-labelledby="cta-h" className="bg-bg py-[clamp(96px,16vh,200px)]">
       <div className="container-x">
-        <h2 id="cta-h" className="max-w-[16ch] text-[9vw] sm:text-[clamp(40px,5.2vw,84px)] font-semibold leading-[0.95] tracking-[-0.045em]">
-          Let&apos;s see what your site can do.
-        </h2>
-        <form onSubmit={audit.onSubmit} noValidate aria-labelledby="cta-h" className="mt-12 max-w-[1100px] lg:mt-16">
+        <div className="grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-8">
+          <Heading id="cta-h" className="max-w-[16ch] text-[9vw] font-semibold leading-[0.95] tracking-[-0.045em] sm:text-[clamp(40px,5.2vw,84px)] lg:col-span-8">
+            {title}
+          </Heading>
+          {aside && <div className="lg:col-span-4">{aside}</div>}
+        </div>
+        <form id="audit" onSubmit={audit.onSubmit} noValidate aria-labelledby="cta-h" className="mt-12 max-w-[1100px] lg:mt-16">
           <Honeypot />
           <p className="text-[20px] font-medium leading-[1.6] tracking-[-0.02em] sm:text-[32px]">
             Audit{" "}

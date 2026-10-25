@@ -195,15 +195,9 @@ html.lenis body {
   overflow: hidden;
 }
 
-/* One soft lime glow (inner pages) */
+/* One soft lime glow (login page) */
 .glow {
   background: radial-gradient(closest-side, rgba(168, 240, 30, 0.16), rgba(168, 240, 30, 0) 70%);
-}
-
-/* Tilt cards (±8deg via CSS vars set in Tilt.tsx) */
-.tilt {
-  transform: perspective(1000px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
-  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s;
 }
 
 /* Preloader: pure CSS so it can never trap the page, even without JS */
@@ -230,7 +224,6 @@ html.lenis body {
 @media print {
   header.nav-intro,
   footer,
-  .grain,
   .preloader,
   .print\:hidden {
     display: none !important;
@@ -290,7 +283,7 @@ html.light .hero-statement::after {
   }
 }
 
-/* Process: step counter swap */
+/* A changing figure settles in (the live price) */
 .step-swap {
   animation: step-swap 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -301,27 +294,8 @@ html.light .hero-statement::after {
   }
 }
 
-/* Marquee */
-.marquee-track {
-  animation: marquee 40s linear infinite;
-}
-@keyframes marquee {
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-/* Initial states for the hero intro, only when JS + motion are on (otherwise content is static and visible) */
+/* The navigation bar slides in after the preloader, only when JS + motion are on */
 @media (prefers-reduced-motion: no-preference) {
-  .js [data-hero-media] {
-    clip-path: inset(30% 22% 30% 22% round 32px);
-  }
-  .js .hero-line > span {
-    transform: translateY(110%);
-  }
-  .js .hero-fade {
-    opacity: 0;
-  }
   .js .nav-intro {
     opacity: 0;
     transform: translateY(-16px);
@@ -351,11 +325,5 @@ html.has-cursor button {
   }
   .preloader {
     display: none;
-  }
-  .tilt {
-    transform: none !important;
-  }
-  .marquee-track {
-    animation: none;
   }
 }
