@@ -18,13 +18,13 @@ export default function HomeProcess() {
   const line = "text-[9vw] font-medium leading-[1.02] tracking-[-0.04em] sm:text-[clamp(40px,5.2vw,84px)]";
 
   return (
-    <section ref={ref} id="process" data-chapter="dark" aria-labelledby="process-h" className="bg-bg py-[clamp(96px,16vh,200px)]">
+    <section ref={ref} id="process" data-glow aria-labelledby="process-h" className="py-[clamp(96px,16vh,200px)]">
       <ol className="container-x flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:gap-y-14">
         {steps.map((s, i) => {
           const Line = i === 0 ? "h2" : "p";
           return (
             <li key={s.line} data-enter className={`${INDENT[i % 4]} lg:col-end-13 lg:pl-0 ${START[i % 4]}`}>
-              <Line id={i === 0 ? "process-h" : undefined} className={`${line} ${i === steps.length - 1 ? "text-accent" : ""}`}>
+              <Line id={i === 0 ? "process-h" : undefined} data-reveal className={`${line} ${i === steps.length - 1 ? "text-accent" : ""}`}>
                 {s.line}
               </Line>
               <p className="mt-3 max-w-[34ch] text-[17px] leading-relaxed text-muted">{s.note}</p>

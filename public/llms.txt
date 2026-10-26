@@ -1,0 +1,22 @@
+# Gravityy Studio
+
+> India-based digital studio that designs, builds and automates websites, web and mobile apps, marketing automation and analytics for founders and growing teams in India and worldwide. Made in India, working worldwide.
+
+## Services
+- [Websites](https://www.gravityystudio.com/services/web): fast, accessible marketing sites with a CMS the team can edit.
+- [Web & mobile apps](https://www.gravityystudio.com/services/app): portals, SaaS and cross-platform apps with auth, billing and roles.
+- [Automation](https://www.gravityystudio.com/services/auto): lead capture, CRM sync and follow-ups.
+- [Analytics](https://www.gravityystudio.com/services/data): event tracking and live dashboards.
+- [All services](https://www.gravityystudio.com/services)
+
+## Pricing
+- [Pricing](https://www.gravityystudio.com/pricing): Build Websites (one-time) from ₹59,999 per project + 18% GST, or $1,490 internationally; Grow (monthly) from ₹24,999 per month + 18% GST, or $590 internationally. Includes up to 8 custom pages, CMS setup, Lighthouse 90+ and on-page SEO. A configurator builds custom estimates.
+
+## Work
+- [Selected work](https://www.gravityystudio.com/work): Viara Studios (luxury real estate website), ATHLEX (fitness club website), a D2C skincare storefront (+64% repeat purchase rate, 1.4s largest contentful paint).
+
+## Company
+- [Process](https://www.gravityystudio.com/process): eight steps from discovery to scale.
+- [Solutions](https://www.gravityystudio.com/solutions): engagements built from the services.
+- [FAQ](https://www.gravityystudio.com/faq): timelines, pricing, international clients, ownership, support, working with existing teams.
+- [Contact](https://www.gravityystudio.com/contact): hello@gravityystudio.com. Free audit: send a website URL and work email for a written report within 3 working days.

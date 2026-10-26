@@ -23,7 +23,7 @@ export default function HomeReel() {
   });
 
   return (
-    <section ref={ref} data-chapter="dark" aria-labelledby="reel-h" className="theme-dark relative h-[78svh] min-h-[480px] overflow-hidden bg-sunken">
+    <section ref={ref} aria-labelledby="reel-h" className="theme-dark relative h-[78svh] min-h-[480px] overflow-hidden bg-sunken">
       <div data-drift data-video-host className="absolute inset-[-8%_0]">
         <Image src={poster} alt="" fill sizes="100vw" placeholder="blur" className="object-cover" />
         <LoopVideo name="showreel" label="Showreel" poster={poster.src} className="absolute inset-0 h-full w-full object-cover" controlClassName="right-4 top-4 sm:right-8 sm:top-8" />

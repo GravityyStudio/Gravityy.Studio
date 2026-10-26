@@ -1,41 +1,31 @@
 "use client";
-import { useRef } from "react";
-import { useEnter } from "@/hooks/useEnter";
 import { useContent } from "../ContentProvider";
 
-/** Client words set like letters: the first given room at statement size, the others as reading text. */
+/** Client words as cards (confirmed testimonials from the CMS), plus one labelled slot for the next confirmed quote. */
 export default function HomeVoices() {
   const { testimonials } = useContent();
-  const ref = useRef<HTMLElement>(null);
-  useEnter(ref);
-  if (!testimonials.length) return null;
-  const [first, ...rest] = testimonials;
-
-  const SignOff = ({ t }: { t: (typeof testimonials)[number] }) => (
-    <footer className="mt-6 text-[15px]">
-      <span className="block font-medium">{t.name}</span>
-      <span className="block text-muted">{t.role}</span>
-    </footer>
-  );
 
   return (
-    <section ref={ref} id="voices" data-chapter="dark" aria-labelledby="voices-h" className="bg-surface py-[clamp(96px,14vh,160px)]">
-      <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-x-8">
-        <h2 id="voices-h" data-enter className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em] lg:col-span-3">
+    <section id="voices" data-glow aria-labelledby="voices-h" className="py-[clamp(96px,14vh,180px)]">
+      <div className="container-x">
+        <h2 id="voices-h" data-reveal className="display max-w-[14ch] !text-[clamp(36px,5vw,80px)]">
           In their words
         </h2>
-        <div className="flex flex-col gap-14 lg:col-span-7 lg:col-start-5">
-          <blockquote data-enter>
-            <p className="max-w-[46ch] text-[20px] font-medium leading-snug tracking-[-0.02em] sm:text-[32px]">{first.quote}</p>
-            <SignOff t={first} />
-          </blockquote>
-          {rest.map((t) => (
-            <blockquote key={t.name + t.role} data-enter className="max-w-[46ch]">
-              <p className="text-[17px] leading-[1.55]">{t.quote}</p>
-              <SignOff t={t} />
-            </blockquote>
+        <ul className="mt-12 grid gap-5 md:grid-cols-2 lg:mt-16">
+          {testimonials.map((t) => (
+            <li key={t.name + t.role} data-panel className="flex flex-col justify-between gap-8 rounded-xl bg-surface p-7 hairline sm:p-9">
+              <blockquote className="text-[clamp(20px,1.8vw,24px)] font-medium leading-snug tracking-[-0.015em]">{t.quote}</blockquote>
+              <p className="flex flex-col text-[15px]">
+                <span className="font-semibold">{t.name}</span>
+                <span className="text-muted">{t.role}</span>
+              </p>
+            </li>
           ))}
-        </div>
+          <li data-panel className="flex flex-col justify-between gap-8 rounded-xl border border-dashed border-fg/20 p-7 text-muted sm:p-9">
+            <p className="text-[20px] leading-snug">{"{{TESTIMONIAL: a confirmed quote from a client, with their permission}}"}</p>
+            <p className="text-[15px]">{"{{NAME}}, {{ROLE}}, {{COMPANY}}"}</p>
+          </li>
+        </ul>
       </div>
     </section>
   );

@@ -3,7 +3,6 @@ import WorkStrip from "@/components/home/WorkStrip";
 import Link from "@/components/ui/SmartLink";
 import PageHero from "@/components/PageHero";
 import FooterNewsletter from "@/components/FooterNewsletter";
-import HomeCta from "@/components/home/HomeCta";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { getPosts, postDate } from "@/lib/posts";
@@ -18,7 +17,7 @@ export default async function BlogPage() {
     <main id="main">
       <JsonLd data={breadcrumbLd([["Blog", "/blog"]])} />
       <PageHero crumbs={[["Blog", "/blog"]]} title={pages.blog.title} lede={pages.blog.lede} />
-      <section data-chapter="dark" aria-labelledby="posts-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
+      <section aria-labelledby="posts-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
         <div className="container-x">
           <h2 id="posts-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
             Latest notes
@@ -60,7 +59,6 @@ export default async function BlogPage() {
           )}
         </div>
       </section>
-      <HomeCta />
       <WorkStrip />
     </main>
   );

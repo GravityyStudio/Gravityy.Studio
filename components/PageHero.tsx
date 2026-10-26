@@ -12,9 +12,9 @@ type Props = { title: string; lede: string; crumbs?: [string, string][]; childre
 export default function PageHero({ title, lede, crumbs = [], children }: Props) {
   const parent = crumbs.length > 1 ? crumbs[crumbs.length - 2] : null;
   return (
-    <section data-chapter="dark" aria-labelledby="page-h" className="bg-bg pb-[clamp(72px,10vw,140px)] pt-[clamp(140px,16vw,220px)]">
+    <section data-glow aria-labelledby="page-h" className="pb-[clamp(72px,10vw,140px)] pt-[clamp(140px,16vw,220px)]">
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-8">
-        <h1 id="page-h" className="home-in text-[clamp(56px,8vw,136px)] font-semibold leading-[0.9] tracking-[-0.05em] lg:col-span-8">
+        <h1 id="page-h" className="display home-rise lg:col-span-8">
           {title}
         </h1>
         <div className="home-in flex flex-col gap-6 lg:col-span-4" style={{ animationDelay: "0.15s" }}>

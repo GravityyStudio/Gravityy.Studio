@@ -2,7 +2,6 @@ import PageHero from "@/components/PageHero";
 import HomeWork from "@/components/home/HomeWork";
 import HomeReel from "@/components/home/HomeReel";
 import HomeVoices from "@/components/home/HomeVoices";
-import HomeCta from "@/components/home/HomeCta";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { breadcrumbLd, workLd } from "@/lib/seo";
@@ -18,7 +17,6 @@ export default async function WorkPage() {
       <HomeWork limit={0} />
       <HomeReel />
       <HomeVoices />
-      <HomeCta />
     </main>
   );
 }

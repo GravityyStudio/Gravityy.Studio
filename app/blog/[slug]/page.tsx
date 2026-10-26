@@ -3,7 +3,6 @@ import { ArrowLeft } from "lucide-react";
 import Link from "@/components/ui/SmartLink";
 import JsonLd from "@/components/JsonLd";
 import Markdown from "@/components/Markdown";
-import HomeCta from "@/components/home/HomeCta";
 import { getPost, getPosts, postDate } from "@/lib/posts";
 import { SITE, breadcrumbLd, pageMeta } from "@/lib/seo";
 
@@ -56,7 +55,6 @@ export default async function PostPage({ params }: Params) {
           <Markdown source={p.body} />
         </div>
       </article>
-      <HomeCta />
     </main>
   );
 }

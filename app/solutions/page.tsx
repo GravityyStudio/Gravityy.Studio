@@ -1,7 +1,6 @@
 import PageHero from "@/components/PageHero";
 import HomeServices from "@/components/home/HomeServices";
 import HomeWork from "@/components/home/HomeWork";
-import HomeCta from "@/components/home/HomeCta";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { breadcrumbLd } from "@/lib/seo";
@@ -17,12 +16,10 @@ export default async function SolutionsPage() {
       <HomeServices
         id="engagements"
         heading="Five engagements"
-        chapter="dark"
         items={solutions.map((s) => ({ label: s.name, desc: s.desc }))}
         more={{ href: "/services", label: "The services they are built from" }}
       />
       <HomeWork />
-      <HomeCta />
     </main>
   );
 }

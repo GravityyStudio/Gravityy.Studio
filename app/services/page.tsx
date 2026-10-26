@@ -2,7 +2,6 @@ import PageHero from "@/components/PageHero";
 import WorkStrip from "@/components/home/WorkStrip";
 import HomeServices from "@/components/home/HomeServices";
 import Configurator from "@/components/Configurator";
-import HomeCta from "@/components/home/HomeCta";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { breadcrumbLd } from "@/lib/seo";
@@ -18,7 +17,6 @@ export default async function ServicesPage() {
       <HomeServices heading="Every service" items={services.map((s) => ({ label: s.name, desc: s.desc, href: `/services/${s.id}` }))} more={null} />
       <WorkStrip surface={false} />
       <Configurator />
-      <HomeCta />
     </main>
   );
 }

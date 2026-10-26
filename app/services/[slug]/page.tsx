@@ -44,7 +44,7 @@ export default async function ServicePage({ params }: Params) {
       <JsonLd data={[breadcrumbLd([["Services", "/services"], [s.name, `/services/${s.id}`]]), serviceLd(s, standard)]} />
       <PageHero crumbs={[["Services", "/services"], [s.name, `/services/${s.id}`]]} title={s.name} lede={s.desc} />
 
-      <section data-chapter="dark" aria-labelledby="tools-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
+      <section aria-labelledby="tools-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
         <div className="container-x grid gap-14 lg:grid-cols-12 lg:gap-x-8">
           <div className="flex flex-col gap-6 lg:col-span-6">
             <h2 id="tools-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
@@ -69,7 +69,7 @@ export default async function ServicePage({ params }: Params) {
               From {fmtINR(low)} for a lean scope on a flexible timeline, up to {fmtINR(high)} for an advanced scope on a rush timeline.
             </p>
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              <QuoteButton prefill={prefill} />
+              <QuoteButton prefill={prefill} label="Talk to us first" />
               <Link href="/pricing#configurator" className="group inline-flex min-h-[48px] items-center gap-2 px-2 text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
                 Combine services <ArrowRight size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:translate-x-0.5" />
               </Link>

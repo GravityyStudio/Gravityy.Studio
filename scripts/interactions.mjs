@@ -35,22 +35,33 @@ for (const w of [390, 1440]) {
   assert.equal(await page.evaluate(() => document.activeElement?.textContent?.trim()), "Skip to content");
   ok("first Tab focuses the skip link");
 
-  // Theme toggle + persistence
-  const start = await page.evaluate(() => (document.documentElement.classList.contains("light") ? "light" : "dark"));
-  const other = start === "dark" ? "light" : "dark";
-  await page.getByRole("button", { name: `Switch to ${other} mode` }).first().click();
-  assert.ok(await page.evaluate((t) => document.documentElement.classList.contains(t), other));
-  await page.reload({ waitUntil: "networkidle" });
-  assert.ok(await page.evaluate((t) => document.documentElement.classList.contains(t), other));
-  await page.getByRole("button", { name: `Switch to ${start} mode` }).first().click();
-  assert.ok(await page.evaluate((t) => document.documentElement.classList.contains(t), start));
-  ok(`theme toggle switches ${start} → ${other}, persists across reload, switches back`);
+  // Hero: one primary and one secondary CTA; the primary goes to the audit form
+  const hero = page.locator("#top");
+  assert.equal(await hero.getByRole("link").count(), 2);
+  await hero.getByRole("link", { name: "Get a free audit" }).click();
+  await page.locator("#audit").waitFor();
+  ok("hero has exactly two CTAs; 'Get a free audit' reaches #audit");
+
+  // Audit form: inline validation, then the success state (API stubbed: no real request is filed)
+  await page.route("**/api/audit", (r) => r.fulfill({ json: { ok: true, message: "Got it. Your audit will arrive within 3 working days." } }));
+  const audit = page.locator("#audit");
+  await audit.getByRole("button", { name: "Send my free audit" }).click();
+  await audit.getByText("Enter a valid website URL.").waitFor();
+  assert.equal(await audit.getByLabel("Website URL").getAttribute("aria-invalid"), "true");
+  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("name")), "url");
+  await audit.getByLabel("Website URL").fill("example.com");
+  await audit.getByLabel("Work email").fill("asha@example.com");
+  await audit.getByRole("button", { name: "Send my free audit" }).click();
+  await audit.getByText("Request received.").waitFor();
+  ok("audit form: inline error focuses the field, then shows the success state");
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await sleep(600);
 
   // Nav → Pricing page (client-side), active state
-  await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Pricing" }).click();
+  await page.getByRole("navigation", { name: "Primary" }).first().getByRole("link", { name: "Pricing" }).click();
   await page.waitForURL(URL + "/pricing");
   assert.equal(await h1(page), "Pricing");
-  assert.equal(await page.getByRole("navigation", { name: "Primary" }).getByRole("link", { name: "Pricing" }).getAttribute("aria-current"), "page");
+  assert.equal(await page.getByRole("navigation", { name: "Primary" }).first().getByRole("link", { name: "Pricing" }).getAttribute("aria-current"), "page");
   ok("nav link opens /pricing and marks it current");
   await sleep(800);
 
@@ -60,11 +71,11 @@ for (const w of [390, 1440]) {
   await sleep(800);
   assert.match(await page.locator("#configurator aside").innerText(), /₹2,70,000/); // (60k+30k+180k) × 1 × 1
   ok("estimate updates when a service is toggled (₹2,70,000)");
-  await page.getByRole("button", { name: "Get as a quote" }).click();
+  await page.locator("#configurator").getByRole("button", { name: "Talk to us first" }).click();
   const dialog = page.getByRole("dialog", { name: "Start a Project" });
   await dialog.waitFor();
   assert.match(await dialog.locator("textarea").inputValue(), /Configurator estimate: ₹2,70,000 \(≈ \$3,250\)/);
-  ok("Get as a quote opens the contact modal with the estimate prefilled");
+  ok("'Talk to us first' opens the contact modal with the estimate prefilled");
   await dialog.getByRole("button", { name: "Send brief" }).click();
   await dialog.getByText("Tell us your name.").waitFor();
   await dialog.getByLabel("Name").fill("Asha");
@@ -75,26 +86,29 @@ for (const w of [390, 1440]) {
   await dialog.getByText("Thanks, Asha.").waitFor();
   await page.keyboard.press("Escape");
   await dialog.waitFor({ state: "detached" });
-  assert.equal(await page.evaluate(() => document.activeElement?.textContent?.trim()), "Get as a quote");
+  assert.equal(await page.evaluate(() => document.activeElement?.textContent?.trim()), "Talk to us first");
   ok("contact form validates, submits, Esc closes and focus returns");
 
   // Live price: region and engagement are radio groups; the figure is announced as a status
   await page.locator("#pricing").scrollIntoViewIfNeeded();
   const price = page.locator("#pricing [role=status]").first();
   assert.match(await price.getAttribute("aria-label"), /₹59,999/);
-  await page.locator("#pricing label", { hasText: "International ($)" }).click();
+  await page.locator("#pricing label", { hasText: "USD $" }).click();
   assert.match(await price.getAttribute("aria-label"), /\$1,490/);
-  await page.locator("#pricing label", { hasText: /^Grow/ }).click();
+  await page.locator("#pricing label", { hasText: "Monthly grow" }).click();
   assert.match(await price.getAttribute("aria-label"), /\$590/);
   await page.keyboard.press("ArrowLeft");
   assert.match(await price.getAttribute("aria-label"), /\$1,490/);
   ok("live price switches region and plan by click and arrow keys");
 
-  // FAQ page: every question answered as reading text
+  // FAQ page: accordion with aria-expanded
   await page.goto(URL + "/faq", { waitUntil: "networkidle" });
-  assert.equal(await page.locator("#faq p strong").count(), 7); // 6 questions + "Something else?"
-  assert.ok(await page.getByText("How is pricing calculated?").isVisible());
-  ok("/faq shows all 6 questions with their answers");
+  assert.equal(await page.locator("#faq button[aria-expanded]").count(), 6);
+  const q = page.getByRole("button", { name: "How is pricing calculated?" });
+  await q.click();
+  assert.equal(await q.getAttribute("aria-expanded"), "true");
+  assert.ok(await page.getByRole("region", { name: "How is pricing calculated?" }).isVisible());
+  ok("/faq lists all 6 questions; accordion toggles aria-expanded and shows the answer");
 
   // Work page: every project, client letters, showreel
   await page.goto(URL + "/work", { waitUntil: "networkidle" });

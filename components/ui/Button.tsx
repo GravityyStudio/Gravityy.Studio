@@ -9,6 +9,7 @@ type Props = {
   onClick?: (e: MouseEvent) => void;
   type?: "button" | "submit";
   disabled?: boolean;
+  loading?: boolean;
   className?: string;
   external?: boolean;
 };
@@ -16,32 +17,39 @@ type Props = {
 const STYLES: Record<Variant, string> = {
   primary: "bg-fg text-bg hover:bg-fg/85",
   accent: "bg-accent text-bg hover:brightness-110",
-  ghost: "border border-line-strong text-fg hover:border-fg/60 hover:bg-fg/[0.06]",
+  ghost: "text-fg hairline hover:bg-fg/[0.06]",
 };
 
 /**
- * Pill button. Stays in place: hover is an in-place colour shift + a 1.03 scale from the centre (0.2s), press
- * settles to 0.98. No pointer-follow or layout movement; reduced motion keeps only the colour change.
+ * Pill button, 48px tall (≥44px target). States: default; hover = in-place colour shift + 1.03 scale; focus-visible =
+ * the global accent ring; active = 0.98; disabled = 40% and inert to the pointer; loading = spinner, aria-busy and
+ * blocked clicks. Keyboard: Enter/Space (native). Touch: no hover dependency. Reduced motion keeps only the colour.
  */
-export default function Button({ children, variant = "primary", href, onClick, type = "button", disabled, className = "", external }: Props) {
-  const cls = `inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-6 text-[15px] font-medium tracking-[-0.01em] transition-[transform,background-color,border-color,filter,opacity] duration-200 ease-out hover:scale-[1.03] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 motion-reduce:hover:scale-100 motion-reduce:active:scale-100 ${STYLES[variant]} ${className}`;
+export default function Button({ children, variant = "primary", href, onClick, type = "button", disabled, loading, className = "", external }: Props) {
+  const cls = `inline-flex min-h-[48px] items-center justify-center gap-2 rounded-pill px-6 text-[15px] font-semibold tracking-[-0.01em] transition-[transform,background-color,filter,opacity] duration-200 ease-[cubic-bezier(.22,1,.36,1)] hover:scale-[1.03] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 aria-busy:pointer-events-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 ${STYLES[variant]} ${className}`;
+  const body = (
+    <>
+      {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent" />}
+      {children}
+    </>
+  );
 
   // Internal routes → client-side navigation (no full reload).
   if (href?.startsWith("/"))
     return (
       <Link href={href} className={cls} onClick={onClick}>
-        {children}
+        {body}
       </Link>
     );
   if (href)
     return (
       <a href={href} className={cls} onClick={onClick} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}>
-        {children}
+        {body}
       </a>
     );
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={cls}>
-      {children}
+    <button type={type} onClick={onClick} disabled={disabled} aria-busy={loading || undefined} className={cls}>
+      {body}
     </button>
   );
 }

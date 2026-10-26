@@ -56,7 +56,7 @@ export default function Configurator() {
   const quote = () => openContact(quoteMessage({ services: chosen.map((s) => s.name), scope: scopeO.label, timeline: tlO.label, inr, plan: plan.name }));
 
   return (
-    <section ref={ref} id="configurator" data-chapter="dark" aria-labelledby="config-h" className="bg-surface py-[clamp(96px,14vh,180px)]">
+    <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(96px,14vh,180px)]">
       <div className="container-x">
         <div data-enter className="flex flex-col gap-4">
           <h2 id="config-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
@@ -111,7 +111,7 @@ export default function Configurator() {
               <p className="mt-2 text-[15px] leading-relaxed text-muted">{plan.why}</p>
             </div>
             <Button variant="accent" onClick={quote} disabled={!sel.length} className="w-full">
-              Get as a quote
+              Talk to us first
             </Button>
           </aside>
         </div>

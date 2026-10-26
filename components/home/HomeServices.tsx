@@ -18,7 +18,7 @@ const ROWS: [string, string][] = [
 ];
 
 export type PosterItem = { label: string; desc: string; href?: string };
-type Props = { id?: string; heading?: string; items?: PosterItem[]; more?: { href: string; label: string } | null; chapter?: "paper" | "dark" };
+type Props = { id?: string; heading?: string; items?: PosterItem[]; more?: { href: string; label: string } | null };
 
 /** A list at poster scale: the list is the picture. On hover the other names step back to the soft ink. */
 export default function HomeServices({
@@ -26,7 +26,6 @@ export default function HomeServices({
   heading = "What we build",
   items,
   more = { href: "/services", label: "All eleven services, with tools and a live estimate" },
-  chapter = "paper",
 }: Props) {
   const { services } = useContent();
   const ref = useRef<HTMLElement>(null);
@@ -45,9 +44,9 @@ export default function HomeServices({
     <section
       ref={ref}
       id={id}
-      data-chapter={chapter}
+      data-glow
       aria-labelledby={`${id}-h`}
-      className={`py-[clamp(88px,14vh,160px)] ${chapter === "paper" ? "chapter-paper" : "bg-bg"}`}
+      className="py-[clamp(88px,14vh,160px)]"
     >
       <div className="container-x">
         <h2 id={`${id}-h`} data-enter className={`${name} text-muted`}>

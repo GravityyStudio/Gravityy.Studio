@@ -22,7 +22,7 @@ export default function WorkStrip({ surface = true }: { surface?: boolean }) {
   useEnter(ref);
 
   return (
-    <section ref={ref} data-chapter="dark" aria-labelledby="strip-h" className={`${surface ? "bg-surface" : "bg-bg"} py-[clamp(88px,12vw,160px)]`}>
+    <section ref={ref} aria-labelledby="strip-h" className={`${surface ? "bg-surface" : ""} py-[clamp(88px,12vw,160px)]`}>
       <div className="container-x">
         <div data-enter className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="strip-h" className="text-[clamp(28px,3vw,40px)] font-medium tracking-[-0.03em]">

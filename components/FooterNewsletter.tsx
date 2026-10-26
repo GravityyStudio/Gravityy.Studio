@@ -10,10 +10,10 @@ export default function FooterNewsletter() {
   return (
     <form onSubmit={onSubmit} noValidate aria-labelledby="news-h" className="relative flex w-full max-w-[420px] flex-col gap-3">
       <Honeypot />
-      <h2 id="news-h" className="text-[15px] font-medium tracking-[-0.01em] text-fg">
+      <h2 id="news-h" className="font-semibold tracking-[-0.01em] text-fg">
         Growth notes, once a month
       </h2>
-      <div className="flex items-center gap-2 rounded-full border border-line bg-bg py-1.5 pl-5 pr-1.5 transition-colors focus-within:border-fg/50">
+      <div className="flex items-center gap-2 rounded-pill bg-bg py-1.5 pl-5 pr-1.5 hairline transition-shadow focus-within:shadow-[inset_0_0_0_2px_rgb(var(--accent))]">
         <label htmlFor="news-email" className="sr-only">
           Email
         </label>
@@ -36,7 +36,7 @@ export default function FooterNewsletter() {
           <ArrowRight size={18} aria-hidden="true" />
         </button>
       </div>
-      <p id="news-status" role="status" className={`min-h-5 text-[13px] ${status.ok ? "text-accent" : "text-danger"}`}>
+      <p id="news-status" role="status" className={`min-h-5 text-[15px] ${status.ok ? "text-accent" : "text-danger"}`}>
         {status.msg}
       </p>
     </form>
