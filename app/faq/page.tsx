@@ -1,5 +1,5 @@
 import PageHero from "@/components/PageHero";
-import WorkStrip from "@/components/home/WorkStrip";
+import WorkGrid from "@/components/work/WorkGrid";
 import HomeFaq from "@/components/home/HomeFaq";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
@@ -14,7 +14,7 @@ export default async function FaqPage() {
       <JsonLd data={[breadcrumbLd([["FAQ", "/faq"]]), faqLd(content)]} />
       <PageHero crumbs={[["FAQ", "/faq"]]} title={content.pages.faq.title} lede={content.pages.faq.lede} />
       <HomeFaq heading="Every answer" allLink={false} />
-      <WorkStrip />
+      <WorkGrid id="recent" title="Recent work" limit={3} />
     </main>
   );
 }

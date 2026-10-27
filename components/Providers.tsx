@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import { LazyMotion } from "framer-motion";
+import { LazyMotion, MotionConfig } from "framer-motion";
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
@@ -17,10 +17,11 @@ type UI = {
 const UICtx = createContext<UI>({ ready: true, openContact: () => {}, lockScroll: () => {}, scrollTo: () => {} });
 export const useUI = () => useContext(UICtx);
 
-// Framer animation features (menu, modals) load when the main thread is idle; nothing animates with Framer above the fold.
+// Framer animation features (menu, modals, page transitions, card tilt, layout reflow) load when the main thread is idle;
+// nothing animates with Framer above the fold on first load. domMax adds layout animations (filters, sliding indicators).
 const idle = () => new Promise<void>((r) => ("requestIdleCallback" in window ? requestIdleCallback(() => r(), { timeout: 2500 }) : setTimeout(r, 1200)));
 const NAV_OFFSET = 88; // = [id] scroll-margin-top in globals.css, which Lenis already applies to scrollTo(el)
-const loadFeatures = () => idle().then(() => import("framer-motion")).then((m) => m.domAnimation);
+const loadFeatures = () => idle().then(() => import("framer-motion")).then((m) => m.domMax);
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(false);
@@ -30,7 +31,8 @@ export default function Providers({ children }: { children: ReactNode }) {
   // Lenis smooth scroll driven by GSAP's ticker so ScrollTrigger and Lenis share one clock.
   useEffect(() => {
     if (prefersReduced()) return;
-    const l = new Lenis({ lerp: 0.1 });
+    // Smooth wheel scrolling (touch keeps native momentum). Lower lerp = longer, softer glide.
+    const l = new Lenis({ lerp: 0.085, wheelMultiplier: 0.95, smoothWheel: true });
     lenis.current = l;
     l.on("scroll", ScrollTrigger.update);
     const tick = (t: number) => l.raf(t * 1000);
@@ -136,6 +138,20 @@ export default function Providers({ children }: { children: ReactNode }) {
     });
     return () => cancelAnimationFrame(id);
   }, [path, scrollTo]);
+  // Card spotlight (.spotlight in globals.css): one delegated listener feeds the pointer position to the hovered card.
+  useEffect(() => {
+    if (!window.matchMedia("(hover: hover)").matches) return;
+    const move = (e: PointerEvent) => {
+      const card = (e.target as Element | null)?.closest?.<HTMLElement>(".spotlight");
+      if (!card) return;
+      const r = card.getBoundingClientRect();
+      card.style.setProperty("--mx", `${e.clientX - r.left}px`);
+      card.style.setProperty("--my", `${e.clientY - r.top}px`);
+    };
+    document.addEventListener("pointermove", move, { passive: true });
+    return () => document.removeEventListener("pointermove", move);
+  }, []);
+
   // Every same-page "#id" link goes through scrollTo (one place, works with Lenis and pins).
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -153,8 +169,11 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <UICtx.Provider value={{ ready, openContact, lockScroll, scrollTo }}>
       <LazyMotion features={loadFeatures} strict>
-        {children}
-        <ContactModal open={contact.open} prefill={contact.prefill} onClose={closeContact} />
+        {/* reducedMotion="user": Framer drops transform animations when the OS asks for reduced motion */}
+        <MotionConfig reducedMotion="user">
+          {children}
+          <ContactModal open={contact.open} prefill={contact.prefill} onClose={closeContact} />
+        </MotionConfig>
       </LazyMotion>
     </UICtx.Provider>
   );

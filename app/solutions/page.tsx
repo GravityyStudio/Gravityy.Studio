@@ -1,6 +1,6 @@
 import PageHero from "@/components/PageHero";
 import HomeServices from "@/components/home/HomeServices";
-import HomeWork from "@/components/home/HomeWork";
+import WorkGrid from "@/components/work/WorkGrid";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { breadcrumbLd } from "@/lib/seo";
@@ -19,7 +19,7 @@ export default async function SolutionsPage() {
         items={solutions.map((s) => ({ label: s.name, desc: s.desc }))}
         more={{ href: "/services", label: "The services they are built from" }}
       />
-      <HomeWork />
+      <WorkGrid title="Selected work" limit={3} />
     </main>
   );
 }

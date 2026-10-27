@@ -14,7 +14,7 @@ export default function LegalPage({ title, path, lede, updated, sections }: Prop
         <p className="text-[15px] text-muted lg:col-span-3">Last updated {updated}</p>
         <div className="flex max-w-[68ch] flex-col gap-10 lg:col-span-8 lg:col-start-5">
           {sections.map(([h, paras]) => (
-            <section key={h} aria-labelledby={`s-${h}`}>
+            <section key={h} data-panel aria-labelledby={`s-${h}`}>
               <h2 id={`s-${h}`} className="text-[clamp(22px,2vw,28px)] font-semibold tracking-[-0.02em]">
                 {h}
               </h2>

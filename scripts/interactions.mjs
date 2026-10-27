@@ -153,6 +153,14 @@ for (const w of [390, 1440]) {
   await reel.waitFor({ state: "detached" });
   ok("/work shows all 6 projects and 3 client letters; showreel modal traps focus, Esc closes");
 
+  // Work filters: chips narrow the card grid and announce the count
+  await page.getByRole("button", { name: "Mobile app", exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll("#work [data-case]").length === 1);
+  assert.equal(await page.getByRole("button", { name: "Mobile app", exact: true }).getAttribute("aria-pressed"), "true");
+  await page.getByRole("button", { name: "All", exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll("#work [data-case]").length === 6);
+  ok("work filters narrow the grid (Mobile app → 1) and All restores 6");
+
   // Services → detail page, footer link
   await page.goto(URL + "/services", { waitUntil: "networkidle" });
   await page.locator("#services").getByRole("link", { name: "Website Development" }).click();

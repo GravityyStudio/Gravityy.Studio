@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { LogOut } from "lucide-react";
 import { signOut } from "@/app/login/actions";
+import Counter from "../ui/Counter";
 import AppTabs from "./AppTabs";
 
 type Props = { eyebrow: string; title: string; email: string; role: string; tabs?: { href: string; label: string }[]; aside?: ReactNode; children: ReactNode };
@@ -45,12 +46,14 @@ export default function AppShell({ eyebrow, title, email, role, tabs, aside, chi
   );
 }
 
-/** Small stat tile used on dashboards. */
+/** Small stat tile used on dashboards: the value counts up as the tile enters view (final text always in the DOM). */
 export function StatTile({ label, value, hint, delay = 0 }: { label: string; value: string; hint?: string; delay?: number }) {
   return (
-    <div className="card rise flex flex-col gap-2 p-6" style={{ animationDelay: `${delay}ms` }}>
+    <div className="card card-lift spotlight rise relative flex flex-col gap-2 overflow-hidden p-6" style={{ animationDelay: `${delay}ms` }}>
       <p className="text-[13px] text-muted">{label}</p>
-      <p className="text-[clamp(26px,3vw,36px)] font-medium tracking-[-0.03em] tabular-nums">{value}</p>
+      <p className="text-[clamp(26px,3vw,36px)] font-medium tracking-[-0.03em]">
+        <Counter value={value} />
+      </p>
       {hint && <p className="text-[13px] text-fg/70">{hint}</p>}
     </div>
   );

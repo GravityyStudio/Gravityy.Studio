@@ -3,7 +3,7 @@ import HomeHero from "@/components/home/HomeHero";
 import { LogoStrip, TeamBlock } from "@/components/home/Trust";
 import ServiceRows from "@/components/home/ServiceRows";
 import NodeNetwork from "@/components/home/NodeNetwork";
-import WorkCards from "@/components/home/WorkCards";
+import WorkGrid from "@/components/work/WorkGrid";
 import HomeProcess from "@/components/home/HomeProcess";
 import HomeVoices from "@/components/home/HomeVoices";
 import HomePricing from "@/components/home/HomePricing";
@@ -27,7 +27,7 @@ export default async function Home() {
       <LogoStrip />
       <Lazy><ServiceRows /></Lazy>
       <Lazy><NodeNetwork /></Lazy>
-      <Lazy><WorkCards /></Lazy>
+      <Lazy><WorkGrid title="Selected work" limit={3} /></Lazy>
       <Lazy><HomeProcess /></Lazy>
       <Lazy><HomeVoices /></Lazy>
       <TeamBlock />

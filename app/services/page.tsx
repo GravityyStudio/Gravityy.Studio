@@ -1,5 +1,5 @@
 import PageHero from "@/components/PageHero";
-import WorkStrip from "@/components/home/WorkStrip";
+import WorkGrid from "@/components/work/WorkGrid";
 import HomeServices from "@/components/home/HomeServices";
 import Configurator from "@/components/Configurator";
 import JsonLd from "@/components/JsonLd";
@@ -15,7 +15,7 @@ export default async function ServicesPage() {
       <JsonLd data={breadcrumbLd([["Services", "/services"]])} />
       <PageHero crumbs={[["Services", "/services"]]} title={pages.services.title} lede={pages.services.lede} />
       <HomeServices heading="Every service" items={services.map((s) => ({ label: s.name, desc: s.desc, href: `/services/${s.id}` }))} more={null} />
-      <WorkStrip surface={false} />
+      <WorkGrid id="recent" title="Recent work" limit={3} />
       <Configurator />
     </main>
   );

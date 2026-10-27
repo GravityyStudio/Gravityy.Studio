@@ -1,5 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
+import { m } from "framer-motion";
 import type { LucideIcon } from "lucide-react";
 import Link from "@/components/ui/SmartLink";
 import AppTabs from "./AppTabs";
@@ -8,7 +9,8 @@ export type NavGroup = { group: string; items: [label: string, href: string, ico
 
 /**
  * Grouped sidebar (lg+), flattened scrolling tabs on smaller screens. The first item is the section root (exact match);
- * others are active on nested routes too. `also` adds extra paths that light up an item.
+ * others are active on nested routes too. `also` adds extra paths that light up an item. The active pill slides between
+ * items (Framer shared layout); under reduced motion it simply moves.
  */
 export default function SideNav({ label, nav, also = {} }: { label: string; nav: NavGroup[]; also?: Record<string, string[]> }) {
   const path = usePathname();
@@ -31,10 +33,11 @@ export default function SideNav({ label, nav, also = {} }: { label: string; nav:
                   <Link
                     href={href}
                     aria-current={on(href) ? "page" : undefined}
-                    className={`flex min-h-[40px] items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-200 ${on(href) ? "bg-fg font-medium text-bg" : "text-muted hover:bg-raised hover:text-fg"}`}
+                    className={`group relative flex min-h-[40px] items-center gap-3 rounded-xl px-3 text-sm transition-colors duration-200 ${on(href) ? "font-medium text-bg" : "text-muted hover:bg-raised hover:text-fg"}`}
                   >
-                    <Icon size={16} aria-hidden="true" className="shrink-0" />
-                    {l}
+                    {on(href) && <m.span layoutId={`${label}-active`} aria-hidden="true" className="absolute inset-0 rounded-xl bg-fg" transition={{ type: "spring", stiffness: 420, damping: 36 }} />}
+                    <Icon size={16} aria-hidden="true" className="relative shrink-0 transition-transform duration-300 group-hover:translate-x-0.5" />
+                    <span className="relative">{l}</span>
                   </Link>
                 </li>
               ))}

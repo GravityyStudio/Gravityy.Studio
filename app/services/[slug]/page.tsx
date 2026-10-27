@@ -1,5 +1,5 @@
 import Link from "@/components/ui/SmartLink";
-import WorkStrip from "@/components/home/WorkStrip";
+import WorkGrid from "@/components/work/WorkGrid";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
 import PageHero from "@/components/PageHero";
@@ -79,7 +79,7 @@ export default async function ServicePage({ params }: Params) {
       </section>
 
       <HomeProcess />
-      <WorkStrip />
+      <WorkGrid id="recent" title="Recent work" limit={3} />
       <HomeServices
         id="more"
         heading="Other services"

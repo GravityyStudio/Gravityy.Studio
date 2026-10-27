@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-/** Responsive table: horizontal scroll on phones, sticky header row. */
+/** Responsive table: horizontal scroll on phones, sticky header row; rows rise in one after another and tint on hover. */
 export default function DataTable({ head, children, empty }: { head: string[]; children: ReactNode; empty?: ReactNode }) {
   return (
     <div className="card overflow-x-auto">
@@ -14,7 +14,7 @@ export default function DataTable({ head, children, empty }: { head: string[]; c
             ))}
           </tr>
         </thead>
-        <tbody className="[&>tr:not(:last-child)]:border-b [&>tr]:border-line">{children}</tbody>
+        <tbody className="stagger [&>tr:not(:last-child)]:border-b [&>tr]:border-line [&>tr]:transition-colors [&>tr:hover]:bg-fg/[0.03]">{children}</tbody>
       </table>
       {empty}
     </div>

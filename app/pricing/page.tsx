@@ -1,5 +1,5 @@
 import PageHero from "@/components/PageHero";
-import WorkStrip from "@/components/home/WorkStrip";
+import WorkGrid from "@/components/work/WorkGrid";
 import HomePricing from "@/components/home/HomePricing";
 import Configurator from "@/components/Configurator";
 import HomeFaq from "@/components/home/HomeFaq";
@@ -17,7 +17,7 @@ export default async function PricingPage() {
       <PageHero crumbs={[["Pricing", "/pricing"]]} title={pages.pricing.title} lede={pages.pricing.lede} />
       <HomePricing />
       <Configurator />
-      <WorkStrip surface={false} />
+      <WorkGrid id="recent" title="Recent work" limit={3} />
       <HomeFaq />
     </main>
   );
