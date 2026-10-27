@@ -17,11 +17,13 @@ for (const w of [390, 1440]) {
   for (const r of ROUTES) {
     const res = await page.goto(URL + r, { waitUntil: "networkidle" });
     assert.equal(res.status(), 200, r);
+    // Server HTML must never hide the page (a hidden wrapper delays LCP until JS runs)
+    assert.ok(!/<(div|main)[^>]*style="opacity:0/.test(await res.text()), `${r} ships hidden content`);
     assert.equal(await page.locator("h1").count(), 1, `${r} h1 count`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, `${r} overflow @${w}`);
   }
   assert.deepEqual(errors, []);
-  ok(`all ${ROUTES.length} routes: 200, one h1, no errors, no horizontal scroll @${w}px`);
+  ok(`all ${ROUTES.length} routes: 200, visible server HTML, one h1, no errors, no horizontal scroll @${w}px`);
   await page.close();
 }
 
