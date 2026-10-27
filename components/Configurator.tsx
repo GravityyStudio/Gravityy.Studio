@@ -13,7 +13,7 @@ const usd = (n: number) => "≈ " + fmtUSD(toUSD(n));
 function Options({ legend, opts, value, onPick }: { legend: string; opts: Option[]; value: string; onPick: (id: string) => void }) {
   return (
     <fieldset>
-      <legend className="mb-4 text-[17px] font-medium">{legend}</legend>
+      <legend className="mb-4 text-[16px] font-medium">{legend}</legend>
       <div role="radiogroup" aria-label={legend} className="grid grid-cols-3 gap-2">
         {opts.map((o) => {
           const on = value === o.id;
@@ -59,15 +59,15 @@ export default function Configurator() {
     <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div data-enter className="flex flex-col gap-4">
-          <h2 id="config-h" data-reveal className="text-[clamp(28px,3vw,40px)] font-medium leading-tight">
+          <h2 id="config-h" data-reveal className="text-[clamp(24px,2.5vw,34px)] font-medium leading-tight">
             Build your estimate
           </h2>
-          <p className="max-w-[52ch] text-[17px] leading-relaxed">Pick what you need. The estimate updates as you go and becomes your quote.</p>
+          <p className="max-w-[52ch] text-[16px] leading-relaxed">Pick what you need. The estimate updates as you go and becomes your quote.</p>
         </div>
         <div className="mt-12 grid items-start gap-10 lg:grid-cols-12 lg:gap-x-8">
           <div className="flex flex-col gap-10 lg:col-span-7" data-enter>
             <fieldset>
-              <legend className="mb-4 text-[17px] font-medium">
+              <legend className="mb-4 text-[16px] font-medium">
                 Services <span className="font-normal text-muted">(pick any)</span>
               </legend>
               <div className="flex flex-wrap gap-2">
@@ -98,8 +98,8 @@ export default function Configurator() {
             </p>
             <div className="flex flex-col gap-3">
               <p aria-hidden="true" className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <AnimatedNumber value={inr} format={fmtINR} className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-none tracking-[-0.02em] tabular-nums" />
-                <AnimatedNumber value={inr} format={usd} className="text-[20px] text-muted" />
+                <AnimatedNumber value={inr} format={fmtINR} className="text-[clamp(30px,3.6vw,42px)] font-semibold leading-none tracking-[-0.02em] tabular-nums" />
+                <AnimatedNumber value={inr} format={usd} className="text-[18px] text-muted" />
               </p>
               <p className="text-[15px] text-muted">
                 {sel.length ? `Your estimate: ${sel.length} service${sel.length > 1 ? "s" : ""}, ${scopeO.label.toLowerCase()} scope, ${tlO.label.toLowerCase()} timeline` : "No services selected"}
@@ -107,7 +107,7 @@ export default function Configurator() {
             </div>
             <div className="rounded-2xl bg-surface p-5">
               <p className="text-[15px] text-muted">Recommended plan</p>
-              <p className="mt-1 text-[20px] font-medium">{plan.name}</p>
+              <p className="mt-1 text-[18px] font-medium">{plan.name}</p>
               <p className="mt-2 text-[15px] leading-relaxed text-muted">{plan.why}</p>
             </div>
             <Button variant="accent" onClick={quote} disabled={!sel.length} className="w-full">

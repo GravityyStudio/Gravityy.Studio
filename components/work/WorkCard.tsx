@@ -83,7 +83,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
             {c.metrics.map((mt) => (
               <div key={mt.l} className="flex flex-col-reverse">
                 <dt className="mt-1 text-[14px] text-muted">{mt.l}</dt>
-                <dd className="text-[clamp(26px,2.4vw,36px)] font-bold leading-none tracking-[-0.02em]">
+                <dd className="text-[clamp(22px,2vw,31px)] font-bold leading-none tracking-[-0.02em]">
                   <Counter value={mt.v} />
                 </dd>
               </div>

@@ -13,6 +13,8 @@ const PAGES: [string, number][] = [
   ["/faq", 0.6],
   ["/contact", 0.8],
   ["/blog", 0.7],
+  ["/team", 0.5],
+  ["/testimonials", 0.5],
   ["/privacy", 0.2],
   ["/terms", 0.2],
 ];

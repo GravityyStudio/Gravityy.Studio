@@ -16,7 +16,7 @@ export default function HomeProcess() {
   const steps = home.steps ?? LOCAL.pages.home.steps;
   const ref = useRef<HTMLElement>(null);
   useEnter(ref);
-  const line = "text-[9vw] font-medium leading-[1.05] tracking-[-0.02em] sm:text-[clamp(40px,5.2vw,84px)]";
+  const line = "text-[9vw] font-medium leading-[1.05] tracking-[-0.02em] sm:text-[clamp(30px,3.6vw,55px)]";
 
   return (
     <section ref={ref} id="process" data-glow aria-labelledby="process-h" className="py-[clamp(56px,8vh,96px)]">
@@ -28,7 +28,7 @@ export default function HomeProcess() {
               <Line id={i === 0 ? "process-h" : undefined} data-reveal className={`${line} ${i === steps.length - 1 ? "text-accent" : ""}`}>
                 {s.line}
               </Line>
-              <p className="mt-3 max-w-[34ch] text-[17px] leading-relaxed text-muted">{s.note}</p>
+              <p className="mt-3 max-w-[34ch] text-[16px] leading-relaxed text-muted">{s.note}</p>
             </li>
           );
         })}
@@ -37,7 +37,7 @@ export default function HomeProcess() {
           <MockPanel className="max-w-[360px]" />
         </li>
         <li data-enter className={`${INDENT[3]} lg:col-start-7 lg:col-end-13 lg:pl-0`}>
-          <Link href="/process" className="text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
+          <Link href="/process" className="text-[16px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
             The full eight-step process
           </Link>
         </li>

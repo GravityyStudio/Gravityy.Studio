@@ -26,9 +26,9 @@
   /* To retheme, change only --accent and --glow (and the two gradient stops that tint the glow sections). */
 
   /* type: Manrope Variable. Scale: 11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-2xs … text-xl) */
-  --font-size-base: 17.66px;
-  --line-height-base: 27.38px;
-  --display-size: clamp(40px, 7vw, 120px);
+  --font-size-base: 16px;
+  --line-height-base: 26px;
+  --display-size: clamp(32px, 5vw, 72px);
   --display-weight: 650;
   --display-tracking: -0.02em;
   --display-leading: 1.05;

@@ -16,7 +16,7 @@ export default function ServiceRows() {
   return (
     <section id="services" data-glow aria-labelledby="services-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
-        <h2 id="services-h" data-reveal className="display mb-10 !text-[clamp(36px,5vw,80px)] lg:mb-14">
+        <h2 id="services-h" data-reveal className="display mb-10 !text-[clamp(27px,3.5vw,52px)] lg:mb-14">
           What we build
         </h2>
         <ul className="flex flex-col">
@@ -26,7 +26,7 @@ export default function ServiceRows() {
                 href={r.href}
                 className="group grid gap-3 py-5 md:grid-cols-12 md:items-center md:gap-8 md:py-7"
               >
-                <span className="display relative block overflow-hidden !text-[clamp(36px,6vw,96px)] md:col-span-8">
+                <span className="display relative block overflow-hidden !text-[clamp(27px,4.2vw,62px)] md:col-span-8">
                   <span className="block transition-transform duration-[600ms] ease-[cubic-bezier(.22,1,.36,1)] group-hover:-translate-y-full group-focus-visible:-translate-y-full motion-reduce:transition-none">
                     {r.label}
                   </span>

@@ -22,12 +22,12 @@ export default function AuditForm() {
     if (f && !audit.status.ok) (form.current?.elements.namedItem(f) as HTMLInputElement | null)?.focus();
   }, [audit.status]);
   const field =
-    "min-h-[56px] w-full rounded-md bg-bg px-5 text-[17px] text-fg hairline transition-shadow placeholder:text-placeholder focus:outline-none focus-visible:shadow-[inset_0_0_0_2px_rgb(var(--accent))] aria-[invalid=true]:shadow-[inset_0_0_0_2px_rgb(var(--danger))]";
+    "min-h-[56px] w-full rounded-md bg-bg px-5 text-[16px] text-fg hairline transition-shadow placeholder:text-placeholder focus:outline-none focus-visible:shadow-[inset_0_0_0_2px_rgb(var(--accent))] aria-[invalid=true]:shadow-[inset_0_0_0_2px_rgb(var(--danger))]";
 
   return (
     <div id="audit" className="grid gap-10 lg:grid-cols-12 lg:gap-x-10">
       <div className="flex flex-col gap-6 lg:col-span-5">
-        <h2 data-reveal className="display !text-[clamp(36px,5vw,80px)]">Get a free audit</h2>
+        <h2 data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">Get a free audit</h2>
         <ol className="flex flex-col gap-3">
           {STEPS.map((s, i) => (
             <li key={s} className="flex gap-4">

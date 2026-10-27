@@ -1,11 +1,13 @@
 import { Suspense, type ReactNode } from "react";
 import HomeHero from "@/components/home/HomeHero";
-import { LogoStrip, TeamBlock } from "@/components/home/Trust";
+import { LogoStrip } from "@/components/home/Trust";
+import Marquee from "@/components/home/Marquee";
+import Team from "@/components/home/Team";
 import ServiceRows from "@/components/home/ServiceRows";
 import NodeNetwork from "@/components/home/NodeNetwork";
 import WorkGrid from "@/components/work/WorkGrid";
 import HomeProcess from "@/components/home/HomeProcess";
-import HomeVoices from "@/components/home/HomeVoices";
+import Testimonials from "@/components/home/Testimonials";
 import HomePricing from "@/components/home/HomePricing";
 import HomeFaq from "@/components/home/HomeFaq";
 import JsonLd from "@/components/JsonLd";
@@ -26,11 +28,12 @@ export default async function Home() {
       <HomeHero />
       <LogoStrip />
       <Lazy><ServiceRows /></Lazy>
+      <Marquee />
       <Lazy><NodeNetwork /></Lazy>
       <Lazy><WorkGrid title="Selected work" limit={3} /></Lazy>
       <Lazy><HomeProcess /></Lazy>
-      <Lazy><HomeVoices /></Lazy>
-      <TeamBlock />
+      <Lazy><Testimonials /></Lazy>
+      <Team limit={4} />
       <Lazy><HomePricing /></Lazy>
       <Lazy><HomeFaq /></Lazy>
     </main>

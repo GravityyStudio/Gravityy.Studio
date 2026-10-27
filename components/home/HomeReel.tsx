@@ -31,7 +31,7 @@ export default function HomeReel() {
       {/* Neutral scrim under the caption only (the allowed exception over a picture). */}
       <div aria-hidden="true" /* taste-skill-ignore: neutral scrim */ className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
       <div className="container-x absolute inset-x-0 bottom-0 flex items-end justify-between gap-6 pb-[clamp(32px,6vw,72px)]">
-        <h2 id="reel-h" data-reveal className="text-[clamp(40px,5.2vw,84px)] font-medium leading-[1.05] tracking-[-0.02em]">
+        <h2 id="reel-h" data-reveal className="text-[clamp(30px,3.6vw,55px)] font-medium leading-[1.05] tracking-[-0.02em]">
           Watch the reel
         </h2>
         <button

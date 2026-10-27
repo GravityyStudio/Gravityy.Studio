@@ -24,7 +24,7 @@ export default function PageHero({ title, lede, crumbs = [], children }: Props) 
               {parent && (
                 <Link
                   href={parent[1]}
-                  className="group inline-flex min-h-[44px] items-center gap-2 text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent"
+                  className="group inline-flex min-h-[44px] items-center gap-2 text-[16px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent"
                 >
                   <ArrowLeft size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-0.5" />
                   All {parent[0].toLowerCase()}

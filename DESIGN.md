@@ -22,9 +22,9 @@ colors:
 
 typography:
   family: "Manrope Variable (next/font, --font-sans)"
-  base: "17.66px / 27.38px"
-  display: "uppercase, weight 650, tracking -0.02em, leading 1.05, clamp(40px, 7vw, 120px) — class .display"
-  section-display: "clamp(36px, 5vw, 80px) for section titles that use .display"
+  base: "16px / 26px"
+  display: "uppercase, weight 650, tracking -0.02em, leading 1.05, clamp(32px, 5vw, 72px) — class .display"
+  section-display: "clamp(27px, 3.5vw, 52px) for section titles that use .display"
   scale: "11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-t-11 … text-t-24)"
   small: 15px                # captions, legends, meta (13px legal only)
   case: "display headings uppercase; everything else sentence case"
@@ -78,7 +78,7 @@ read. Every claim on the page is either real (confirmed by the owner) or a visib
 
 ## Typography
 
-`.display` is the only headline style: uppercase, 650, -0.02em, leading 1.05. Body and UI text use normal letter spacing. Body text is 17.66/27.38 in full ink;
+`.display` is the only headline style: uppercase, 650, -0.02em, leading 1.05. Body and UI text use normal letter spacing. Body text is 16/26 in full ink;
 muted ink is for secondary lines only. Keep headlines to two or three lines at every width. Cut words before
 shrinking type. First-screen widths are set in `rem`, not `ch`, so the font swap doesn't shift layout.
 
@@ -125,6 +125,8 @@ ripple feedback, 44px targets.
 | 9 | Left scroll-progress rail with ticks and a lime dot (lg+) | `motion/ScrollRail.tsx` |
 | 10 | Footer: giant wordmark, bouncing lime ball (spring physics), tilted label, glow, link columns, social pills, audit form | `Footer.tsx`, `FooterWordmark.tsx` |
 | 11 | Utility chips: bottom-right Sound off/on (off by default, remembered), bottom-left theme button | `UtilityChips.tsx` |
+| 13 | Skills marquee: two rows of tools and skills drifting in opposite directions (CSS), pause on hover | `home/Marquee.tsx` |
+| 14 | Testimonial slider (scroll-snap, arrows, swipe) and team grid (staggered portraits, monochrome to colour on hover) | `home/Testimonials.tsx`, `home/Team.tsx` |
 | 12 | Reduced motion: no Lenis, cursor, trail, pin, float, loops or line splitting; panels keep a plain fade | `lib/motion.ts`, `gsap.matchMedia` |
 
 Cards and app motion:

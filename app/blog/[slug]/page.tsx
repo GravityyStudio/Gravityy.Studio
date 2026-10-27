@@ -39,14 +39,14 @@ export default async function PostPage({ params }: Params) {
     <main id="main">
       <JsonLd data={[breadcrumbLd([["Blog", "/blog"], [p.title, `/blog/${p.slug}`]]), ld]} />
       <article className="container-x max-w-[760px] pb-section pt-[clamp(140px,16vw,200px)]">
-        <h1 className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-[1.05] tracking-[-0.02em]">{p.title}</h1>
+        <h1 className="text-[clamp(30px,3.6vw,42px)] font-semibold leading-[1.05] tracking-[-0.02em]">{p.title}</h1>
         <p className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[15px] text-muted">
           <span>{postDate(p)}</span>
           <Link href="/blog" className="group inline-flex min-h-[44px] items-center gap-2 font-medium text-fg underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
             <ArrowLeft size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-0.5" /> All notes
           </Link>
         </p>
-        {p.excerpt && <p className="mt-6 text-[20px] leading-snug">{p.excerpt}</p>}
+        {p.excerpt && <p className="mt-6 text-[18px] leading-snug">{p.excerpt}</p>}
         {p.cover_url && (
           // eslint-disable-next-line @next/next/no-img-element -- CMS URL (Supabase Storage or external)
           <img src={p.cover_url} alt="" className="mt-10 aspect-[16/9] w-full object-cover" />

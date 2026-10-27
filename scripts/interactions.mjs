@@ -3,14 +3,14 @@ import { chromium } from "playwright";
 import assert from "node:assert/strict";
 
 const URL = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
-const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact", "/work/viara", "/privacy", "/terms"];
+const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact", "/work/viara", "/privacy", "/terms", "/team", "/testimonials"];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch();
 const ok = (m) => console.log("  ✓", m);
 const h1 = async (page) => (await page.locator("h1").first().textContent())?.trim(); // real text, not the CSS-uppercased render
 
 // ---------- Every route: 200, one h1, no runtime errors, no horizontal scroll (390 + 1440) ----------
-for (const w of [390, 1440]) {
+for (const w of [360, 390, 768, 1440]) {
   const page = await browser.newPage({ viewport: { width: w, height: 900 } });
   const errors = [];
   page.on("pageerror", (e) => errors.push(String(e)));
@@ -85,6 +85,7 @@ for (const w of [390, 1440]) {
   await audit.getByText("Request received.").waitFor();
   ok("audit form: inline error focuses the field, then shows the success state");
   await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForFunction(() => !document.querySelector("header nav")?.hasAttribute("inert"));
   await sleep(600);
 
   // Nav → Pricing page (client-side), active state
@@ -204,6 +205,18 @@ for (const w of [390, 1440]) {
   assert.equal(await page.getByRole("navigation", { name: "Primary" }).first().getByRole("link", { name: "Client login" }).count(), 0);
   ok("signed in: nav shows Dashboard with a profile initial instead of Client login");
   await ctx.close();
+}
+
+// ---------- Testimonial slider: Next moves the track ----------
+{
+  const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
+  await page.goto(URL + "/testimonials", { waitUntil: "networkidle" });
+  const track = page.getByRole("list", { name: "Testimonials" });
+  await page.getByRole("button", { name: "Next testimonial" }).click();
+  await page.waitForFunction(() => (document.querySelector('[aria-label="Testimonials"]')?.scrollLeft ?? 0) > 0);
+  assert.ok((await track.locator("figcaption").count()) >= 1);
+  ok("testimonial slider: Next scrolls to the next card; each card has a name");
+  await page.close();
 }
 
 // ---------- Mobile ----------
