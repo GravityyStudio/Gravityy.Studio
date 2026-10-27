@@ -1,9 +1,10 @@
 "use client";
 import { useContent } from "../ContentProvider";
 
-/** Client words as cards (confirmed testimonials from the CMS), plus one labelled slot for the next confirmed quote. */
+/** Client words as cards: confirmed testimonials from the CMS only. */
 export default function HomeVoices() {
   const { testimonials } = useContent();
+  if (!testimonials.length) return null;
 
   return (
     <section id="voices" data-glow aria-labelledby="voices-h" className="py-[clamp(80px,11vh,140px)]">
@@ -21,10 +22,6 @@ export default function HomeVoices() {
               </p>
             </li>
           ))}
-          <li data-panel className="flex flex-col justify-between gap-8 rounded-xl border border-dashed border-fg/20 p-7 text-muted sm:p-9">
-            <p className="text-[20px] leading-snug">{"{{TESTIMONIAL: a confirmed quote from a client, with their permission}}"}</p>
-            <p className="text-[15px]">{"{{NAME}}, {{ROLE}}, {{COMPANY}}"}</p>
-          </li>
         </ul>
       </div>
     </section>

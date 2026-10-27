@@ -71,6 +71,7 @@ export default function HomePricing() {
   const other = planFor(region === "india" ? "intl" : "india", kind).plan;
   const price = plan ? priceText(plan) : card.price;
   const open = plan && !isPlaceholderPrice(plan); // a placeholder price can't be bought yet: the CTA opens contact instead
+  const quoted = !plan || !isPlaceholderPrice(plan); // false while the price reads "On request"
 
   // Count the figure from the previously shown amount to the new one; a currency flip swaps instead of counting.
   useEffect(() => {
@@ -135,17 +136,17 @@ export default function HomePricing() {
             <div className="flex flex-col gap-3">
               <p
                 role="status"
-                aria-label={`${card.name}: from ${price} ${card.unit}`}
-                className="text-[clamp(64px,9vw,148px)] font-bold leading-[0.9] tracking-[-0.055em]"
+                aria-label={quoted ? `${card.name}: from ${price} ${card.unit}` : `${card.name}: price on request`}
+                className={`${quoted ? "text-[clamp(64px,9vw,148px)]" : "text-[clamp(44px,6vw,96px)]"} font-bold leading-[0.9] tracking-[-0.055em]`}
               >
                 <span ref={fig} aria-hidden="true" className="tabular-nums">
                   {price}
                 </span>
               </p>
               <p className="text-muted">
-                {card.name}, starting price {card.unit}
+                {quoted ? `${card.name}, starting price ${card.unit}` : `${card.name}: tell us about the project and we will quote in USD`}
                 {plan && plan.gst_rate > 0 ? ` · + ${Math.round(plan.gst_rate * 100)}% GST at checkout` : ""}
-                {other ? ` · ${region === "india" ? "International" : "In India"}: from ${priceText(other)}` : ""}
+                {other ? ` · ${region === "india" ? "International" : "In India"}: ${isPlaceholderPrice(other) ? "on request" : `from ${priceText(other)}`}` : ""}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">

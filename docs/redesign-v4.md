@@ -27,17 +27,20 @@ implement. Tokens are in `app/tokens.css` and mapped in `tailwind.config.ts`; th
 9. **Mobile simplifications.** Phones get no reveal blur, no pin, no float or loop animations, and no chip backdrop
    blur. The cursor becomes a tap ripple.
 
-## Placeholders to fill (search for `{{`)
+## Content to add (nothing is shown until it exists)
 
-| Placeholder | Where |
-|---|---|
-| `{{USD_PRICE}}` | Pricing, until `USD_CONFIRMED` is true and `plans` holds real USD prices |
-| `{{CLIENT_LOGO}}` ×4 | `components/home/Trust.tsx` |
-| `{{FOUNDER_PHOTO}}`, `{{FOUNDER_NAME}}`, `{{FOUNDER_ROLE}}`, `{{FOUNDER_BIO}}` | `Trust.tsx` |
-| `{{METRIC}}`, `{{RESULT_LABEL}}` | Viara and ATHLEX cards and case pages |
-| `{{TESTIMONIAL}}`, `{{NAME}}`, `{{ROLE}}`, `{{COMPANY}}` | `HomeVoices.tsx` |
-| `{{CASE_BRIEF}}`, `{{CASE_APPROACH}}`, `{{CASE_OUTCOME}}`, `{{SCOPE}}` | `app/work/[slug]/page.tsx` (each case study) |
-| `{{LINKEDIN_URL}}`, `{{INSTAGRAM_URL}}` | Footer, via CMS → Site → social |
+Placeholders are no longer rendered on the live site (a test fails if any `{{…}}` appears). Each block appears once its
+content is added:
+
+| Content | Where to add it | Shows |
+|---|---|---|
+| Client names / logos | `CLIENTS` in `components/home/Trust.tsx` | "Recently shipped for" strip |
+| Founder name, role, bio, photo | `FOUNDER` in `components/home/Trust.tsx` | Team block on home |
+| Results for Viara / ATHLEX | `metrics` on the case in CMS → cases | Card and case-page metrics |
+| Case write-ups | `brief`, `approach`, `outcome` on each case in CMS → cases | Case-study story sections |
+| Testimonials | CMS → testimonials | "In their words" |
+| LinkedIn / Instagram | Full profile URLs in CMS → Site → social | Footer "Follow" pills |
+| USD prices | GLOBAL rows in `plans`, then `USD_CONFIRMED = true` in `lib/billing.ts` | USD price (reads "On request" until then) |
 
 ## Also needs the owner
 

@@ -45,10 +45,10 @@ export default function ScrollChoreo() {
                 yPercent: 60,
                 opacity: 0,
                 ...blur,
-                duration: 0.9,
+                duration: 0.7,
                 ease: "expo.out",
-                stagger: 0.08,
-                scrollTrigger: { trigger: el, start: "top 85%", once: true },
+                stagger: 0.06,
+                scrollTrigger: { trigger: el, start: "top 92%", once: true },
               }),
           });
         });
@@ -60,10 +60,10 @@ export default function ScrollChoreo() {
             gsap.from(el, {
               scale: 0.96,
               opacity: 0,
-              duration: 0.9,
+              duration: 0.6,
               ease: "expo.out",
               clearProps: "transform,opacity",
-              scrollTrigger: { trigger: el, start: "top 88%", once: true },
+              scrollTrigger: { trigger: el, start: "top 95%", once: true },
             }),
           );
       });
