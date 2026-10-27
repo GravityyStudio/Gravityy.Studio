@@ -21,9 +21,3 @@ export const auditSchema = z.object({
 });
 
 export const newsletterSchema = z.object({ email, website: z.string().optional() });
-
-
-/** First error message, for single-line form status. */
-export function firstError(r: z.SafeParseReturnType<unknown, unknown>) {
-  return r.success ? "" : (r.error.issues[0]?.message ?? "Something went wrong.");
-}

@@ -5,20 +5,19 @@ Tailwind, GSAP + ScrollTrigger + SplitText, Lenis, Framer Motion (UI state only)
 The hero is a crossfading reel of Pexels + Pixabay motion clips.
 
 ```
-app/            layout (fonts, metadata, JSON-LD, GA4), page (section order), api/{contact,audit,newsletter},
-                sitemap.ts, robots.ts, opengraph-image.tsx, globals.css
-components/     one file per section: Preloader, Navbar, Hero (+HeroReel), Marquee, ServicesRail, Solutions,
-                Configurator, CaseStack, Showreel, ProcessPinned, TechStack3D, Analytics (+Charts), Funnel,
-                Stats, Testimonials, Pricing, FAQ, FinalCTA, ContactModal, Footer, CustomCursor, Providers
-components/ui/  Button (magnetic), SectionHeading (masked line reveal), Tilt, CountUp, AnimatedNumber,
-                LoopVideo, Modal, Icon, Honeypot
-data/*.json     all copy and data arrays (services, scopes/timelines, solutions, cases, process, stack,
-                funnel, testimonials, pricing, faq, nav/footer/metrics/stats, chart series)
-lib/            seo.ts (metadata + JSON-LD graph), pricing.ts (configurator math), motion.ts (central motion config), gsap.ts, schemas.ts (zod),
-                api.ts + email.ts (form handling / provider stub), onNear.ts, heroState.ts
-hooks/          useReveal, useLazyGSAP, useFocusTrap, useFormSubmit, useMedia
-scripts/        encode-media (Pexels/real footage), gen-media (placeholders), capture-work (live-site
-                screenshots), check-pricing, screenshots, interactions, lighthouse
+app/            layout (fonts, metadata, JSON-LD), pages (home, services, solutions, work, process, pricing, faq,
+                team, testimonials, blog, contact, privacy, terms), api/{contact,audit,newsletter,me,...},
+                admin + portal (signed-in), sitemap.ts, robots.ts, llms.txt, tokens.css, globals.css
+components/     Navbar, Footer, AuditForm, ContactModal, Providers (Lenis, Framer), CustomCursor, UtilityChips,
+                SocialIcons, home/* (sections), work/* (project cards + filters), motion/* (ScrollChoreo, ScrollRail)
+components/ui/  Button, Counter, AnimatedNumber, LoopVideo, BgVideo, Modal, BrandMark, BrandIcons, Honeypot
+data/*.json     all copy and data arrays (services, solutions, cases, process, stack, testimonials, team,
+                pricing, faq, site/nav/footer, theme); the CMS (Supabase `cms_entries`) overrides them
+lib/            content.ts (CMS + local fallback), seo.ts (metadata + JSON-LD), billing.ts, pexels.ts, motion.ts,
+                gsap.ts, schemas.ts (zod), api.ts + email.ts (forms), crm/, discovery/, automation/, events/
+hooks/          useEnter, useLazyGSAP, useFocusTrap, useFormSubmit, useViewer
+scripts/        encode-media, gen-media (placeholders), check-* (backend checks), screenshots, interactions
+                (end-to-end checks: `node scripts/interactions.mjs <url>`), lighthouse
 public/media/   posters + loop videos (see public/media/README.md)
 ```
 
@@ -152,8 +151,7 @@ All copy is data. Edit the JSON and the page updates; there's no markup to touch
   `data/testimonials.json`. **Case studies:** `data/cases.json` (`slug` maps to `public/media/<slug>.*`).
 - **Nav, footer, dashboard metrics, studio stats, client-login URL, email:** `data/site.json`.
 - **Chart series:** `data/charts.json`. **Process / funnel / stack / solutions:** their own JSON files.
-- **Icons:** data uses Material Symbols names; `components/ui/Icon.tsx` maps them to lucide icons. Add a
-  mapping there if you introduce a new name.
+- **Icons:** lucide-react, imported where used (tree-shaken).
 - **Motion timings:** every duration/ease/stagger is in `lib/motion.ts`.
 
 ## Swapping video and images
@@ -209,7 +207,6 @@ Gmail drafts and the approval queue UI, discovery imports, analytics. Each paid 
 | Findings: metadata, mobile, navigation (broken internal links via HEAD), calls to action, HTTPS, accessibility. Each is **confirmed** (seen in markup or an HTTP status) or **inferred** (likely, e.g. JS-rendered content) | `lib/discovery/analyze.ts` |
 | Scoring: 100 points = industry fit + website needs + project budget + purchase intent; weights, target industries and threshold editable in the dashboard; every point has a reason; unknown data scores 0 and lowers confidence | `lib/discovery/scoring.ts`, `discovery_settings` table |
 | Approval: "Approve & add to CRM" is admin-only and atomic (company dedupe, lead, activity, `crm.updated` event, audit). Nothing is emailed | `public.prospect_add_to_crm()` |
-| Optional AI summary: off until a provider is approved; never affects the score | `lib/discovery/ai.ts` |
 
 **n8n event contracts (v1)**: written to `outbox_events` (topic = type). IDs and counts only, no personal data.
 Validated with Zod in `lib/events/contracts.ts`; additive changes keep v1, breaking changes bump the version.
