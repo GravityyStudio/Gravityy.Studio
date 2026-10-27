@@ -14,7 +14,7 @@ const SUB = "Gravityy Studio designs, builds and automates websites, apps and th
  */
 export default function HomeHero() {
   return (
-    <section id="top" data-glow aria-labelledby="hero-h" className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-[clamp(56px,9vh,112px)] pt-36">
+    <section id="top" data-glow aria-labelledby="hero-h" className="relative flex flex-col justify-end overflow-hidden pb-[clamp(48px,9vh,112px)] pt-32 sm:min-h-[70svh] lg:min-h-[100svh] lg:pt-36">
       <BgVideo src={VIDEOS.hero} />
       <div className="container-x">
         <p className="home-rise mb-6 text-[clamp(20px,2vw,28px)] font-medium text-accent">{TAGLINE}</p>
