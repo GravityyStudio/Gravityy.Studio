@@ -2,7 +2,9 @@ import Link from "@/components/ui/SmartLink";
 import WorkGrid from "@/components/work/WorkGrid";
 import { notFound } from "next/navigation";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 import PageHero from "@/components/PageHero";
+import { SERVICE_PHOTOS, pexelsImage } from "@/lib/pexels";
 import QuoteButton from "@/components/QuoteButton";
 import HomeProcess from "@/components/home/HomeProcess";
 import HomeServices from "@/components/home/HomeServices";
@@ -43,6 +45,13 @@ export default async function ServicePage({ params }: Params) {
     <main id="main">
       <JsonLd data={[breadcrumbLd([["Services", "/services"], [s.name, `/services/${s.id}`]]), serviceLd(s, standard)]} />
       <PageHero crumbs={[["Services", "/services"], [s.name, `/services/${s.id}`]]} title={s.name} lede={s.desc} />
+      {SERVICE_PHOTOS[s.id] && (
+        <div className="container-x pb-[clamp(48px,7vw,96px)]">
+          <div data-panel className="relative aspect-[21/9] overflow-hidden rounded-xl bg-surface">
+            <Image src={pexelsImage(SERVICE_PHOTOS[s.id])} alt={SERVICE_PHOTOS[s.id].alt} fill sizes="(min-width:1280px) 1216px, 100vw" quality={65} className="object-cover" />
+          </div>
+        </div>
+      )}
 
       <section aria-labelledby="tools-h" className="bg-surface py-[clamp(64px,8vw,112px)]">
         <div className="container-x grid gap-14 lg:grid-cols-12 lg:gap-x-8">

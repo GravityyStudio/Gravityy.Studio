@@ -57,7 +57,15 @@ export default async function Footer() {
               Terms
             </Link>
           </span>
-          <span>Made in India, working worldwide.</span>
+          <span className="flex flex-wrap items-center gap-x-5">
+            <span>
+              Stock photos and video:{" "}
+              <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center underline decoration-fg/30 underline-offset-4 hover:text-fg">
+                Pexels
+              </a>
+            </span>
+            <span>Made in India, working worldwide.</span>
+          </span>
         </p>
       </div>
     </footer>

@@ -1,6 +1,8 @@
 "use client";
 import { useRef } from "react";
+import Image from "next/image";
 import Link from "@/components/ui/SmartLink";
+import { SERVICE_PHOTOS, pexelsImage } from "@/lib/pexels";
 import { useEnter } from "@/hooks/useEnter";
 import { useContent } from "../ContentProvider";
 
@@ -37,8 +39,21 @@ export default function HomeServices({
     });
   const card =
     "spotlight group relative flex h-full flex-col justify-between gap-5 overflow-hidden sm:min-h-[220px] sm:gap-8 rounded-xl bg-surface p-7 shadow-hairline transition-[transform,box-shadow] duration-[400ms] ease-brand";
+  const photoFor = (r: PosterItem) => SERVICE_PHOTOS[r.href?.split("/services/")[1] ?? ""];
   const body = (r: PosterItem) => (
     <>
+      {photoFor(r) && (
+        <span className="relative -mx-7 -mt-7 mb-1 block aspect-[16/9] overflow-hidden">
+          <Image
+            src={pexelsImage(photoFor(r))}
+            alt={photoFor(r).alt}
+            fill
+            sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
+            quality={60}
+            className="object-cover opacity-80 transition-[transform,opacity] duration-700 ease-brand group-hover:scale-105 group-hover:opacity-100"
+          />
+        </span>
+      )}
       <span className="flex items-start justify-between gap-4">
         <span className="text-[clamp(22px,1.8vw,28px)] font-semibold leading-tight">{r.label}</span>
         {r.href && (

@@ -1,18 +1,20 @@
 import type { ReactNode } from "react";
 import Link from "@/components/ui/SmartLink";
 import { ArrowLeft } from "lucide-react";
+import BgVideo from "./ui/BgVideo";
 
-type Props = { title: string; lede: string; crumbs?: [string, string][]; children?: ReactNode };
+type Props = { title: string; lede: string; crumbs?: [string, string][]; children?: ReactNode; video?: string };
 
 /**
  * Inner-page header: the page's name at poster scale on the left, the lede (and on nested pages a link back to the
  * parent) on the right, both on the title's last baseline. Breadcrumb structured data is emitted by each page, so no
  * visible trail is needed. Title and lede are static (LCP candidates: any animation on them delays LCP).
  */
-export default function PageHero({ title, lede, crumbs = [], children }: Props) {
+export default function PageHero({ title, lede, crumbs = [], children, video }: Props) {
   const parent = crumbs.length > 1 ? crumbs[crumbs.length - 2] : null;
   return (
-    <section data-glow aria-labelledby="page-h" className="pb-[clamp(48px,7vw,96px)] pt-[clamp(120px,12vw,168px)]">
+    <section data-glow aria-labelledby="page-h" className="relative overflow-hidden pb-[clamp(48px,7vw,96px)] pt-[clamp(120px,12vw,168px)]">
+      {video && <BgVideo src={video} />}
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-8">
         <h1 id="page-h" className="display lg:col-span-8">
           {title}

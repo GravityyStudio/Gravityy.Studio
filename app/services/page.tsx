@@ -1,4 +1,5 @@
 import PageHero from "@/components/PageHero";
+import { VIDEOS } from "@/lib/pexels";
 import WorkGrid from "@/components/work/WorkGrid";
 import HomeServices from "@/components/home/HomeServices";
 import Configurator from "@/components/Configurator";
@@ -13,7 +14,7 @@ export default async function ServicesPage() {
   return (
     <main id="main">
       <JsonLd data={breadcrumbLd([["Services", "/services"]])} />
-      <PageHero crumbs={[["Services", "/services"]]} title={pages.services.title} lede={pages.services.lede} />
+      <PageHero video={VIDEOS.services} crumbs={[["Services", "/services"]]} title={pages.services.title} lede={pages.services.lede} />
       <HomeServices heading="Every service" items={services.map((s) => ({ label: s.name, desc: s.desc, href: `/services/${s.id}` }))} more={null} />
       <WorkGrid id="recent" title="Recent work" limit={3} />
       <Configurator />
