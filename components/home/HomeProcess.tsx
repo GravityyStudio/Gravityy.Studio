@@ -18,7 +18,7 @@ export default function HomeProcess() {
   const line = "text-[9vw] font-medium leading-[1.02] tracking-[-0.04em] sm:text-[clamp(40px,5.2vw,84px)]";
 
   return (
-    <section ref={ref} id="process" data-glow aria-labelledby="process-h" className="py-[clamp(96px,16vh,200px)]">
+    <section ref={ref} id="process" data-glow aria-labelledby="process-h" className="py-[clamp(80px,11vh,140px)]">
       <ol className="container-x flex flex-col gap-10 lg:grid lg:grid-cols-12 lg:gap-x-8 lg:gap-y-14">
         {steps.map((s, i) => {
           const Line = i === 0 ? "h2" : "p";

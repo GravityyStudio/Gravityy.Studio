@@ -13,9 +13,10 @@ export const contactSchema = z.object({
   website: z.string().optional(),
 });
 
+// Field order = form order, so the first error reported (and focused) is the first field on screen.
 export const auditSchema = z.object({
-  email,
   url: z.string().trim().max(500).regex(URL_RE, "Enter a valid website URL."),
+  email,
   website: z.string().optional(),
 });
 

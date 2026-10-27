@@ -5,6 +5,8 @@ import plugin from "tailwindcss/plugin";
 const v = (name: string) => `rgb(var(--${name}) / <alpha-value>)`;
 
 export default {
+  // hover: styles only on devices that can hover (no sticky hover after a tap on touch screens)
+  future: { hoverOnlyWhenSupported: true },
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     screens: { sm: "640px", md: "768px", lg: "1024px", xl: "1280px", "2xl": "1536px" },

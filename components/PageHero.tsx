@@ -17,8 +17,8 @@ export default function PageHero({ title, lede, crumbs = [], children }: Props) 
         <h1 id="page-h" className="display home-rise lg:col-span-8">
           {title}
         </h1>
-        <div className="home-in flex flex-col gap-6 lg:col-span-4" style={{ animationDelay: "0.15s" }}>
-          <p className="max-w-[44ch] text-xl leading-snug">{lede}</p>
+        <div className="home-rise flex flex-col gap-6 lg:col-span-4" style={{ animationDelay: "0.15s" }}>
+          <p className="max-w-[34rem] text-xl leading-snug">{lede}</p>
           {(parent || children) && (
             <div className="flex flex-wrap items-center gap-4">
               {parent && (

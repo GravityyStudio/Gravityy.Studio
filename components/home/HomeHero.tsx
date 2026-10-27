@@ -13,16 +13,16 @@ export default function HomeHero() {
   return (
     <section id="top" data-glow aria-labelledby="hero-h" className="relative flex min-h-[100svh] flex-col justify-end pb-[clamp(56px,9vh,112px)] pt-36">
       <div className="container-x">
-        <p className="home-in mb-6 text-[clamp(20px,2vw,28px)] font-medium tracking-[-0.02em] text-accent">{TAGLINE}</p>
-        <h1 id="hero-h" className="display home-rise max-w-[14ch]">
+        <p className="home-rise mb-6 text-[clamp(20px,2vw,28px)] font-medium tracking-[-0.02em] text-accent">{TAGLINE}</p>
+        <h1 id="hero-h" className="display home-rise">
           {HEADLINE.map((l) => (
             <span key={l} className="block">
               {l}
             </span>
           ))}
         </h1>
-        <div className="home-in mt-10 grid gap-8 lg:mt-14 lg:grid-cols-12 lg:items-end lg:gap-x-8" style={{ animationDelay: "0.2s" }}>
-          <p className="max-w-[46ch] text-[20px] leading-snug text-fg/85 lg:col-span-6">{SUB}</p>
+        <div className="home-rise mt-10 grid gap-8 lg:mt-14 lg:grid-cols-12 lg:items-end lg:gap-x-8" style={{ animationDelay: "0.2s" }}>
+          <p className="max-w-[36rem] text-[20px] leading-snug text-fg/85 lg:col-span-6">{SUB}</p>
           <div className="flex flex-wrap gap-3 lg:col-span-6 lg:justify-end">
             <Button href="#audit" variant="accent">
               Get a free audit

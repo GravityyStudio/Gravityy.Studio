@@ -12,7 +12,19 @@ type Region = "india" | "intl";
 type Kind = 0 | 1; // 0 = Build (one-time), 1 = Grow (monthly)
 
 /** Segmented control on native radios: arrow keys move between options, the selected pill slides (transform only). */
-function Segmented<T extends string | number>({ legend, name, options, value, onChange }: { legend: string; name: string; options: [T, string][]; value: T; onChange: (v: T) => void }) {
+function Segmented<T extends string | number>({
+  legend,
+  name,
+  options,
+  value,
+  onChange,
+}: {
+  legend: string;
+  name: string;
+  options: [T, string][];
+  value: T;
+  onChange: (v: T) => void;
+}) {
   const i = options.findIndex(([v]) => v === value);
   return (
     <fieldset>
@@ -78,41 +90,59 @@ export default function HomePricing() {
   }, [plan, price]);
 
   return (
-    <section id="pricing" data-glow aria-labelledby="pricing-h" className="py-[clamp(96px,14vh,180px)]">
+    <section id="pricing" data-glow aria-labelledby="pricing-h" className="py-[clamp(80px,11vh,140px)]">
       <div className="container-x">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-8">
           <h2 id="pricing-h" data-reveal className="display !text-[clamp(36px,5vw,80px)] lg:col-span-7">
             What it costs
           </h2>
-          <p className="max-w-[46ch] text-fg/85 lg:col-span-5">A fixed price for a website build, or a monthly growth team after launch. Pick one to see the price and what is included.</p>
+          <p className="max-w-[46ch] text-fg/85 lg:col-span-5">
+            A fixed price for a website build, or a monthly growth team after launch. Pick one to see the price and what is included.
+          </p>
         </div>
 
+        {/* Phones: choices → price → what is included. Desktop: choices and list on the left, price on the right. */}
         <div data-panel className="mt-12 grid gap-10 rounded-xl bg-surface p-6 hairline sm:p-10 lg:mt-16 lg:grid-cols-12 lg:gap-x-10">
-          <div className="flex flex-col gap-8 lg:col-span-5">
-            <Segmented legend="Engagement" name="kind" options={[[0, "One-time build"], [1, "Monthly grow"]] as [Kind, string][]} value={kind} onChange={setKind} />
-            <Segmented legend="Currency" name="region" options={[["india", "INR ₹"], ["intl", "USD $"]] as [Region, string][]} value={region} onChange={setRegion} />
-            <ul className="flex flex-col gap-3" aria-label={`Included in ${card.name}`}>
-              {card.features.map((f, i) => (
-                <li key={`${kind}-${f}`} className="step-swap flex gap-3" style={{ animationDelay: `${i * 50}ms` }}>
-                  <span aria-hidden="true" className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  {f}
-                </li>
-              ))}
-            </ul>
+          <div className="flex flex-col gap-8 lg:col-span-5 lg:row-start-1">
+            <Segmented
+              legend="Engagement"
+              name="kind"
+              options={
+                [
+                  [0, "One-time build"],
+                  [1, "Monthly grow"],
+                ] as [Kind, string][]
+              }
+              value={kind}
+              onChange={setKind}
+            />
+            <Segmented
+              legend="Currency"
+              name="region"
+              options={
+                [
+                  ["india", "INR ₹"],
+                  ["intl", "USD $"],
+                ] as [Region, string][]
+              }
+              value={region}
+              onChange={setRegion}
+            />
           </div>
 
-          <div className="flex flex-col justify-between gap-8 lg:col-span-6 lg:col-start-7">
+          <div className="flex flex-col justify-between gap-8 lg:col-span-6 lg:col-start-7 lg:row-span-2 lg:row-start-1">
             <div className="flex flex-col gap-3">
-              <p className="text-[15px] text-muted">
-                {card.name} · {card.tag.toLowerCase()} · starting price
-              </p>
-              <p role="status" aria-label={`${card.name}: from ${price} ${card.unit}`} className="text-[clamp(64px,9vw,148px)] font-bold leading-[0.9] tracking-[-0.055em]">
+              <p
+                role="status"
+                aria-label={`${card.name}: from ${price} ${card.unit}`}
+                className="text-[clamp(64px,9vw,148px)] font-bold leading-[0.9] tracking-[-0.055em]"
+              >
                 <span ref={fig} aria-hidden="true" className="tabular-nums">
                   {price}
                 </span>
               </p>
               <p className="text-muted">
-                {card.unit}
+                {card.name}, starting price {card.unit}
                 {plan && plan.gst_rate > 0 ? ` · + ${Math.round(plan.gst_rate * 100)}% GST at checkout` : ""}
                 {other ? ` · ${region === "india" ? "International" : "In India"}: from ${formatMinor(other.amount_minor, other.currency)}` : ""}
               </p>
@@ -127,14 +157,30 @@ export default function HomePricing() {
                   {card.cta}
                 </Button>
               )}
-              <Button onClick={() => openContact(`Hi Gravityy team,\n\nI'm interested in the ${card.name} plan (from ${price} ${card.unit}).\n\nAbout the project:\n`)} variant="ghost">
+              <Button
+                onClick={() =>
+                  openContact(`Hi Gravityy team,\n\nI'm interested in the ${card.name} plan (from ${price} ${card.unit}).\n\nAbout the project:\n`)
+                }
+                variant="ghost"
+              >
                 Talk to us first
               </Button>
-              <Link href="/pricing#configurator" className="inline-flex min-h-[44px] items-center px-2 font-semibold underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
+              <Link
+                href="/pricing#configurator"
+                className="inline-flex min-h-[44px] items-center px-2 font-semibold underline decoration-fg/30 underline-offset-4 hover:decoration-accent"
+              >
                 Build a custom estimate
               </Link>
             </div>
           </div>
+          <ul className="flex flex-col gap-3 lg:col-span-5 lg:row-start-2" aria-label={`Included in ${card.name}`}>
+            {card.features.map((f, i) => (
+              <li key={`${kind}-${f}`} className="step-swap flex gap-3" style={{ animationDelay: `${i * 50}ms` }}>
+                <span aria-hidden="true" className="mt-[10px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                {f}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

@@ -30,7 +30,7 @@ export function LogoStrip() {
 
 export function TeamBlock() {
   return (
-    <section data-glow aria-labelledby="team-h" className="py-[clamp(96px,14vh,160px)]">
+    <section data-glow aria-labelledby="team-h" className="py-[clamp(80px,11vh,140px)]">
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-x-8">
         <div data-panel className="grid aspect-[4/5] max-w-[420px] place-items-center rounded-xl border border-dashed border-fg/20 p-6 text-center text-[15px] text-muted lg:col-span-5">
           {"{{FOUNDER_PHOTO}}"}

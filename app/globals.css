@@ -11,8 +11,9 @@
     color-scheme: dark;
     -webkit-text-size-adjust: 100%;
   }
+  /* body stays transparent: html paints the page colour, so the fixed glow layer (z -10) can show through. */
   body {
-    @apply bg-bg font-sans text-fg antialiased;
+    @apply font-sans text-fg antialiased;
     font-size: var(--font-size-base);
     line-height: var(--line-height-base);
     overflow-x: clip;

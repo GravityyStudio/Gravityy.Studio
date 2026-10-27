@@ -15,7 +15,7 @@ export default function HomeFaq({ heading = "Questions", allLink = true }: { hea
   const base = useId();
 
   return (
-    <section id="faq" data-glow aria-labelledby="faq-h" className="py-[clamp(96px,14vh,180px)]">
+    <section id="faq" data-glow aria-labelledby="faq-h" className="py-[clamp(80px,11vh,140px)]">
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-x-8">
         <div className="flex flex-col gap-5 lg:col-span-4">
           <h2 id="faq-h" data-reveal className="display !text-[clamp(36px,5vw,80px)]">

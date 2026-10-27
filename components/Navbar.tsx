@@ -13,7 +13,7 @@ import { useFocusTrap } from "@/hooks/useFocusTrap";
 /** "/services/web" is inside "Services"; "/" only matches exactly. */
 const isActive = (path: string, href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(href + "/"));
 const EASE = [0.22, 1, 0.36, 1] as const;
-const morph = "transition-[transform,opacity] duration-500 ease-[cubic-bezier(.22,1,.36,1)]";
+const morph = "transition-[transform,opacity,visibility] duration-500 ease-[cubic-bezier(.22,1,.36,1)]";
 
 /**
  * Morphing navigation. At the top of the page a full-width bar (logo, links, client login, CTA); once scrolled it
@@ -75,7 +75,7 @@ export default function Navbar() {
         <nav
           aria-label="Primary"
           inert={!desktop || scrolled}
-          className={`container-x hidden h-[76px] items-center justify-between gap-6 lg:flex ${morph} ${scrolled ? "pointer-events-none -translate-y-6 opacity-0" : ""}`}
+          className={`container-x hidden h-[76px] items-center justify-between gap-6 lg:flex ${morph} ${scrolled ? "pointer-events-none invisible -translate-y-6 opacity-0" : ""}`}
         >
           <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2.5 text-[17px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">
             <BrandMark height={24} priority />
@@ -102,7 +102,7 @@ export default function Navbar() {
         <nav
           aria-label="Primary"
           inert={desktop && !scrolled}
-          className={`absolute inset-x-0 top-3 flex justify-center px-3 ${morph} ${scrolled ? "" : "lg:pointer-events-none lg:scale-95 lg:opacity-0"}`}
+          className={`absolute inset-x-0 top-3 flex justify-center px-3 ${morph} ${scrolled ? "" : "lg:pointer-events-none lg:invisible lg:scale-95 lg:opacity-0"}`}
         >
           <div className="flex w-full max-w-[980px] items-center justify-between gap-2 rounded-pill bg-surface/90 py-1.5 pl-4 pr-1.5 hairline backdrop-blur-md">
             <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2 text-[16px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">

@@ -7,7 +7,7 @@ const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/proc
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch();
 const ok = (m) => console.log("  ✓", m);
-const h1 = (page) => page.locator("h1").first().innerText();
+const h1 = async (page) => (await page.locator("h1").first().textContent())?.trim(); // real text, not the CSS-uppercased render
 
 // ---------- Every route: 200, one h1, no runtime errors, no horizontal scroll (390 + 1440) ----------
 for (const w of [390, 1440]) {
@@ -48,7 +48,7 @@ for (const w of [390, 1440]) {
   await audit.getByRole("button", { name: "Send my free audit" }).click();
   await audit.getByText("Enter a valid website URL.").waitFor();
   assert.equal(await audit.getByLabel("Website URL").getAttribute("aria-invalid"), "true");
-  assert.equal(await page.evaluate(() => document.activeElement?.getAttribute("name")), "url");
+  await page.waitForFunction(() => document.activeElement?.getAttribute("name") === "url", null, { timeout: 3000 }); // focus moves after render
   await audit.getByLabel("Website URL").fill("example.com");
   await audit.getByLabel("Work email").fill("asha@example.com");
   await audit.getByRole("button", { name: "Send my free audit" }).click();
@@ -91,14 +91,17 @@ for (const w of [390, 1440]) {
 
   // Live price: region and engagement are radio groups; the figure is announced as a status
   await page.locator("#pricing").scrollIntoViewIfNeeded();
+  // Prices are live plan rows, so assert on currency and on change, not on fixed amounts.
   const price = page.locator("#pricing [role=status]").first();
-  assert.match(await price.getAttribute("aria-label"), /₹59,999/);
+  const label = () => price.getAttribute("aria-label");
+  assert.match(await label(), /₹[\d,]+/);
   await page.locator("#pricing label", { hasText: "USD $" }).click();
-  assert.match(await price.getAttribute("aria-label"), /\$1,490/);
+  const usdBuild = await label();
+  assert.match(usdBuild, /\$[\d,]+/);
   await page.locator("#pricing label", { hasText: "Monthly grow" }).click();
-  assert.match(await price.getAttribute("aria-label"), /\$590/);
+  assert.match(await label(), /^Grow: from \$[\d,]+ per month/);
   await page.keyboard.press("ArrowLeft");
-  assert.match(await price.getAttribute("aria-label"), /\$1,490/);
+  assert.equal(await label(), usdBuild);
   ok("live price switches region and plan by click and arrow keys");
 
   // FAQ page: accordion with aria-expanded

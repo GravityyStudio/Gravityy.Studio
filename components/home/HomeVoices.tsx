@@ -6,7 +6,7 @@ export default function HomeVoices() {
   const { testimonials } = useContent();
 
   return (
-    <section id="voices" data-glow aria-labelledby="voices-h" className="py-[clamp(96px,14vh,180px)]">
+    <section id="voices" data-glow aria-labelledby="voices-h" className="py-[clamp(80px,11vh,140px)]">
       <div className="container-x">
         <h2 id="voices-h" data-reveal className="display max-w-[14ch] !text-[clamp(36px,5vw,80px)]">
           In their words

@@ -52,7 +52,7 @@ const CARDS: Card[] = [
  */
 export default function WorkCards() {
   return (
-    <section id="work" data-glow aria-labelledby="work-h" className="py-[clamp(96px,14vh,180px)]">
+    <section id="work" data-glow aria-labelledby="work-h" className="py-[clamp(80px,11vh,140px)]">
       <div className="container-x">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <h2 id="work-h" data-reveal className="display !text-[clamp(36px,5vw,80px)]">
@@ -81,8 +81,8 @@ export default function WorkCards() {
                 )}
               </div>
               <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
-                <p className="text-[15px] text-muted">{c.sector}</p>
                 <h3 className="text-[clamp(24px,2.2vw,30px)] font-semibold leading-tight tracking-[-0.03em]">{c.title}</h3>
+                <p className="-mt-2 text-[15px] text-muted">{c.sector}</p>
                 <p className="text-fg/85">{c.summary}</p>
                 <dl className="mt-auto grid grid-cols-2 gap-4 pt-4">
                   {(c.metrics ?? [{ v: "{{METRIC}}", l: "{{RESULT_LABEL}}" }, { v: "{{METRIC}}", l: "{{RESULT_LABEL}}" }]).map((m, i) => (

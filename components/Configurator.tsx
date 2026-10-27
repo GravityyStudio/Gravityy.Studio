@@ -56,7 +56,7 @@ export default function Configurator() {
   const quote = () => openContact(quoteMessage({ services: chosen.map((s) => s.name), scope: scopeO.label, timeline: tlO.label, inr, plan: plan.name }));
 
   return (
-    <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(96px,14vh,180px)]">
+    <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(80px,11vh,140px)]">
       <div className="container-x">
         <div data-enter className="flex flex-col gap-4">
           <h2 id="config-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
