@@ -27,7 +27,7 @@ export default function HomeWork({ limit = 3 }: { limit?: number }) {
   useEnter(ref);
 
   return (
-    <section ref={ref} id="work" data-chapter="dark" aria-labelledby="work-h" className="overflow-hidden bg-bg py-[clamp(88px,12vw,180px)]">
+    <section ref={ref} id="work" data-glow aria-labelledby="work-h" className="overflow-hidden py-[clamp(88px,12vw,180px)]">
       <div className="container-x">
         <div data-enter className="flex flex-wrap items-baseline justify-between gap-4">
           <h2 id="work-h" className="text-[clamp(28px,3vw,40px)] font-medium tracking-[-0.03em]">

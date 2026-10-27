@@ -8,158 +8,175 @@ import { useContent } from "./ContentProvider";
 import { useUI } from "./Providers";
 import Button from "./ui/Button";
 import BrandMark from "./ui/BrandMark";
-import ThemeToggle from "./ThemeToggle";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
-import { FM } from "@/lib/motion";
 
 /** "/services/web" is inside "Services"; "/" only matches exactly. */
 const isActive = (path: string, href: string) => (href === "/" ? path === "/" : path === href || path.startsWith(href + "/"));
+const EASE = [0.22, 1, 0.36, 1] as const;
+const morph = "transition-[transform,opacity,visibility] duration-500 ease-[cubic-bezier(.22,1,.36,1)]";
 
-type Chapter = "dark" | "paper" | "accent";
-// The bar takes the field of the chapter beneath it (sections mark themselves with data-chapter); default is the page ground.
-const CHAPTER: Record<Chapter, string> = { dark: "bg-bg text-fg", paper: "chapter-paper", accent: "chapter-accent" };
-
+/**
+ * Morphing navigation. At the top of the page a full-width bar (logo, links, client login, CTA); once scrolled it
+ * hands over to a compact floating pill. The two swap by transform + opacity, and the inactive one is `inert`, so
+ * keyboard and screen-reader users only ever meet one. Phones get the pill only, whose Menu opens a full-screen
+ * overlay with a staggered reveal (focus trapped, Esc closes, aria-expanded on the toggle).
+ */
 export default function Navbar() {
   const { site } = useContent();
-  const { openContact, lockScroll } = useUI();
+  const { lockScroll } = useUI();
   const path = usePathname();
-  const [hidden, setHidden] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [desktop, setDesktop] = useState(false);
   const [open, setOpen] = useState(false);
-  const [chapter, setChapter] = useState<Chapter>("dark");
   const panel = useRef<HTMLDivElement>(null);
-  const bar = useRef<HTMLElement>(null);
   const close = () => setOpen(false);
   const links = site.NAV.filter((l) => l.href !== "/").slice(0, 5);
 
-  // Hide on scroll down, reveal on scroll up; read the chapter under the bar on every frame that scrolls.
   useEffect(() => {
-    let last = window.scrollY;
-    let frame = 0;
-    const read = () => {
-      frame = 0;
-      const y = (bar.current?.offsetHeight ?? 64) / 2;
-      const under = document.elementsFromPoint(window.innerWidth / 2, y).find((el) => !bar.current?.contains(el));
-      setChapter(((under?.closest("[data-chapter]") as HTMLElement | null)?.dataset.chapter as Chapter) ?? "dark");
-    };
-    const onScroll = () => {
-      if (!frame) frame = requestAnimationFrame(read);
-      const y = window.scrollY;
-      if (Math.abs(y - last) < 6) return;
-      setHidden(y > last && y > 120);
-      last = y;
-    };
-    read();
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const sync = () => setDesktop(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll);
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
-      cancelAnimationFrame(frame);
-    };
-  }, [path]);
-
-  // Close the menu and show the bar on every route change.
-  useEffect(() => {
-    setOpen(false);
-    setHidden(false);
-  }, [path]);
-
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  useEffect(() => setOpen(false), [path]);
   useEffect(() => lockScroll(open), [open, lockScroll]);
   useFocusTrap(panel, open, close);
 
+  const linkCls = (href: string) =>
+    `inline-flex min-h-[44px] items-center rounded-pill px-3 text-[15px] transition-colors duration-200 hover:text-fg ${isActive(path, href) ? "text-fg" : "text-muted"}`;
+  const cta = (
+    <Button href="#audit" variant="accent" className="!min-h-[44px] !px-5 text-[15px]">
+      Get a free audit
+    </Button>
+  );
+  const menuButton = (
+    <button
+      type="button"
+      onClick={() => setOpen(true)}
+      aria-expanded={open}
+      aria-controls="site-menu"
+      className="inline-flex min-h-[44px] items-center rounded-pill px-4 text-[15px] font-medium hairline transition-colors hover:bg-fg/[0.06]"
+    >
+      Menu
+    </button>
+  );
+
   return (
     <>
-      <header
-        ref={bar}
-        className={`nav-intro fixed inset-x-0 top-0 z-50 transition-[transform,background-color,color] duration-300 ${CHAPTER[chapter] ?? CHAPTER.dark} ${hidden && !open ? "-translate-y-full" : ""}`}
-      >
-        <nav aria-label="Primary" className="container-x flex h-16 items-center justify-between gap-4 lg:h-[72px]">
+      <header className="nav-intro fixed inset-x-0 top-0 z-50">
+        {/* Full bar: desktop, top of page */}
+        <nav
+          aria-label="Primary"
+          inert={!desktop || scrolled}
+          className={`container-x hidden h-[76px] items-center justify-between gap-6 lg:flex ${morph} ${scrolled ? "pointer-events-none invisible -translate-y-6 opacity-0" : ""}`}
+        >
           <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2.5 text-[17px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">
             <BrandMark height={24} priority />
-            <span aria-hidden="true" className="hidden sm:inline">
-              Gravityy Studio
-            </span>
+            <span aria-hidden="true">Gravityy Studio</span>
           </Link>
-          <ul className="hidden items-center gap-1 lg:flex">
-            {links.map((l) => {
-              const on = isActive(path, l.href);
-              return (
+          <ul className="flex items-center gap-1">
+            {links.map((l) => (
+              <li key={l.href}>
+                <Link href={l.href} aria-current={isActive(path, l.href) ? "page" : undefined} className={linkCls(l.href)}>
+                  {l.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="flex items-center gap-2">
+            <Link href={site.clientLoginHref} className={linkCls(site.clientLoginHref)}>
+              Client login
+            </Link>
+            {cta}
+          </div>
+        </nav>
+
+        {/* Floating pill: always on phones, after scrolling on desktop */}
+        <nav
+          aria-label="Primary"
+          inert={desktop && !scrolled}
+          className={`absolute inset-x-0 top-3 flex justify-center px-3 ${morph} ${scrolled ? "" : "lg:pointer-events-none lg:invisible lg:scale-95 lg:opacity-0"}`}
+        >
+          <div className="flex w-full max-w-[980px] items-center justify-between gap-2 rounded-pill bg-surface/90 py-1.5 pl-4 pr-1.5 hairline backdrop-blur-md">
+            <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2 text-[16px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">
+              <BrandMark height={22} />
+              <span aria-hidden="true" className="hidden sm:inline">
+                Gravityy Studio
+              </span>
+            </Link>
+            <ul className="hidden items-center lg:flex">
+              {links.map((l) => (
                 <li key={l.href}>
-                  <Link
-                    href={l.href}
-                    aria-current={on ? "page" : undefined}
-                    className={`inline-flex min-h-[44px] items-center px-3 text-[15px] underline-offset-[6px] transition-colors hover:underline ${on ? "underline decoration-2" : ""}`}
-                  >
+                  <Link href={l.href} aria-current={isActive(path, l.href) ? "page" : undefined} className={linkCls(l.href)}>
                     {l.label}
                   </Link>
                 </li>
-              );
-            })}
-          </ul>
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            <Link href={site.clientLoginHref} className="hidden min-h-[44px] items-center px-3 text-[15px] hover:underline hover:underline-offset-[6px] xl:inline-flex">
-              Client login
-            </Link>
-            <Button onClick={() => openContact()} className="!min-h-[40px] !px-4 sm:!min-h-[44px] sm:!px-5">
-              Start a project
-            </Button>
-            <button type="button" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="mobile-menu" className="inline-flex min-h-[44px] items-center px-2 text-[15px] font-medium lg:hidden">
-              Menu
-            </button>
+              ))}
+            </ul>
+            <div className="flex items-center gap-1.5">
+              <Link href={site.clientLoginHref} className={`${linkCls(site.clientLoginHref)} hidden xl:inline-flex`}>
+                Client login
+              </Link>
+              {cta}
+              <span className="lg:hidden">{menuButton}</span>
+            </div>
           </div>
         </nav>
       </header>
 
       <AnimatePresence>
         {open && (
-          <>
-            <m.div key="scrim" className="fixed inset-0 z-[60] bg-black/60 lg:hidden" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={close} aria-hidden="true" />
-            <m.div
-              key="panel"
-              id="mobile-menu"
-              ref={panel}
-              role="dialog"
-              aria-modal="true"
-              aria-label="Menu"
-              className="fixed inset-y-0 right-0 z-[70] flex w-[min(380px,90vw)] flex-col gap-8 overflow-y-auto bg-surface-2 p-6 lg:hidden"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={FM.panel}
-            >
-              <div className="flex items-center justify-between">
-                <ThemeToggle />
-                <button type="button" onClick={close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-full bg-raised">
-                  <X size={18} aria-hidden="true" />
-                </button>
-              </div>
-              <m.ul className="flex flex-col gap-1" initial="hide" animate="show" variants={{ show: { transition: { staggerChildren: 0.05, delayChildren: 0.1 } } }}>
-                {site.NAV.map((l) => {
-                  const on = isActive(path, l.href);
-                  return (
-                    <m.li key={l.href} variants={{ hide: { opacity: 0, x: 24 }, show: { opacity: 1, x: 0 } }}>
-                      <Link
-                        href={l.href}
-                        onClick={close}
-                        aria-current={on ? "page" : undefined}
-                        className={`flex min-h-[52px] items-center justify-between text-[28px] font-medium tracking-[-0.03em] ${on ? "text-fg" : "text-fg/80"}`}
-                      >
-                        {l.label}
-                        {on && <span aria-hidden="true" className="h-2 w-2 rounded-full bg-accent" />}
-                      </Link>
-                    </m.li>
-                  );
-                })}
-              </m.ul>
-              <div className="mt-auto flex flex-col gap-3">
-                <Button onClick={() => (close(), openContact())}>Start a project</Button>
-                <Button href={site.clientLoginHref} variant="ghost">
-                  Client login
-                </Button>
-              </div>
+          <m.div
+            key="menu"
+            id="site-menu"
+            ref={panel}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Menu"
+            className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-bg px-5 pb-8 pt-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0, transition: { duration: 0.25 } }}
+            transition={{ duration: 0.35, ease: EASE }}
+          >
+            <div className="flex items-center justify-between">
+              <Link href="/" onClick={close} className="flex min-h-[44px] items-center gap-2 text-[16px] font-semibold tracking-[-0.03em]" aria-label="Gravityy Studio, home">
+                <BrandMark height={22} />
+              </Link>
+              <button type="button" onClick={close} aria-label="Close menu" className="grid h-11 w-11 place-items-center rounded-pill hairline">
+                <X size={18} aria-hidden="true" />
+              </button>
+            </div>
+            <m.ul className="mt-10 flex flex-col" initial="hide" animate="show" variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}>
+              {site.NAV.map((l) => (
+                <m.li key={l.href} className="overflow-hidden" variants={{ hide: { y: "100%", opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: 0.6, ease: EASE } } }}>
+                  <Link
+                    href={l.href}
+                    onClick={close}
+                    aria-current={isActive(path, l.href) ? "page" : undefined}
+                    className={`display flex min-h-[56px] items-center !text-[clamp(40px,11vw,72px)] ${isActive(path, l.href) ? "text-accent" : "text-fg"}`}
+                  >
+                    {l.label}
+                  </Link>
+                </m.li>
+              ))}
+            </m.ul>
+            <m.div className="mt-auto flex flex-col gap-3 pt-10" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0, transition: { delay: 0.45, duration: 0.5, ease: EASE } }}>
+              <Button href="#audit" variant="accent" onClick={close}>
+                Get a free audit
+              </Button>
+              <Button href={site.clientLoginHref} variant="ghost">
+                Client login
+              </Button>
             </m.div>
-          </>
+          </m.div>
         )}
       </AnimatePresence>
     </>

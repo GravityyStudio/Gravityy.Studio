@@ -85,7 +85,11 @@ export default function Providers({ children }: { children: ReactNode }) {
     const l = lenis.current;
     l?.start();
     document.documentElement.style.overflow = "";
+    // Move focus to the target on landing, unless the user has already focused something else mid-scroll.
+    const before = document.activeElement;
     const focus = () => {
+      const now = document.activeElement;
+      if (now && now !== before && now !== document.body) return;
       if (!el.hasAttribute("tabindex")) el.setAttribute("tabindex", "-1");
       el.focus({ preventScroll: true });
     };

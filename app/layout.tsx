@@ -1,21 +1,24 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Manrope } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/Providers";
 import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
+import ScrollChoreo from "@/components/motion/ScrollChoreo";
+import ScrollRail from "@/components/motion/ScrollRail";
 import Footer from "@/components/Footer";
 import JsonLd from "@/components/JsonLd";
-import { DESC, KEYWORDS, SITE, TITLE, siteLd } from "@/lib/seo";
+import { DESC, SITE, TITLE, siteLd } from "@/lib/seo";
 import { THEME_SCRIPT, tokenCss } from "@/lib/theme";
 import { getContent } from "@/lib/content";
 import { ContentProvider } from "@/components/ContentProvider";
+import "./tokens.css";
 import "./globals.css";
 
-const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
-const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
+// Manrope Variable (one file, every weight), swapped in so text paints immediately.
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 
 const GA = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -23,7 +26,6 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE),
   title: { default: TITLE, template: "%s — Gravityy Studio" },
   description: DESC,
-  keywords: KEYWORDS,
   applicationName: "Gravityy Studio",
   authors: [{ name: "Gravityy Studio", url: SITE }],
   creator: "Gravityy Studio",
@@ -36,18 +38,15 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FAFAF7" },
-    { media: "(prefers-color-scheme: dark)", color: "#0A0A0A" },
-  ],
-  colorScheme: "dark light",
+  themeColor: "#0A0A0A",
+  colorScheme: "dark",
 };
 
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const content = await getContent();
   return (
-    <html lang="en" className={`${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={manrope.variable} suppressHydrationWarning>
       <head>
         {/* Before first paint: flag JS (hero intro pre-states) and apply the saved/OS theme, so neither flashes. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
@@ -64,6 +63,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <Navbar />
           {children}
           <Footer />
+          <ScrollChoreo />
+          <ScrollRail />
           <CustomCursor />
         </Providers>
         </ContentProvider>

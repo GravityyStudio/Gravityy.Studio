@@ -1,51 +1,87 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { prefersReduced } from "@/lib/motion";
 
-/** Desktop-only dot that follows the pointer, grows over links/buttons and reads "View" over case cards. */
+const TRAIL = 8;
+
+/**
+ * Accent dot with a dotted trail. Each trail dot eases toward the one ahead of it, so the trail lags and tapers.
+ * Over links, buttons and form controls the dot grows into a ring. Only for a fine pointer with motion allowed:
+ * never on touch, never under reduced motion. The native cursor is hidden only while this one is drawn.
+ */
 export default function CustomCursor() {
-  const ref = useRef<HTMLDivElement>(null);
-  const [mode, setMode] = useState<"dot" | "link" | "view">("dot");
+  const dot = useRef<HTMLDivElement>(null);
+  const trail = useRef<(HTMLSpanElement | null)[]>([]);
   const [on, setOn] = useState(false);
+  const [big, setBig] = useState(false);
 
   useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    if (!mq.matches || !ref.current) return;
+    if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches || prefersReduced()) return;
     setOn(true);
-    let moved = false;
-    gsap.set(ref.current, { opacity: 0 });
     document.documentElement.classList.add("has-cursor");
-    const x = gsap.quickTo(ref.current, "x", { duration: 0.25, ease: "power3.out" });
-    const y = gsap.quickTo(ref.current, "y", { duration: 0.25, ease: "power3.out" });
+    const target = { x: -100, y: -100 };
+    const pts = Array.from({ length: TRAIL + 1 }, () => ({ x: -100, y: -100 }));
+    let frame = 0;
+    let visible = false;
+
+    const tick = () => {
+      pts[0].x += (target.x - pts[0].x) * 0.45;
+      pts[0].y += (target.y - pts[0].y) * 0.45;
+      for (let i = 1; i < pts.length; i++) {
+        pts[i].x += (pts[i - 1].x - pts[i].x) * 0.35;
+        pts[i].y += (pts[i - 1].y - pts[i].y) * 0.35;
+      }
+      if (dot.current) dot.current.style.transform = `translate3d(${pts[0].x}px, ${pts[0].y}px, 0)`;
+      trail.current.forEach((el, i) => {
+        if (el) el.style.transform = `translate3d(${pts[i + 1].x}px, ${pts[i + 1].y}px, 0) scale(${1 - (i + 1) / (TRAIL + 2)})`;
+      });
+      frame = requestAnimationFrame(tick);
+    };
     const move = (e: PointerEvent) => {
       if (e.pointerType !== "mouse") return;
-      if (!moved) {
-        moved = true;
-        gsap.set(ref.current, { x: e.clientX, y: e.clientY, opacity: 1 });
+      target.x = e.clientX;
+      target.y = e.clientY;
+      if (!visible) {
+        visible = true;
+        pts.forEach((p) => ((p.x = e.clientX), (p.y = e.clientY)));
+        document.documentElement.dataset.cursor = "on";
       }
-      x(e.clientX);
-      y(e.clientY);
-      const t = e.target as Element | null;
-      setMode(t?.closest("[data-cursor='view']") ? "view" : t?.closest("a,button,[role='tab'],label") ? "link" : "dot");
+      setBig(!!(e.target as Element | null)?.closest("a,button,input,select,textarea,label,[role='button'],[role='radio']"));
     };
-    const hide = () => gsap.to(ref.current, { opacity: 0, duration: 0.2 });
-    const show = () => gsap.to(ref.current, { opacity: 1, duration: 0.2 });
+    const leave = () => {
+      visible = false;
+      delete document.documentElement.dataset.cursor;
+    };
+    frame = requestAnimationFrame(tick);
     window.addEventListener("pointermove", move, { passive: true });
-    document.addEventListener("pointerleave", hide);
-    document.addEventListener("pointerenter", show);
+    document.addEventListener("pointerleave", leave);
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", move);
-      document.removeEventListener("pointerleave", hide);
-      document.removeEventListener("pointerenter", show);
+      document.removeEventListener("pointerleave", leave);
       document.documentElement.classList.remove("has-cursor");
+      delete document.documentElement.dataset.cursor;
     };
   }, []);
 
-  const size = mode === "view" ? "h-20 w-20 bg-fg text-bg" : mode === "link" ? "h-10 w-10 bg-fg/15 border border-fg/60" : "h-2.5 w-2.5 bg-fg";
+  if (!on) return null;
   return (
-    <div ref={ref} aria-hidden="true" className={`pointer-events-none fixed left-0 top-0 z-[300] ${on ? "" : "hidden"}`}>
-      <div className={`-translate-x-1/2 -translate-y-1/2 rounded-full transition-[width,height,background-color] duration-300 ease-out grid place-items-center font-mono text-xs uppercase tracking-widest mix-blend-normal ${size}`}>
-        {mode === "view" && "View"}
+    <div aria-hidden="true" className="cursor-layer pointer-events-none fixed inset-0 z-[300]">
+      {Array.from({ length: TRAIL }, (_, i) => (
+        <span
+          key={i}
+          ref={(el) => {
+            trail.current[i] = el;
+          }}
+          className="absolute left-0 top-0 -ml-[2px] -mt-[2px] block h-1 w-1 rounded-full bg-accent/70"
+        />
+      ))}
+      <div ref={dot} className="absolute left-0 top-0">
+        {/* dot and ring swap by scale + opacity only */}
+        <span className={`absolute -left-[5px] -top-[5px] block h-2.5 w-2.5 rounded-full bg-accent transition-[transform,opacity] duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${big ? "scale-0 opacity-0" : ""}`} />
+        <span
+          className={`absolute -left-[22px] -top-[22px] block h-11 w-11 rounded-full bg-accent/10 shadow-[inset_0_0_0_1.5px_rgb(var(--accent))] transition-[transform,opacity] duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${big ? "" : "scale-[0.2] opacity-0"}`}
+        />
       </div>
     </div>
   );
