@@ -1,7 +1,7 @@
 "use client";
 import { useRef } from "react";
 import Link from "@/components/ui/SmartLink";
-import { LOCAL } from "@/lib/content";
+import fallback from "@/data/pages.json"; // JSON only: importing lib/content here would bundle the Supabase client for every visitor
 import { useEnter } from "@/hooks/useEnter";
 import { useContent } from "../ContentProvider";
 import MockPanel from "./MockPanel";
@@ -12,8 +12,8 @@ const INDENT = ["pl-0", "pl-[6vw]", "pl-[12vw]", "pl-[18vw]"];
 
 /** Four summary lines from the CMS (home, service pages), linking to the full process. */
 export default function HomeProcess() {
-  const home = useContent().pages.home as typeof LOCAL.pages.home;
-  const steps = home.steps ?? LOCAL.pages.home.steps;
+  const home = useContent().pages.home as typeof fallback.home;
+  const steps = home.steps ?? fallback.home.steps;
   const ref = useRef<HTMLElement>(null);
   useEnter(ref);
   const line = "text-[9vw] font-medium leading-[1.05] tracking-[-0.02em] sm:text-[clamp(30px,3.6vw,55px)]";
