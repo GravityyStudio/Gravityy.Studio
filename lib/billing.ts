@@ -32,6 +32,13 @@ export function formatMinor(minor: number, currency: string) {
   }).format(minor / 100);
 }
 
+// The brief marks the USD figure as a placeholder until the owner confirms it ($1,490 in `plans` predates the
+// ₹19,999 INR price). While false, USD prices show as {{USD_PRICE}}, USD checkout is closed and USD offers are left out of
+// structured data and llms.txt. Set to true once the GLOBAL rows in `plans` hold confirmed prices.
+export const USD_CONFIRMED = false;
+export const isPlaceholderPrice = (p: Pick<Plan, "currency">) => p.currency === "USD" && !USD_CONFIRMED;
+export const priceText = (p: Pick<Plan, "amount_minor" | "currency">) => (isPlaceholderPrice(p) ? "{{USD_PRICE}}" : formatMinor(p.amount_minor, p.currency));
+
 export const REGION_COOKIE = "region";
 /** Country → billing region. India (and unknown, e.g. localhost) bills in INR; everyone else in USD. */
 export const regionFromCountry = (country?: string | null): Region => (!country || country.toUpperCase() === "IN" ? "IN" : "GLOBAL");

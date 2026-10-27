@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import type { Content } from "./content";
-import type { Plan } from "./billing";
+import { isPlaceholderPrice, type Plan } from "./billing";
 
 // Canonical origin: explicit env → the Vercel project's production domain (set by Vercel on every build, follows a
 // custom domain once added) → the planned domain. Server-only: used by metadata, sitemap, robots and auth/payment redirects.
@@ -9,7 +9,7 @@ export const SITE = (process.env.NEXT_PUBLIC_SITE_URL || (vercelProd ? `https://
 export const TITLE = "Gravityy Studio — Websites & apps that convert";
 export const DESC =
   "Gravityy Studio is an India-based digital studio that designs, builds and automates websites, web and mobile apps, automation and analytics for growing teams worldwide.";
-const ORG = `${SITE}/#org`;
+export const ORG = `${SITE}/#org`;
 
 /** Per-page metadata: canonical, OG and Twitter all follow the page. Title uses the root template. */
 export function pageMeta(path: string, title: string, description: string): Metadata {
@@ -93,7 +93,7 @@ export const offersLd = (plans: Plan[]) => ({
   name: "Gravityy Studio plans",
   url: `${SITE}/pricing`,
   itemListElement: plans
-    .filter((p) => p.active)
+    .filter((p) => p.active && !isPlaceholderPrice(p))
     .map((p) => ({
       "@type": "Offer",
       name: `${p.name} (${p.region === "IN" ? "India" : "International"})`,

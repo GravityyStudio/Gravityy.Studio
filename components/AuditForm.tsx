@@ -31,7 +31,7 @@ export default function AuditForm() {
         <ol className="flex flex-col gap-3">
           {STEPS.map((s, i) => (
             <li key={s} className="flex gap-4">
-              <span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-pill bg-accent text-[13px] font-bold text-bg">
+              <span aria-hidden="true" className="grid h-7 w-7 shrink-0 place-items-center rounded-pill bg-accent text-[13px] font-bold text-on-accent">
                 {i + 1}
               </span>
               <span className="text-fg/85">{s}</span>
@@ -44,7 +44,7 @@ export default function AuditForm() {
         {done ? (
           <div role="status" className="flex flex-col items-start gap-4 rounded-xl bg-surface p-7 hairline sm:p-9">
             <p className="text-[clamp(22px,2vw,28px)] font-semibold tracking-[-0.02em]">Request received.</p>
-            <p className="text-fg/85">{audit.status.msg || "Your audit will arrive within 3 working days."} Check your inbox for a confirmation.</p>
+            <p className="text-fg/85">{audit.status.msg || "Your audit will arrive within 3 working days."}</p>
             <Button variant="ghost" onClick={() => setDone(false)}>
               Audit another site
             </Button>

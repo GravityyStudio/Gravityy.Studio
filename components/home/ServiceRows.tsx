@@ -1,5 +1,5 @@
 import Link from "@/components/ui/SmartLink";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const ROWS: { label: string; href: string; desc: string }[] = [
   { label: "Websites", href: "/services/web", desc: "Fast, accessible marketing sites with a CMS your team can actually edit." },
@@ -39,8 +39,8 @@ export default function ServiceRows() {
                 </span>
                 <span className="flex items-center justify-between gap-6 md:col-span-4">
                   <span className="max-w-[36ch] text-muted">{r.desc}</span>
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-pill hairline transition-[transform,background-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:rotate-45 group-hover:bg-accent group-hover:text-bg group-focus-visible:rotate-45">
-                    <ArrowUpRight size={20} aria-hidden="true" />
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-pill hairline transition-[transform,background-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:-rotate-45 group-hover:bg-accent group-hover:text-on-accent group-focus-visible:-rotate-45">
+                    <ArrowRight size={20} aria-hidden="true" />
                   </span>
                 </span>
               </Link>

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
 import Link from "@/components/ui/SmartLink";
 import { requireUser } from "@/lib/auth";
-import { formatMinor, planTotals, providerFor, type Plan } from "@/lib/billing";
+import { formatMinor, isPlaceholderPrice, planTotals, providerFor, type Plan } from "@/lib/billing";
 import { getContent } from "@/lib/content";
 import PayButton from "./PayButton";
 
@@ -16,7 +16,7 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
   const { supabase, profile } = await requireUser(`/pricing/checkout?plan=${encodeURIComponent(planId)}`);
   // Price from plans (server-side): the summary below is exactly what the provider will charge.
   const { data: plan } = await supabase.from("plans").select("*").eq("id", planId).eq("active", true).maybeSingle<Plan>();
-  if (!plan) notFound();
+  if (!plan || isPlaceholderPrice(plan)) notFound();
   const t = planTotals(plan);
   const provider = providerFor(plan.region);
   const card = Object.values((await getContent()).pricing)

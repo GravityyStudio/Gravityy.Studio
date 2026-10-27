@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "@/components/ui/SmartLink";
 import { gsap } from "@/lib/gsap";
 import { prefersReduced } from "@/lib/motion";
-import { formatMinor, type Plan } from "@/lib/billing";
+import { formatMinor, isPlaceholderPrice, priceText, type Plan } from "@/lib/billing";
 import { useContent } from "../ContentProvider";
 import { useUI } from "../Providers";
 import Button from "../ui/Button";
@@ -38,7 +38,7 @@ function Segmented<T extends string | number>({
         {options.map(([v, label]) => (
           <label
             key={String(v)}
-            className={`relative z-10 inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-pill px-4 text-center text-[15px] font-semibold transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${v === value ? "text-bg" : "text-fg/80 hover:text-fg"}`}
+            className={`relative z-10 inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-pill px-4 text-center text-[15px] font-semibold transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${v === value ? "text-on-accent" : "text-fg/80 hover:text-fg"}`}
           >
             <input type="radio" name={name} className="sr-only" checked={v === value} onChange={() => onChange(v)} />
             {label}
@@ -69,7 +69,8 @@ export default function HomePricing() {
   };
   const { card, plan } = planFor(region, kind);
   const other = planFor(region === "india" ? "intl" : "india", kind).plan;
-  const price = plan ? formatMinor(plan.amount_minor, plan.currency) : card.price;
+  const price = plan ? priceText(plan) : card.price;
+  const open = plan && !isPlaceholderPrice(plan); // a placeholder price can't be bought yet: the CTA opens contact instead
 
   // Count the figure from the previously shown amount to the new one; a currency flip swaps instead of counting.
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function HomePricing() {
     if (!el || !plan) return;
     const from = shown.current;
     shown.current = { minor: plan.amount_minor, currency: plan.currency };
-    if (!from || from.currency !== plan.currency || prefersReduced()) return void (el.textContent = price);
+    if (!from || from.currency !== plan.currency || isPlaceholderPrice(plan) || prefersReduced()) return void (el.textContent = price);
     const s = { v: from.minor };
     const tween = gsap.to(s, {
       v: plan.amount_minor,
@@ -144,11 +145,11 @@ export default function HomePricing() {
               <p className="text-muted">
                 {card.name}, starting price {card.unit}
                 {plan && plan.gst_rate > 0 ? ` · + ${Math.round(plan.gst_rate * 100)}% GST at checkout` : ""}
-                {other ? ` · ${region === "india" ? "International" : "In India"}: from ${formatMinor(other.amount_minor, other.currency)}` : ""}
+                {other ? ` · ${region === "india" ? "International" : "In India"}: from ${priceText(other)}` : ""}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-3">
-              {plan ? (
+              {open ? (
                 <Button href={`/pricing/checkout?plan=${plan.id}`} variant="accent">
                   {card.cta}
                 </Button>

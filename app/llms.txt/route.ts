@@ -1,5 +1,5 @@
 import { getContent } from "@/lib/content";
-import { formatMinor, type Plan } from "@/lib/billing";
+import { formatMinor, isPlaceholderPrice, type Plan } from "@/lib/billing";
 import { SITE } from "@/lib/seo";
 
 // /llms.txt: a plain summary for AI tools, built from the same CMS content and plan rows as the site, so prices and
@@ -8,7 +8,7 @@ export const revalidate = 300;
 
 const price = (plans: Plan[], id: string) => {
   const p = plans.find((x) => x.id === id && x.active);
-  if (!p) return null;
+  if (!p || isPlaceholderPrice(p)) return null;
   const tax = p.gst_rate > 0 ? ` + ${Math.round(p.gst_rate * 100)}% GST` : "";
   return `${formatMinor(p.amount_minor, p.currency)}${p.interval === "month" ? " per month" : " per project"}${tax}`;
 };
@@ -29,7 +29,7 @@ export async function GET() {
     `- [All services](${SITE}/services)`,
     "",
     "## Pricing",
-    `- [Pricing](${SITE}/pricing): Build Websites (one-time) from ${price(plans, "build-in") ?? "see pricing"} in India, ${price(plans, "build-global") ?? "see pricing"} internationally; Grow (monthly) from ${price(plans, "grow-in") ?? "see pricing"} in India, ${price(plans, "grow-global") ?? "see pricing"} internationally.`,
+    `- [Pricing](${SITE}/pricing): Build Websites (one-time) from ${price(plans, "build-in") ?? "see pricing"} in India, ${price(plans, "build-global") ?? "on request"} internationally; Grow (monthly) from ${price(plans, "grow-in") ?? "see pricing"} in India, ${price(plans, "grow-global") ?? "on request"} internationally.`,
     "",
     "## Work",
     ...cases.slice(0, 3).map((c) => `- ${c.title} (${c.sector})`),

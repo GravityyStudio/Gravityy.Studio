@@ -198,6 +198,37 @@ html.lenis body {
   }
 }
 
+/* Gentle float for node-network pills; each pill offsets its phase with --float-delay. Desktop motion users only. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .float {
+    animation: float 6s var(--ease) var(--float-delay, 0s) infinite alternate;
+  }
+}
+/* UI mock panel: the lime outline steps from the first chip to the second (w-28 + gap-3) and back. */
+@media (prefers-reduced-motion: no-preference) and (min-width: 1024px) {
+  .mock-cycle {
+    animation: mock-cycle 4.2s var(--ease) infinite;
+  }
+}
+@keyframes mock-cycle {
+  0%,
+  38% {
+    transform: none;
+  }
+  50%,
+  88% {
+    transform: translateX(calc(7rem + 0.75rem));
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes float {
+  to {
+    transform: translateY(-8px);
+  }
+}
+
 /* Custom cursor: drawn only once the pointer has moved; hides the native one only where we draw our own */
 .cursor-layer {
   opacity: 0;

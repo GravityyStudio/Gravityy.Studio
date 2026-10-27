@@ -9,12 +9,13 @@ import Counter from "../ui/Counter";
 import LoopVideo from "../ui/LoopVideo";
 
 type Metric = { v: string; l: string };
-type Card = { title: string; sector: string; summary: string; image: StaticImageData; alt: string; reel?: string; url?: string; metrics: Metric[] | null };
+type Card = { slug: string; title: string; sector: string; summary: string; image: StaticImageData; alt: string; reel?: string; url?: string; metrics: Metric[] | null };
 
 // The three featured projects. Viara and ATHLEX have no measured outcomes on record yet: their metric slots are
 // labelled placeholders ({{…}}) to fill with real numbers, never estimates.
 const CARDS: Card[] = [
   {
+    slug: "viara",
     title: "Viara Studios",
     sector: "Luxury real estate · Website",
     summary: "A scroll-built story site with a signature-residence showcase, a filterable home finder and an EMI calculator.",
@@ -24,6 +25,7 @@ const CARDS: Card[] = [
     metrics: null,
   },
   {
+    slug: "athlex",
     title: "ATHLEX",
     sector: "Fitness club · Website",
     summary: "A bold site for a Bengaluru strength and performance club, with programs, trainers and free-trial booking.",
@@ -33,6 +35,7 @@ const CARDS: Card[] = [
     metrics: null,
   },
   {
+    slug: "case-1",
     title: "A storefront rebuilt around repeat orders",
     sector: "D2C skincare · E-commerce",
     summary: "From a template theme to a custom Shopify build with subscription checkout and automated replenishment emails.",
@@ -81,7 +84,11 @@ export default function WorkCards() {
                 )}
               </div>
               <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
-                <h3 className="text-[clamp(24px,2.2vw,30px)] font-semibold leading-tight tracking-[-0.03em]">{c.title}</h3>
+                <h3 className="text-[clamp(24px,2.2vw,30px)] font-semibold leading-tight tracking-[-0.03em]">
+                  <Link href={`/work/${c.slug}`} className="underline decoration-transparent underline-offset-[6px] transition-colors hover:decoration-accent">
+                    {c.title}
+                  </Link>
+                </h3>
                 <p className="-mt-2 text-[15px] text-muted">{c.sector}</p>
                 <p className="text-fg/85">{c.summary}</p>
                 <dl className="mt-auto grid grid-cols-2 gap-4 pt-4">

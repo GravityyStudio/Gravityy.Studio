@@ -16,8 +16,8 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 const morph = "transition-[transform,opacity,visibility] duration-500 ease-[cubic-bezier(.22,1,.36,1)]";
 
 /**
- * Morphing navigation. At the top of the page a full-width bar (logo, links, client login, CTA); once scrolled it
- * hands over to a compact floating pill. The two swap by transform + opacity, and the inactive one is `inert`, so
+ * Morphing navigation. At the top of the page a full-width bar (logo, links, client login, CTA); scrolling down past 80px
+ * hands over to a compact floating blurred pill, and scrolling up brings the bar back. The two swap by transform + opacity, and the inactive one is `inert`, so
  * keyboard and screen-reader users only ever meet one. Phones get the pill only, whose Menu opens a full-screen
  * overlay with a staggered reveal (focus trapped, Esc closes, aria-expanded on the toggle).
  */
@@ -40,8 +40,16 @@ export default function Navbar() {
     return () => mq.removeEventListener("change", sync);
   }, []);
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 80);
-    onScroll();
+    // Pill once past 80px while scrolling down; the full bar comes back on any deliberate scroll up (>6px).
+    let last = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      if (y <= 80) setScrolled(false);
+      else if (Math.abs(y - last) > 6) setScrolled(y > last);
+      else return;
+      last = y;
+    };
+    setScrolled(last > 80);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
