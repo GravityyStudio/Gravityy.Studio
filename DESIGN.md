@@ -23,7 +23,7 @@ colors:
 typography:
   family: "Manrope Variable (next/font, --font-sans)"
   base: "17.66px / 27.38px"
-  display: "uppercase, weight 650, tracking -0.04em, leading 0.95, clamp(40px, 7vw, 120px) — class .display"
+  display: "uppercase, weight 650, tracking -0.02em, leading 1.05, clamp(40px, 7vw, 120px) — class .display"
   section-display: "clamp(36px, 5vw, 80px) for section titles that use .display"
   scale: "11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-t-11 … text-t-24)"
   small: 15px                # captions, legends, meta (13px legal only)
@@ -54,7 +54,7 @@ spacing:
   sections: "32 / 48 / 64 / 96 / 160px"
   container: 1280px
   gutter: "16px / 24px (sm) / 32px (lg)"
-  section: "clamp(80px, 11vh, 140px) top and bottom"
+  section: "clamp(56px, 8vh, 96px) top and bottom"
   touch-min: 44px
 ---
 
@@ -78,7 +78,7 @@ read. Every claim on the page is either real (confirmed by the owner) or a visib
 
 ## Typography
 
-`.display` is the only headline style: uppercase, 650, -0.04em, leading 0.95. Body text is 17.66/27.38 in full ink;
+`.display` is the only headline style: uppercase, 650, -0.02em, leading 1.05. Body and UI text use normal letter spacing. Body text is 17.66/27.38 in full ink;
 muted ink is for secondary lines only. Keep headlines to two or three lines at every width. Cut words before
 shrinking type. First-screen widths are set in `rem`, not `ch`, so the font swap doesn't shift layout.
 
@@ -114,10 +114,10 @@ ripple feedback, 44px targets.
 
 | # | Signature | Where |
 |---|---|---|
-| 1 | Nav: full bar shrinks to a floating blurred pill after 80px of scrolling down, expands on scroll up; full-screen menu with staggered links | `Navbar.tsx` |
+| 1 | Nav: full bar (logo, links with Services/Work dropdowns, language pill, client login or Dashboard + avatar when signed in, lime CTA) morphs after 80px of scrolling down into a floating centred blurred pill (logo mark, CTA, two-line burger) and expands on scroll up; full-screen menu with staggered links | `Navbar.tsx` |
 | 2 | Cursor: 10px accent dot (lerp 0.15) with 8 fading trail dots, ring over links and buttons; fine pointers only. Touch gets a tap ripple | `CustomCursor.tsx` |
 | 3 | Scroll choreography: black ↔ purple gradient crossfade, line reveal (translateY + 12px blur, no blur below 1024px), panels scale from 0.96. One pinned section (node network, desktop) | `motion/ScrollChoreo.tsx`, `home/NodeNetwork.tsx` |
-| 4 | Service rows: rolling duplicate text, arrow rotates -45°, hairline divider under each row | `home/ServiceRows.tsx` |
+| 4 | Service rows: rolling duplicate text, arrow rotates -45° (no divider lines) | `home/ServiceRows.tsx` |
 | 5 | Node network: "Your product" glowing pill, curves draw on scroll, pills float, hover lights a connection | `home/NodeNetwork.tsx` |
 | 6 | UI mock panel: skeleton lines and two chips, a lime outline cycles between them | `home/MockPanel.tsx` |
 | 7 | Pricing configurator: sliding segment indicator, animated price count, INR/USD flip, live feature list | `home/HomePricing.tsx` |

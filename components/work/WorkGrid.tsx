@@ -24,7 +24,7 @@ export default function WorkGrid({ title, id = "work", limit = 0, filters = fals
   const shown = (limit ? all.slice(0, limit) : all).filter((c) => kind === "All" || kinds(c).includes(kind));
 
   return (
-    <section id={id} data-glow aria-labelledby={`${id}-h`} className={`${surface ? "bg-surface/40" : ""} py-[clamp(80px,11vh,140px)]`}>
+    <section id={id} data-glow aria-labelledby={`${id}-h`} className={`${surface ? "bg-surface/40" : ""} py-[clamp(56px,8vh,96px)]`}>
       <div className="container-x">
         <div className="flex flex-wrap items-end justify-between gap-6">
           <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(36px,5vw,80px)]">

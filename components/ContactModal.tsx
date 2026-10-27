@@ -26,7 +26,7 @@ export default function ContactModal({ open, prefill, onClose }: Props) {
 
   return (
     <Modal open={open} onClose={onClose} labelledBy="contact-h">
-      <h2 id="contact-h" className="mb-6 pr-12 text-[28px] font-medium tracking-[-0.03em]">
+      <h2 id="contact-h" className="mb-6 pr-12 text-[28px] font-medium">
         Start a Project
       </h2>
       {sent ? (

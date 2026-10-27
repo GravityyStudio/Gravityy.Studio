@@ -26,7 +26,7 @@ const STYLES: Record<Variant, string> = {
  * blocked clicks. Keyboard: Enter/Space (native). Touch: no hover dependency. Reduced motion keeps only the colour.
  */
 export default function Button({ children, variant = "primary", href, onClick, type = "button", disabled, loading, className = "", external }: Props) {
-  const cls = `inline-flex min-h-[48px] items-center justify-center gap-2 rounded-pill px-6 text-[15px] font-semibold tracking-[-0.01em] transition-[transform,background-color,filter,opacity] duration-200 ease-[cubic-bezier(.22,1,.36,1)] hover:scale-[1.03] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 aria-busy:pointer-events-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 ${STYLES[variant]} ${className}`;
+  const cls = `inline-flex min-h-[48px] items-center justify-center gap-2 rounded-pill px-6 text-[15px] font-semibold transition-[transform,background-color,filter,opacity] duration-200 ease-[cubic-bezier(.22,1,.36,1)] hover:scale-[1.03] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40 aria-busy:pointer-events-none motion-reduce:hover:scale-100 motion-reduce:active:scale-100 ${STYLES[variant]} ${className}`;
   const body = (
     <>
       {loading && <span aria-hidden="true" className="h-4 w-4 animate-spin rounded-full border-2 border-current border-r-transparent" />}

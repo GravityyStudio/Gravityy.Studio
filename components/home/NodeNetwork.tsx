@@ -42,7 +42,7 @@ export default function NodeNetwork() {
 
   const pill = "rounded-pill bg-surface px-5 py-3 text-[15px] font-semibold hairline";
   return (
-    <section ref={ref} data-glow aria-labelledby="net-h" className="py-[clamp(80px,11vh,140px)]">
+    <section ref={ref} data-glow aria-labelledby="net-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-8">
           <h2 id="net-h" data-reveal className="display !text-[clamp(36px,5vw,80px)] lg:col-span-7">

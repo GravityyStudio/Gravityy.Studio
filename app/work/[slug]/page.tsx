@@ -65,7 +65,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
         </div>
       </section>
 
-      <section aria-labelledby="facts-h" className="container-x grid gap-10 py-[clamp(72px,10vw,140px)] lg:grid-cols-12 lg:gap-x-8">
+      <section aria-labelledby="facts-h" className="container-x grid gap-10 py-[clamp(48px,7vw,96px)] lg:grid-cols-12 lg:gap-x-8">
         <h2 id="facts-h" className="sr-only">
           Project facts
         </h2>
@@ -89,13 +89,13 @@ export default async function CaseStudy({ params }: { params: Params }) {
           {c.metrics?.map((m) => (
             <div key={m.l}>
               <dt className="text-[15px] text-muted">{m.l}</dt>
-              <dd className="mt-2 text-[clamp(36px,4vw,56px)] font-bold leading-none tracking-[-0.04em]">{m.v}</dd>
+              <dd className="mt-2 text-[clamp(36px,4vw,56px)] font-bold leading-none tracking-[-0.02em]">{m.v}</dd>
             </div>
           ))}
         </dl>
       </section>
 
-      <section aria-label="Case study" className={`container-x flex flex-col gap-14 ${story.length ? "pb-[clamp(72px,10vw,140px)]" : "pb-[clamp(40px,5vw,64px)]"}`}>
+      <section aria-label="Case study" className={`container-x flex flex-col gap-14 ${story.length ? "pb-[clamp(48px,7vw,96px)]" : "pb-[clamp(40px,5vw,64px)]"}`}>
         {/* The write-up shows only once the CMS case entry has it (brief / approach / outcome) */}
         {story.map(([h, body]) => (
           <div key={h} className="grid gap-4 lg:grid-cols-12 lg:gap-x-8">

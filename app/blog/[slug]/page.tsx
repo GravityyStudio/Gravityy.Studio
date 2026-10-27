@@ -39,7 +39,7 @@ export default async function PostPage({ params }: Params) {
     <main id="main">
       <JsonLd data={[breadcrumbLd([["Blog", "/blog"], [p.title, `/blog/${p.slug}`]]), ld]} />
       <article className="container-x max-w-[760px] pb-section pt-[clamp(140px,16vw,200px)]">
-        <h1 className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-[1.02] tracking-[-0.045em]">{p.title}</h1>
+        <h1 className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-[1.05] tracking-[-0.02em]">{p.title}</h1>
         <p className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[15px] text-muted">
           <span>{postDate(p)}</span>
           <Link href="/blog" className="group inline-flex min-h-[44px] items-center gap-2 font-medium text-fg underline decoration-fg/30 underline-offset-4 hover:decoration-accent">

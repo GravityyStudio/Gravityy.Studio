@@ -43,7 +43,7 @@ export default function AuditForm() {
       <div className="lg:col-span-6 lg:col-start-7">
         {done ? (
           <div role="status" className="flex flex-col items-start gap-4 rounded-xl bg-surface p-7 hairline sm:p-9">
-            <p className="text-[clamp(22px,2vw,28px)] font-semibold tracking-[-0.02em]">Request received.</p>
+            <p className="text-[clamp(22px,2vw,28px)] font-semibold">Request received.</p>
             <p className="text-fg/85">{audit.status.msg || "Your audit will arrive within 3 working days."}</p>
             <Button variant="ghost" onClick={() => setDone(false)}>
               Audit another site

@@ -10,12 +10,12 @@ export default function LegalPage({ title, path, lede, updated, sections }: Prop
     <main id="main">
       <JsonLd data={breadcrumbLd([[title, path]])} />
       <PageHero title={title} lede={lede} />
-      <div className="container-x grid gap-12 pb-[clamp(72px,10vw,140px)] lg:grid-cols-12 lg:gap-x-8">
+      <div className="container-x grid gap-12 pb-[clamp(48px,7vw,96px)] lg:grid-cols-12 lg:gap-x-8">
         <p className="text-[15px] text-muted lg:col-span-3">Last updated {updated}</p>
         <div className="flex max-w-[68ch] flex-col gap-10 lg:col-span-8 lg:col-start-5">
           {sections.map(([h, paras]) => (
             <section key={h} data-panel aria-labelledby={`s-${h}`}>
-              <h2 id={`s-${h}`} className="text-[clamp(22px,2vw,28px)] font-semibold tracking-[-0.02em]">
+              <h2 id={`s-${h}`} className="text-[clamp(22px,2vw,28px)] font-semibold">
                 {h}
               </h2>
               {paras.map((p) => (

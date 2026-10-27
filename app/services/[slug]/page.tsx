@@ -44,13 +44,13 @@ export default async function ServicePage({ params }: Params) {
       <JsonLd data={[breadcrumbLd([["Services", "/services"], [s.name, `/services/${s.id}`]]), serviceLd(s, standard)]} />
       <PageHero crumbs={[["Services", "/services"], [s.name, `/services/${s.id}`]]} title={s.name} lede={s.desc} />
 
-      <section aria-labelledby="tools-h" className="bg-surface py-[clamp(88px,12vw,160px)]">
+      <section aria-labelledby="tools-h" className="bg-surface py-[clamp(64px,8vw,112px)]">
         <div className="container-x grid gap-14 lg:grid-cols-12 lg:gap-x-8">
           <div className="flex flex-col gap-6 lg:col-span-6">
-            <h2 id="tools-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
+            <h2 id="tools-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight">
               Built with
             </h2>
-            <ul className="flex flex-col gap-1 text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em] text-muted">
+            <ul className="flex flex-col gap-1 text-[clamp(28px,3vw,40px)] font-medium leading-tight text-muted">
               {s.tags.map((t) => (
                 <li key={t}>{t}</li>
               ))}
@@ -63,7 +63,7 @@ export default async function ServicePage({ params }: Params) {
 
           <aside aria-label="Estimate" className="flex flex-col gap-5 lg:col-span-5 lg:col-start-8">
             <p className="text-[15px] text-muted">Starting estimate, standard scope and timeline</p>
-            <p className="text-[clamp(56px,7vw,112px)] font-semibold leading-[0.9] tracking-[-0.055em] tabular-nums">{fmtINR(standard)}</p>
+            <p className="text-[clamp(56px,7vw,112px)] font-semibold leading-[1.05] tracking-[-0.02em] tabular-nums">{fmtINR(standard)}</p>
             <p className="text-[20px] text-muted">≈ {fmtUSD(toUSD(standard))}</p>
             <p className="max-w-[44ch] text-[17px] leading-relaxed">
               From {fmtINR(low)} for a lean scope on a flexible timeline, up to {fmtINR(high)} for an advanced scope on a rush timeline.

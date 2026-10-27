@@ -7,7 +7,7 @@ export default function Preloader() {
     <div className="preloader pointer-events-none fixed inset-0 z-[200] grid place-items-center bg-bg" aria-hidden="true">
       <div className="flex items-center gap-3">
         <BrandMark height={33} priority />
-        <span className="text-xl font-semibold tracking-[-0.03em]">Gravityy Studio</span>
+        <span className="text-xl font-semibold">Gravityy Studio</span>
       </div>
     </div>
   );

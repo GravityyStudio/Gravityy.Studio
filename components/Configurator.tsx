@@ -56,10 +56,10 @@ export default function Configurator() {
   const quote = () => openContact(quoteMessage({ services: chosen.map((s) => s.name), scope: scopeO.label, timeline: tlO.label, inr, plan: plan.name }));
 
   return (
-    <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(80px,11vh,140px)]">
+    <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div data-enter className="flex flex-col gap-4">
-          <h2 id="config-h" data-reveal className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
+          <h2 id="config-h" data-reveal className="text-[clamp(28px,3vw,40px)] font-medium leading-tight">
             Build your estimate
           </h2>
           <p className="max-w-[52ch] text-[17px] leading-relaxed">Pick what you need. The estimate updates as you go and becomes your quote.</p>
@@ -98,7 +98,7 @@ export default function Configurator() {
             </p>
             <div className="flex flex-col gap-3">
               <p aria-hidden="true" className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-                <AnimatedNumber value={inr} format={fmtINR} className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-none tracking-[-0.045em] tabular-nums" />
+                <AnimatedNumber value={inr} format={fmtINR} className="text-[clamp(40px,5.2vw,64px)] font-semibold leading-none tracking-[-0.02em] tabular-nums" />
                 <AnimatedNumber value={inr} format={usd} className="text-[20px] text-muted" />
               </p>
               <p className="text-[15px] text-muted">
@@ -107,7 +107,7 @@ export default function Configurator() {
             </div>
             <div className="rounded-2xl bg-surface p-5">
               <p className="text-[15px] text-muted">Recommended plan</p>
-              <p className="mt-1 text-[20px] font-medium tracking-[-0.02em]">{plan.name}</p>
+              <p className="mt-1 text-[20px] font-medium">{plan.name}</p>
               <p className="mt-2 text-[15px] leading-relaxed text-muted">{plan.why}</p>
             </div>
             <Button variant="accent" onClick={quote} disabled={!sel.length} className="w-full">
