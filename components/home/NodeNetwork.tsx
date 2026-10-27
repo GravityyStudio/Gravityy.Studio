@@ -45,7 +45,7 @@ export default function NodeNetwork() {
     <section ref={ref} data-glow aria-labelledby="net-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-8">
-          <h2 id="net-h" data-reveal className="display !text-[clamp(36px,5vw,80px)] lg:col-span-7">
+          <h2 id="net-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)] lg:col-span-7">
             One team, every layer
           </h2>
           <p className="max-w-[46ch] text-fg/85 lg:col-span-5">
@@ -89,7 +89,7 @@ export default function NodeNetwork() {
             ))}
           </ul>
           <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <p data-node className="rounded-pill bg-accent px-7 py-4 text-[17px] font-bold text-on-accent shadow-[0_0_60px_rgb(var(--glow)/0.55),0_0_24px_rgb(var(--accent)/0.45)]">
+            <p data-node className="rounded-pill bg-accent px-7 py-4 text-[16px] font-bold text-on-accent shadow-[0_0_60px_rgb(var(--glow)/0.55),0_0_24px_rgb(var(--accent)/0.45)]">
               Your product
             </p>
           </div>
@@ -97,7 +97,7 @@ export default function NodeNetwork() {
 
         {/* Phones: the same relationship, stacked */}
         <div className="mt-12 flex flex-col items-center gap-4 md:hidden">
-          <p className="rounded-pill bg-accent px-6 py-3 text-[17px] font-bold text-on-accent shadow-[0_0_40px_rgb(var(--glow)/0.5)]">Your product</p>
+          <p className="rounded-pill bg-accent px-6 py-3 text-[16px] font-bold text-on-accent shadow-[0_0_40px_rgb(var(--glow)/0.5)]">Your product</p>
           <span aria-hidden="true" className="h-8 w-px bg-accent/50" />
           <ul className="flex flex-wrap justify-center gap-2">
             {NODES.map((n) => (

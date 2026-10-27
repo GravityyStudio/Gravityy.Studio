@@ -23,7 +23,7 @@ export default function HomeHero() {
           ))}
         </h1>
         <div className="mt-10 grid gap-8 lg:mt-14 lg:grid-cols-12 lg:items-end lg:gap-x-8">
-          <p className="max-w-[36rem] text-[20px] leading-snug text-fg/85 lg:col-span-6">{SUB}</p>
+          <p className="max-w-[36rem] text-[18px] leading-snug text-fg/85 lg:col-span-6">{SUB}</p>
           <div className="home-rise flex flex-wrap gap-3 lg:col-span-6 lg:justify-end" style={{ animationDelay: "0.2s" }}>
             <Button href="#audit" variant="accent">
               Get a free audit

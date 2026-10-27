@@ -1,7 +1,7 @@
 import PageHero from "@/components/PageHero";
 import WorkGrid from "@/components/work/WorkGrid";
 import HomeReel from "@/components/home/HomeReel";
-import HomeVoices from "@/components/home/HomeVoices";
+import Testimonials from "@/components/home/Testimonials";
 import JsonLd from "@/components/JsonLd";
 import { cmsPageMeta, getContent } from "@/lib/content";
 import { breadcrumbLd, workLd } from "@/lib/seo";
@@ -16,7 +16,7 @@ export default async function WorkPage() {
       <PageHero crumbs={[["Work", "/work"]]} title={content.pages.work.title} lede={content.pages.work.lede} />
       <WorkGrid title="Projects" filters />
       <HomeReel />
-      <HomeVoices />
+      <Testimonials />
     </main>
   );
 }

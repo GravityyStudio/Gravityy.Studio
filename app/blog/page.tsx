@@ -19,7 +19,7 @@ export default async function BlogPage() {
       <PageHero crumbs={[["Blog", "/blog"]]} title={pages.blog.title} lede={pages.blog.lede} />
       <section data-glow aria-labelledby="posts-h" className="py-[clamp(64px,8vw,112px)]">
         <div className="container-x">
-          <h2 id="posts-h" data-reveal className="display !text-[clamp(36px,5vw,80px)]">
+          <h2 id="posts-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
             Latest notes
           </h2>
           {posts.length ? (
@@ -52,7 +52,7 @@ export default async function BlogPage() {
             </ul>
           ) : (
             <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-x-8">
-              <p className="max-w-[40ch] text-[20px] leading-snug lg:col-span-6">
+              <p className="max-w-[40ch] text-[18px] leading-snug lg:col-span-6">
                 The first notes are on their way: what we learn shipping and growing client systems, once a month.
               </p>
               <div className="lg:col-span-5 lg:col-start-8">

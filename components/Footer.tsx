@@ -3,24 +3,13 @@ import { getContent } from "@/lib/content";
 import AuditForm from "./AuditForm";
 import FooterNewsletter from "./FooterNewsletter";
 import FooterWordmark from "./FooterWordmark";
+import SocialIcons from "./SocialIcons";
 
 const linkCls = "inline-flex min-h-[44px] items-center text-fg/80 transition-colors hover:text-fg";
-const pillCls = "inline-flex min-h-[44px] items-center gap-1 rounded-pill px-4 text-[15px] text-fg/85 hairline transition-colors hover:bg-fg/[0.06] hover:text-fg";
-
-/** A social link is real only once it points at a profile: a bare domain or a {{PLACEHOLDER}} is left out. */
-const isProfile = (href: string) => {
-  if (href.includes("{{")) return false;
-  try {
-    return new URL(href).pathname.replace(/\/+$/, "") !== "";
-  } catch {
-    return false;
-  }
-};
 
 /** Footer: the audit form (the site's one), newsletter, link columns, and the wordmark with its bouncing ball. */
 export default async function Footer() {
   const { site } = await getContent();
-  const socials = (site.social ?? []).filter((s) => isProfile(s.href));
   return (
     <footer data-glow className="cv relative pt-[clamp(64px,8vw,112px)]">
       <div className="container-x">
@@ -28,26 +17,12 @@ export default async function Footer() {
 
         <div className="mt-[clamp(56px,7vw,96px)] grid gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-4">
-            <p className="max-w-[30ch] text-[20px] leading-snug">Design, engineering and automation for teams that want one partner for the whole system.</p>
+            <p className="max-w-[30ch] text-[18px] leading-snug">Design, engineering and automation for teams that want one partner for the whole system.</p>
             <div className="mt-2 max-w-[380px]">
               <FooterNewsletter />
             </div>
-            {/* Social profiles (Site CMS → Site settings → social): only real profile URLs show; bare domains are skipped */}
-            {socials.length > 0 && (
-              <nav aria-label="Social" className="mt-4">
-                <h2 className="mb-3 font-semibold">Follow</h2>
-                <ul className="flex flex-wrap gap-2">
-                  {socials.map((s) => (
-                    <li key={s.label}>
-                      <a href={s.href} target="_blank" rel="noopener noreferrer" className={pillCls}>
-                        {s.label}
-                        <span className="sr-only"> (opens in a new tab)</span>
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            )}
+            {/* Social profiles (Site CMS → Site settings → social): real profile URLs only, plus email */}
+            <SocialIcons social={site.social ?? []} email={site.email} className="mt-2" />
           </div>
           {site.FOOTER.map((c) => (
             <nav key={c.title} aria-label={c.title} className="lg:col-span-2 lg:last:col-span-4">

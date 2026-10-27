@@ -95,7 +95,7 @@ export default function HomePricing() {
     <section id="pricing" data-glow aria-labelledby="pricing-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-8">
-          <h2 id="pricing-h" data-reveal className="display !text-[clamp(36px,5vw,80px)] lg:col-span-7">
+          <h2 id="pricing-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)] lg:col-span-7">
             What it costs
           </h2>
           <p className="max-w-[46ch] text-fg/85 lg:col-span-5">
@@ -137,7 +137,7 @@ export default function HomePricing() {
               <p
                 role="status"
                 aria-label={quoted ? `${card.name}: from ${price} ${card.unit}` : `${card.name}: price on request`}
-                className={`${quoted ? "text-[clamp(64px,9vw,148px)]" : "text-[clamp(44px,6vw,96px)]"} font-bold leading-[1.05] tracking-[-0.02em]`}
+                className={`${quoted ? "text-[clamp(48px,6.3vw,96px)]" : "text-[clamp(33px,4.2vw,62px)]"} font-bold leading-[1.05] tracking-[-0.02em]`}
               >
                 <span ref={fig} aria-hidden="true" className="tabular-nums">
                   {price}

@@ -61,5 +61,5 @@ export default function Markdown({ source }: { source: string }) {
       out.push(<p key={k}>{inline(p.join(" "))}</p>);
     }
   }
-  return <div className="flex flex-col gap-6 text-[17px] leading-[1.75] text-fg/85">{out}</div>;
+  return <div className="flex flex-col gap-6 text-[16px] leading-[1.75] text-fg/85">{out}</div>;
 }

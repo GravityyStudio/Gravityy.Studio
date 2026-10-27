@@ -72,7 +72,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
         <dl className="grid gap-8 sm:grid-cols-2 lg:col-span-12 lg:grid-cols-4">
           <div>
             <dt className="text-[15px] text-muted">Sector</dt>
-            <dd className="mt-2 text-[20px] font-semibold">{c.sector}</dd>
+            <dd className="mt-2 text-[18px] font-semibold">{c.sector}</dd>
           </div>
           {!!c.tags?.length && (
             <div>
@@ -89,7 +89,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
           {c.metrics?.map((m) => (
             <div key={m.l}>
               <dt className="text-[15px] text-muted">{m.l}</dt>
-              <dd className="mt-2 text-[clamp(36px,4vw,56px)] font-bold leading-none tracking-[-0.02em]">{m.v}</dd>
+              <dd className="mt-2 text-[clamp(27px,2.8vw,36px)] font-bold leading-none tracking-[-0.02em]">{m.v}</dd>
             </div>
           ))}
         </dl>
@@ -99,10 +99,10 @@ export default async function CaseStudy({ params }: { params: Params }) {
         {/* The write-up shows only once the CMS case entry has it (brief / approach / outcome) */}
         {story.map(([h, body]) => (
           <div key={h} className="grid gap-4 lg:grid-cols-12 lg:gap-x-8">
-            <h2 data-reveal className="display !text-[clamp(28px,3.4vw,48px)] lg:col-span-4">
+            <h2 data-reveal className="display !text-[clamp(21px,2.4vw,31px)] lg:col-span-4">
               {h}
             </h2>
-            <p className="max-w-[60ch] text-[20px] leading-relaxed text-fg/85 lg:col-span-7 lg:col-start-6">{body}</p>
+            <p className="max-w-[60ch] text-[18px] leading-relaxed text-fg/85 lg:col-span-7 lg:col-start-6">{body}</p>
           </div>
         ))}
         <div className="flex flex-wrap gap-3">
@@ -123,7 +123,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
           <Link href={`/work/${next.slug}`} className="group flex items-center justify-between gap-6 rounded-xl bg-surface p-8 hairline transition-colors hover:bg-raised">
             <span className="flex flex-col gap-2">
               <span className="text-[15px] text-muted">Next project</span>
-              <span className="display !text-[clamp(28px,4vw,64px)]">{next.title.split(":")[0]}</span>
+              <span className="display !text-[clamp(21px,2.8vw,42px)]">{next.title.split(":")[0]}</span>
             </span>
             <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-pill hairline transition-transform duration-500 group-hover:-rotate-45">
               →

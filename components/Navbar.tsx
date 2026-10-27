@@ -3,7 +3,8 @@ import { useEffect, useId, useRef, useState } from "react";
 import Link from "@/components/ui/SmartLink";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, m } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { Briefcase, ChevronDown, CircleHelp, House, Layers, Lightbulb, type LucideIcon, Mail, MessageSquareQuote, Newspaper, Tag, Users, Workflow } from "lucide-react";
+import SocialIcons from "./SocialIcons";
 import { useContent } from "./ContentProvider";
 import { useUI } from "./Providers";
 import Button from "./ui/Button";
@@ -17,6 +18,25 @@ const isActive = (path: string, href: string) => (href === "/" ? path === "/" : 
 const EASE = [0.22, 1, 0.36, 1] as const;
 const morph = "transition-[transform,opacity] duration-500 ease-[cubic-bezier(.22,1,.36,1)]";
 type SubLink = { label: string; href: string; hint?: string };
+// Menu icons by route; unknown routes get none.
+const ICONS: Record<string, LucideIcon> = {
+  "/": House,
+  "/services": Layers,
+  "/solutions": Lightbulb,
+  "/work": Briefcase,
+  "/process": Workflow,
+  "/pricing": Tag,
+  "/faq": CircleHelp,
+  "/team": Users,
+  "/testimonials": MessageSquareQuote,
+  "/blog": Newspaper,
+  "/contact": Mail,
+};
+// Pages added in code that the CMS nav may not list yet.
+const EXTRA = [
+  { label: "Team", href: "/team" },
+  { label: "Testimonials", href: "/testimonials" },
+];
 
 /** Two-line hamburger; the lines rotate into an X when `open`. */
 function Burger({ open }: { open: boolean }) {
@@ -163,6 +183,7 @@ export default function Navbar() {
   const panel = useRef<HTMLDivElement>(null);
   const close = () => setOpen(false);
   const links = site.NAV.filter((l) => l.href !== "/").slice(0, 5);
+  const menu = [...site.NAV, ...EXTRA.filter((e) => !site.NAV.some((l) => l.href === e.href))];
   const dropdowns: Record<string, SubLink[]> = {
     "/services": services.slice(0, 8).map((s) => ({ label: s.name, href: `/services/${s.id}` })),
     "/work": (cases as Case[]).slice(0, 6).map((c) => ({ label: c.title.split(":")[0], href: `/work/${c.slug}`, hint: c.sector })),
@@ -208,11 +229,16 @@ export default function Navbar() {
           inert={!desktop || scrolled}
           className={`container-x hidden h-[76px] items-center justify-between gap-4 lg:flex ${morph} ${scrolled ? "pointer-events-none -translate-y-6 opacity-0" : ""}`}
         >
-          <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2.5 text-[17px] font-semibold" aria-label="Gravityy Studio, home">
+          <Link href="/" className="flex min-h-[44px] shrink-0 items-center gap-2.5 text-[16px] font-semibold" aria-label="Gravityy Studio, home">
             <BrandMark height={24} priority />
             <span aria-hidden="true">Gravityy Studio</span>
           </Link>
           <ul className="flex items-center">
+            <li className="hidden xl:block">
+              <Link href="/" aria-current={path === "/" ? "page" : undefined} className={`inline-flex min-h-[44px] items-center px-3 text-[15px] transition-colors duration-200 hover:text-fg ${path === "/" ? "text-fg" : "text-muted"}`}>
+                Home
+              </Link>
+            </li>
             {links.map((l) => (
               <NavItem key={l.href} label={l.label} href={l.href} items={dropdowns[l.href]} path={path} />
             ))}
@@ -258,7 +284,9 @@ export default function Navbar() {
             role="dialog"
             aria-modal="true"
             aria-label="Menu"
-            className="fixed inset-0 z-[70] flex flex-col overflow-y-auto bg-bg/95 px-5 pb-8 pt-4 backdrop-blur-xl"
+            // data-lenis-prevent: the overlay scrolls natively (smooth, momentum) while Lenis holds the page still
+            data-lenis-prevent
+            className="fixed inset-0 z-[70] flex flex-col overflow-y-auto overscroll-contain scroll-smooth bg-bg/95 px-5 pb-8 pt-4 backdrop-blur-xl"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0, transition: { duration: 0.25 } }}
@@ -273,23 +301,31 @@ export default function Navbar() {
               </button>
             </div>
             <m.ul
-              className="mx-auto mt-10 flex w-full max-w-[1280px] flex-col"
+              className="mx-auto mt-8 grid w-full max-w-[1280px] gap-x-10 sm:grid-cols-2 lg:mt-12 lg:grid-cols-3"
               initial="hide"
               animate="show"
               variants={{ show: { transition: { staggerChildren: 0.06, delayChildren: 0.08 } } }}
             >
-              {site.NAV.map((l) => (
-                <m.li key={l.href} className="overflow-hidden" variants={{ hide: { y: "100%", opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: 0.6, ease: EASE } } }}>
-                  <Link
-                    href={l.href}
-                    onClick={close}
-                    aria-current={isActive(path, l.href) ? "page" : undefined}
-                    className={`display flex min-h-[56px] items-center !text-[clamp(40px,9vw,88px)] transition-colors hover:text-accent ${isActive(path, l.href) ? "text-accent" : "text-fg"}`}
-                  >
-                    {l.label}
-                  </Link>
-                </m.li>
-              ))}
+              {menu.map((l) => {
+                const Icon = ICONS[l.href];
+                return (
+                  <m.li key={l.href} className="overflow-hidden" variants={{ hide: { y: "100%", opacity: 0 }, show: { y: 0, opacity: 1, transition: { duration: 0.6, ease: EASE } } }}>
+                    <Link
+                      href={l.href}
+                      onClick={close}
+                      aria-current={isActive(path, l.href) ? "page" : undefined}
+                      className={`group flex min-h-[56px] items-center gap-4 py-2 text-[clamp(22px,2.6vw,32px)] font-semibold transition-colors hover:text-accent ${isActive(path, l.href) ? "text-accent" : "text-fg"}`}
+                    >
+                      {Icon && (
+                        <span aria-hidden="true" className="grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-hairline transition-colors group-hover:bg-accent group-hover:text-on-accent">
+                          <Icon size={18} />
+                        </span>
+                      )}
+                      {l.label}
+                    </Link>
+                  </m.li>
+                );
+              })}
             </m.ul>
             <m.div
               className="mx-auto mt-auto flex w-full max-w-[1280px] flex-wrap items-center gap-3 pt-10"
@@ -300,7 +336,8 @@ export default function Navbar() {
                 Get a free audit
               </Button>
               <Account viewer={viewer} loginHref={site.clientLoginHref} />
-              <LangPill className="ml-auto" />
+              <SocialIcons social={site.social ?? []} email={site.email} className="sm:ml-auto" />
+              <LangPill />
             </m.div>
           </m.div>
         )}

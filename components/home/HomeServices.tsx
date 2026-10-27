@@ -54,7 +54,7 @@ export default function HomeServices({
   return (
     <section ref={ref} id={id} data-glow aria-labelledby={`${id}-h`} className="py-[clamp(64px,10vh,112px)]">
       <div className="container-x">
-        <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(36px,5vw,80px)]">
+        <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
           {heading}
         </h2>
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
@@ -71,7 +71,7 @@ export default function HomeServices({
           ))}
         </ul>
         {more && (
-          <p data-enter className="mt-12 text-[17px]">
+          <p data-enter className="mt-12 text-[16px]">
             <Link href={more.href} className="font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
               {more.label}
             </Link>

@@ -30,7 +30,7 @@ export default function ContactModal({ open, prefill, onClose }: Props) {
         Start a Project
       </h2>
       {sent ? (
-        <p role="status" className="text-[17px] leading-relaxed">
+        <p role="status" className="text-[16px] leading-relaxed">
           Thanks, {sent.name}. We&apos;ll reply to {sent.email} within one working day.
         </p>
       ) : (
