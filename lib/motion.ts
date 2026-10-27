@@ -2,7 +2,6 @@
 export const MOTION = {
   ease: { out: "power3.out", inOut: "power2.inOut", expo: "expo.out" },
   dur: {
-    preloader: 0.7,
     heroLine: 0.8,
     heading: 0.9,
     card: 0.8,

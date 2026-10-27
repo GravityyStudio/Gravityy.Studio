@@ -107,31 +107,10 @@ html.lenis body {
   background: radial-gradient(closest-side, rgba(168, 240, 30, 0.16), rgba(168, 240, 30, 0) 70%);
 }
 
-/* Preloader: pure CSS so it can never trap the page, even without JS */
-.preloader {
-  animation: preloader-out 0.3s ease 0.55s forwards;
-}
-.preloader > div {
-  animation: preloader-mark 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-@keyframes preloader-out {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-@keyframes preloader-mark {
-  from {
-    opacity: 0;
-    transform: scale(0.85);
-  }
-}
-
 /* Printing an invoice: only the document. */
 @media print {
   header.nav-intro,
   footer,
-  .preloader,
   .print\:hidden {
     display: none !important;
   }
@@ -207,17 +186,6 @@ html.lenis body {
   }
 }
 
-/* First-screen entrance once the preloader has gone (CSS only: never stuck hidden without JS). */
-.home-in {
-  animation: home-in 1s cubic-bezier(0.22, 1, 0.36, 1) 0.6s both;
-}
-@keyframes home-in {
-  from {
-    opacity: 0;
-    transform: translateY(0.35em);
-  }
-}
-
 /* A changing figure settles in (the live price) */
 .step-swap {
   animation: step-swap 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -229,7 +197,7 @@ html.lenis body {
   }
 }
 
-/* The navigation bar slides in after the preloader, only when JS + motion are on */
+/* The navigation bar slides in once the app has mounted, only when JS + motion are on */
 @media (prefers-reduced-motion: no-preference) {
   .js .nav-intro {
     opacity: 0;
@@ -312,8 +280,5 @@ html.has-cursor button {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-  .preloader {
-    display: none;
   }
 }
