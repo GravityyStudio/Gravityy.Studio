@@ -3,7 +3,6 @@ import { Manrope } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/Providers";
-import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
 import UtilityChips from "@/components/UtilityChips";
@@ -60,7 +59,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         </a>
         <ContentProvider value={content}>
         <Providers>
-          <Preloader />
           <Navbar />
           {children}
           <Footer />

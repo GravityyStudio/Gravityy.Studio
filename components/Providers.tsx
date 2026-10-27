@@ -4,7 +4,7 @@ import { LazyMotion, MotionConfig } from "framer-motion";
 import Lenis from "lenis";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { MOTION, prefersReduced } from "@/lib/motion";
+import { prefersReduced } from "@/lib/motion";
 import ContactModal from "./ContactModal";
 
 type UI = {
@@ -59,14 +59,10 @@ export default function Providers({ children }: { children: ReactNode }) {
     return () => (ro.disconnect(), clearTimeout(t));
   }, []);
 
-  // Preloader is pure CSS; this marks the moment it has faded so the hero timeline can start.
+  // Marks the app as mounted (the nav slides in). No preloader: it covered the first paint and delayed LCP.
   useEffect(() => {
-    const ms = prefersReduced() ? 0 : MOTION.dur.preloader * 1000;
-    const t = setTimeout(() => {
-      setReady(true);
-      document.documentElement.dataset.ready = "1";
-    }, ms);
-    return () => clearTimeout(t);
+    setReady(true);
+    document.documentElement.dataset.ready = "1";
   }, []);
 
   const openContact = useCallback((prefill?: string) => {
