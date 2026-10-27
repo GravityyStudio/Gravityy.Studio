@@ -29,13 +29,13 @@ export default async function PortalProjects() {
     );
 
   return (
-    <ul className="flex flex-col gap-5">
+    <ul className="stagger grid gap-5 xl:grid-cols-2">
       {projects.map((p) => {
         const ms = Array.isArray(p.milestones) ? p.milestones : [];
         const done = ms.filter((m) => m.done).length;
         const next = ms.findIndex((m) => !m.done);
         return (
-          <li key={p.id} className="card flex flex-col gap-5 p-6 sm:p-8">
+          <li key={p.id} className="card card-lift spotlight relative flex flex-col gap-5 overflow-hidden p-6 sm:p-8">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="text-2xl font-medium tracking-[-0.03em]">{p.name}</h2>
@@ -46,7 +46,7 @@ export default async function PortalProjects() {
             {p.description && <p className="max-w-[720px] text-[15px] leading-relaxed text-muted">{p.description}</p>}
             <div className="flex items-center gap-3 text-sm">
               <span className="h-2 flex-1 overflow-hidden rounded-full bg-raised" role="progressbar" aria-valuenow={p.progress} aria-valuemin={0} aria-valuemax={100} aria-label={`${p.name} progress`}>
-                <span className="block h-full rounded-full bg-accent" style={{ width: `${p.progress}%` }} />
+                <span className="bar-grow block h-full rounded-full bg-accent" style={{ width: `${p.progress}%`, animationDelay: "250ms" }} />
               </span>
               <span className="tabular-nums">{p.progress}%</span>
             </div>

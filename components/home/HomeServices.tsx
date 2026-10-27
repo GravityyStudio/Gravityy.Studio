@@ -1,7 +1,6 @@
 "use client";
 import { useRef } from "react";
 import Link from "@/components/ui/SmartLink";
-import { ArrowUpRight } from "lucide-react";
 import { useEnter } from "@/hooks/useEnter";
 import { useContent } from "../ContentProvider";
 
@@ -20,7 +19,7 @@ const ROWS: [string, string][] = [
 export type PosterItem = { label: string; desc: string; href?: string };
 type Props = { id?: string; heading?: string; items?: PosterItem[]; more?: { href: string; label: string } | null };
 
-/** A list at poster scale: the list is the picture. On hover the other names step back to the soft ink. */
+/** Capabilities as cards: a cursor spotlight, lift and glow on hover; they stagger in on scroll (useEnter / GSAP). */
 export default function HomeServices({
   id = "services",
   heading = "What we build",
@@ -36,47 +35,43 @@ export default function HomeServices({
       const s = services.find((x) => x.id === sid);
       return s ? [{ label, desc: s.desc, href: `/services/${sid}` }] : [];
     });
-  const name = "text-[9vw] font-medium leading-none tracking-[-0.045em] sm:text-[clamp(40px,5.2vw,84px)]";
-  const row = "group grid gap-3 py-[0.18em] max-md:pb-6 md:grid-cols-12 md:items-baseline md:gap-8";
-  const desc = "max-w-[48ch] pl-4 text-[17px] leading-snug text-muted md:col-span-5 md:pl-0 lg:col-span-4";
+  const card =
+    "spotlight group relative flex h-full min-h-[220px] flex-col justify-between gap-8 overflow-hidden rounded-xl bg-surface p-7 shadow-hairline transition-[transform,box-shadow] duration-[400ms] ease-brand";
+  const body = (r: PosterItem) => (
+    <>
+      <span className="flex items-start justify-between gap-4">
+        <span className="text-[clamp(22px,1.8vw,28px)] font-semibold leading-tight tracking-[-0.03em]">{r.label}</span>
+        {r.href && (
+          <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-pill shadow-hairline transition-[transform,background-color,color] duration-500 ease-brand group-hover:-rotate-45 group-hover:bg-accent group-hover:text-on-accent">
+            →
+          </span>
+        )}
+      </span>
+      <span className="text-fg/75">{r.desc}</span>
+    </>
+  );
 
   return (
-    <section
-      ref={ref}
-      id={id}
-      data-glow
-      aria-labelledby={`${id}-h`}
-      className="py-[clamp(88px,14vh,160px)]"
-    >
+    <section ref={ref} id={id} data-glow aria-labelledby={`${id}-h`} className="py-[clamp(88px,14vh,160px)]">
       <div className="container-x">
-        <h2 id={`${id}-h`} data-enter className={`${name} text-muted`}>
+        <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(36px,5vw,80px)]">
           {heading}
         </h2>
-        <ul className="mt-[0.35em] flex flex-col [&:has(a:hover)_a:not(:hover)_.cap]:text-muted">
+        <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
           {rows.map((r) => (
             <li key={r.label} data-enter>
               {r.href ? (
-                <Link href={r.href} className={row}>
-                  <span className={`cap ${name} transition-colors duration-300 md:col-span-7 lg:col-span-8`}>
-                    {r.label}
-                    <ArrowUpRight
-                      aria-hidden="true"
-                      className="ml-2 inline h-[0.5em] w-[0.5em] -translate-y-[0.1em] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
-                    />
-                  </span>
-                  <span className={desc}>{r.desc}</span>
+                <Link href={r.href} className={`${card} hover:-translate-y-1.5 hover:shadow-glow-card`}>
+                  {body(r)}
                 </Link>
               ) : (
-                <div className={row}>
-                  <span className={`${name} md:col-span-7 lg:col-span-8`}>{r.label}</span>
-                  <span className={desc}>{r.desc}</span>
-                </div>
+                <div className={card}>{body(r)}</div>
               )}
             </li>
           ))}
         </ul>
         {more && (
-          <p data-enter className="mt-14 text-[17px]">
+          <p data-enter className="mt-12 text-[17px]">
             <Link href={more.href} className="font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
               {more.label}
             </Link>

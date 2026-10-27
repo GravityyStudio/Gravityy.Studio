@@ -153,6 +153,49 @@ html.lenis body {
   }
 }
 
+/* App screens: children of .stagger rise one after another (rows of a table, items of a list); capped at ~12 steps. */
+.stagger > * {
+  animation: rise 0.5s var(--ease) both;
+}
+.stagger > *:nth-child(2) { animation-delay: 40ms; }
+.stagger > *:nth-child(3) { animation-delay: 80ms; }
+.stagger > *:nth-child(4) { animation-delay: 120ms; }
+.stagger > *:nth-child(5) { animation-delay: 160ms; }
+.stagger > *:nth-child(6) { animation-delay: 200ms; }
+.stagger > *:nth-child(7) { animation-delay: 240ms; }
+.stagger > *:nth-child(8) { animation-delay: 280ms; }
+.stagger > *:nth-child(9) { animation-delay: 320ms; }
+.stagger > *:nth-child(10) { animation-delay: 360ms; }
+.stagger > *:nth-child(11) { animation-delay: 400ms; }
+.stagger > *:nth-child(n + 12) { animation-delay: 440ms; }
+
+/* Progress and pipeline bars grow from the left (transform only). */
+.bar-grow {
+  transform-origin: left center;
+  animation: bar-grow 0.9s var(--ease) both;
+}
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* Cards that respond to the pointer (dashboards, links): lift + glow on hover, press-in on click. */
+.card-lift {
+  transition:
+    transform var(--dur-4) var(--ease),
+    box-shadow var(--dur-4) var(--ease);
+}
+@media (hover: hover) {
+  .card-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-glow-card);
+  }
+}
+.card-lift:active {
+  transform: translateY(0) scale(0.99);
+}
+
 /* LCP-safe entrance for first-screen headlines: transform only, so the text counts as painted from the first frame. */
 .home-rise {
   animation: home-rise 1s var(--ease) 0.1s both;
@@ -226,6 +269,23 @@ html.lenis body {
 @keyframes float {
   to {
     transform: translateY(-8px);
+  }
+}
+
+/* Cursor spotlight for cards: a soft accent light follows the pointer (--mx/--my set by one listener in Providers). */
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-4) ease;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgb(var(--accent) / 0.12), transparent 70%);
+}
+@media (hover: hover) {
+  .spotlight:hover::before {
+    opacity: 1;
   }
 }
 

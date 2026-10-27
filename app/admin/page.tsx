@@ -58,14 +58,14 @@ export default async function AdminOverview() {
 
       <section aria-labelledby="pipe-h">
         <Heading id="pipe-h" title="Lead pipeline" href="/admin/leads" link="Open board" />
-        <ul className="card flex flex-col gap-4 p-5 sm:p-6">
+        <ul className="card stagger flex flex-col gap-4 p-5 sm:p-6">
           {byStage.map((s, i) => (
             <li key={s.stage} className="grid grid-cols-[96px_1fr_auto] items-center gap-4 text-sm sm:grid-cols-[120px_1fr_200px]">
               <span className={s.stage === "won" ? "text-accent" : "text-muted"}>{human(s.stage)}</span>
               <span className="h-2 overflow-hidden rounded-full bg-raised">
                 <span
-                  className={`rise block h-full rounded-full ${s.stage === "lost" ? "bg-fg/25" : "bg-accent"}`}
-                  style={{ width: `${(s.count / max) * 100}%`, animationDelay: `${i * 60}ms` }}
+                  className={`bar-grow block h-full rounded-full ${s.stage === "lost" ? "bg-fg/25" : "bg-accent"}`}
+                  style={{ width: `${(s.count / max) * 100}%`, animationDelay: `${200 + i * 60}ms` }}
                 />
               </span>
               <span className="text-right tabular-nums">
@@ -83,7 +83,7 @@ export default async function AdminOverview() {
         </section>
         <section aria-labelledby="audit-h" className="min-w-0">
           <Heading id="audit-h" title="Recent activity" href="/admin/audit-log" link="Audit log" />
-          <ol className="card divide-y divide-line">
+          <ol className="card stagger divide-y divide-line">
             {(log ?? []).map((a) => (
               <li key={a.id} className="flex flex-col gap-0.5 px-5 py-3 text-sm">
                 <span>

@@ -59,7 +59,7 @@ export default function Configurator() {
     <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(80px,11vh,140px)]">
       <div className="container-x">
         <div data-enter className="flex flex-col gap-4">
-          <h2 id="config-h" className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
+          <h2 id="config-h" data-reveal className="text-[clamp(28px,3vw,40px)] font-medium leading-tight tracking-[-0.03em]">
             Build your estimate
           </h2>
           <p className="max-w-[52ch] text-[17px] leading-relaxed">Pick what you need. The estimate updates as you go and becomes your quote.</p>

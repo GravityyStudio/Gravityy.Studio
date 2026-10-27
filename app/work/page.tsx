@@ -1,5 +1,5 @@
 import PageHero from "@/components/PageHero";
-import HomeWork from "@/components/home/HomeWork";
+import WorkGrid from "@/components/work/WorkGrid";
 import HomeReel from "@/components/home/HomeReel";
 import HomeVoices from "@/components/home/HomeVoices";
 import JsonLd from "@/components/JsonLd";
@@ -14,7 +14,7 @@ export default async function WorkPage() {
     <main id="main">
       <JsonLd data={[breadcrumbLd([["Work", "/work"]]), workLd(content)]} />
       <PageHero crumbs={[["Work", "/work"]]} title={content.pages.work.title} lede={content.pages.work.lede} />
-      <HomeWork limit={0} />
+      <WorkGrid title="Projects" filters />
       <HomeReel />
       <HomeVoices />
     </main>

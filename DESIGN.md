@@ -127,6 +127,19 @@ ripple feedback, 44px targets.
 | 11 | Utility chips: bottom-right Sound off/on (off by default, remembered), bottom-left theme button | `UtilityChips.tsx` |
 | 12 | Reduced motion: no Lenis, cursor, trail, pin, float, loops or line splitting; panels keep a plain fade | `lib/motion.ts`, `gsap.matchMedia` |
 
+Cards and app motion:
+- **Work / project cards** (`components/work/WorkCard.tsx`, `WorkGrid.tsx`): Framer spring tilt toward the cursor,
+  lift + glow on hover, hover reel, count-up metrics, stretched link to the case study. `/work` adds type filters
+  (`aria-pressed` chips, sliding accent pill, layout reflow). Used on home, /work, /solutions and inner pages.
+- **Service, blog and dashboard cards**: `.spotlight` (an accent light follows the pointer; one listener in Providers)
+  and `.card-lift` (lift, glow, press-in).
+- **Page transitions** (`app/template.tsx`): every client-side navigation fades and rises in; the landing page is never
+  hidden (LCP-safe). Covers the site, the portal and the admin.
+- **Portal / admin**: sliding active pill in the sidebar and tabs (Framer shared layout), stat tiles count up, table
+  rows and lists rise in one after another (`.stagger`), progress and pipeline bars grow from the left (`.bar-grow`).
+- **Smooth scroll**: Lenis (lerp 0.085) on the GSAP ticker for wheel input; touch keeps native momentum; off under
+  reduced motion. Framer follows the OS setting through `MotionConfig reducedMotion="user"`.
+
 Rules:
 - Content is never hidden in CSS. Hidden start states are set by script, so the page is complete without JS and
   under reduced motion.

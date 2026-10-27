@@ -12,7 +12,7 @@ type Inv = { id: string; number: number; total_minor: number; currency: string; 
 
 function Tile({ icon, label, href, link, children, delay }: { icon: ReactNode; label: string; href: string; link: string; children: ReactNode; delay: number }) {
   return (
-    <section className="card rise flex flex-col gap-4 p-6" style={{ animationDelay: `${delay}ms` }}>
+    <section className="card card-lift spotlight rise relative flex flex-col gap-4 overflow-hidden p-6" style={{ animationDelay: `${delay}ms` }}>
       <p className="flex items-center gap-2 text-[13px] text-muted">
         {icon}
         {label}
@@ -107,7 +107,7 @@ export default async function PortalOverview({ searchParams }: { searchParams: P
         <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {QUICK.map(([label, href, Icon], i) => (
             <li key={href} className="rise" style={{ animationDelay: `${280 + i * 50}ms` }}>
-              <Link href={href} className="card group flex min-h-[88px] items-center justify-between gap-3 p-5 transition-colors hover:border-line-strong">
+              <Link href={href} className="card card-lift spotlight group relative flex min-h-[88px] items-center justify-between gap-3 overflow-hidden p-5">
                 <span className="flex items-center gap-3 font-medium">
                   <Icon size={18} aria-hidden="true" className="text-accent" />
                   {label}

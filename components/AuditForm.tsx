@@ -27,7 +27,7 @@ export default function AuditForm() {
   return (
     <div id="audit" className="grid gap-10 lg:grid-cols-12 lg:gap-x-10">
       <div className="flex flex-col gap-6 lg:col-span-5">
-        <h2 className="display !text-[clamp(36px,5vw,80px)]">Get a free audit</h2>
+        <h2 data-reveal className="display !text-[clamp(36px,5vw,80px)]">Get a free audit</h2>
         <ol className="flex flex-col gap-3">
           {STEPS.map((s, i) => (
             <li key={s} className="flex gap-4">
