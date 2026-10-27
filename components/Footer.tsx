@@ -7,7 +7,7 @@ import FooterWordmark from "./FooterWordmark";
 const linkCls = "inline-flex min-h-[44px] items-center text-fg/80 transition-colors hover:text-fg";
 const pillCls = "inline-flex min-h-[44px] items-center gap-1 rounded-pill px-4 text-[15px] text-fg/85 hairline transition-colors hover:bg-fg/[0.06] hover:text-fg";
 
-/** A social link is real only once it points at a profile: a bare domain or a {{PLACEHOLDER}} is shown as a labelled gap. */
+/** A social link is real only once it points at a profile: a bare domain or a {{PLACEHOLDER}} is left out. */
 const isProfile = (href: string) => {
   if (href.includes("{{")) return false;
   try {
@@ -20,6 +20,7 @@ const isProfile = (href: string) => {
 /** Footer: the audit form (the site's one), newsletter, link columns, and the wordmark with its bouncing ball. */
 export default async function Footer() {
   const { site } = await getContent();
+  const socials = (site.social ?? []).filter((s) => isProfile(s.href));
   return (
     <footer data-glow className="cv relative pt-[clamp(88px,12vw,160px)]">
       <div className="container-x">
@@ -31,26 +32,22 @@ export default async function Footer() {
             <div className="mt-2 max-w-[380px]">
               <FooterNewsletter />
             </div>
-            {/* Social profiles: Site CMS → Site settings → social. */}
-            <nav aria-label="Social" className="mt-4">
-              <h2 className="mb-3 font-semibold">Follow</h2>
-              <ul className="flex flex-wrap gap-2">
-                {(site.social ?? []).map((s) => (
-                  <li key={s.label}>
-                    {isProfile(s.href) ? (
+            {/* Social profiles (Site CMS → Site settings → social): only real profile URLs show; bare domains are skipped */}
+            {socials.length > 0 && (
+              <nav aria-label="Social" className="mt-4">
+                <h2 className="mb-3 font-semibold">Follow</h2>
+                <ul className="flex flex-wrap gap-2">
+                  {socials.map((s) => (
+                    <li key={s.label}>
                       <a href={s.href} target="_blank" rel="noopener noreferrer" className={pillCls}>
                         {s.label}
                         <span className="sr-only"> (opens in a new tab)</span>
                       </a>
-                    ) : (
-                      <span className={`${pillCls} border border-dashed border-fg/20 text-muted shadow-none`}>
-                        {s.label} {`{{${s.label.toUpperCase()}_URL}}`}
-                      </span>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            </nav>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )}
           </div>
           {site.FOOTER.map((c) => (
             <nav key={c.title} aria-label={c.title} className="lg:col-span-2 lg:last:col-span-4">

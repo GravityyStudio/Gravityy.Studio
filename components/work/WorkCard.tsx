@@ -13,7 +13,7 @@ const SPRING = { stiffness: 220, damping: 22, mass: 0.6 };
 /**
  * Project card. On a fine pointer it tilts toward the cursor (Framer springs, transform only) and lifts with a glow;
  * where a clip exists its reel plays on hover. Metrics count up as the card enters view; projects without measured
- * results show labelled placeholders. The whole card links to the case study (stretched link); "Live site" sits above it.
+ * results simply omit them. The whole card links to the case study (stretched link); "Live site" sits above it.
  */
 export default function WorkCard({ c, priority = false }: { c: Case; priority?: boolean }) {
   const ref = useRef<HTMLElement>(null);
@@ -68,7 +68,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
             {name}
           </Link>
         </h3>
-        <p className="line-clamp-3 text-fg/80">{c.summary}</p>
+        <p className="text-fg/80">{c.summary}</p>
         {!!c.tags?.length && (
           <ul aria-label="Scope" className="flex flex-wrap gap-2">
             {c.tags.slice(0, 3).map((t) => (
@@ -78,20 +78,19 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
             ))}
           </ul>
         )}
-        <dl className="mt-auto grid grid-cols-2 gap-4 pt-2">
-          {(c.metrics ?? [
-            { v: "{{METRIC}}", l: "{{RESULT_LABEL}}" },
-            { v: "{{METRIC}}", l: "{{RESULT_LABEL}}" },
-          ]).map((mt, i) => (
-            <div key={i} className="flex flex-col-reverse">
-              <dt className="mt-1 text-[14px] text-muted">{mt.l}</dt>
-              <dd className="text-[clamp(26px,2.4vw,36px)] font-bold leading-none tracking-[-0.04em]">
-                {c.metrics ? <Counter value={mt.v} /> : <span className="text-[16px] font-medium text-muted">{mt.v}</span>}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <div className="flex items-center justify-between gap-4 pt-2">
+        {c.metrics && (
+          <dl className="grid grid-cols-2 gap-4 pt-2">
+            {c.metrics.map((mt) => (
+              <div key={mt.l} className="flex flex-col-reverse">
+                <dt className="mt-1 text-[14px] text-muted">{mt.l}</dt>
+                <dd className="text-[clamp(26px,2.4vw,36px)] font-bold leading-none tracking-[-0.04em]">
+                  <Counter value={mt.v} />
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+        <div className="mt-auto flex items-center justify-between gap-4 pt-2">
           <span aria-hidden="true" className="inline-flex items-center gap-2 font-semibold">
             Case study
             <span className="grid h-9 w-9 place-items-center rounded-pill shadow-hairline transition-[transform,background-color,color] duration-500 ease-brand group-hover:-rotate-45 group-hover:bg-accent group-hover:text-on-accent">

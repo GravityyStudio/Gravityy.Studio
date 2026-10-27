@@ -47,7 +47,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const content = await getContent();
   return (
-    <html lang="en" className={manrope.variable} suppressHydrationWarning>
+    <html lang="en-IN" className={manrope.variable} suppressHydrationWarning>
       <head>
         {/* Before first paint: flag JS (hero intro pre-states) and apply the saved/OS theme, so neither flashes. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />

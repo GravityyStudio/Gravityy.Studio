@@ -10,4 +10,4 @@ import athlex from "@/public/media/work-athlex.jpg";
 const POSTERS: Record<string, StaticImageData> = { viara, athlex, "case-1": p1, "case-2": p2, "case-3": p3, "case-4": p4 };
 export const posterFor = (slug: string) => POSTERS[slug] ?? p1;
 
-export type Case = { slug: string; video?: boolean; sector: string; title: string; summary: string; url?: string; alt: string; tags?: string[]; metrics?: { v: string; l: string }[] };
+export type Case = { slug: string; video?: boolean; sector: string; title: string; summary: string; url?: string; alt: string; tags?: string[]; metrics?: { v: string; l: string }[]; brief?: string; approach?: string; outcome?: string };

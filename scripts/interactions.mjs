@@ -18,12 +18,15 @@ for (const w of [390, 1440]) {
     const res = await page.goto(URL + r, { waitUntil: "networkidle" });
     assert.equal(res.status(), 200, r);
     // Server HTML must never hide the page (a hidden wrapper delays LCP until JS runs)
-    assert.ok(!/<(div|main)[^>]*style="opacity:0/.test(await res.text()), `${r} ships hidden content`);
+    const html = await res.text();
+    assert.ok(!/<(div|main)[^>]*style="opacity:0/.test(html), `${r} ships hidden content`);
+    // No unfilled template placeholders on the live site
+    assert.ok(!/\{\{[A-Z_]+/.test(html), `${r} shows a {{PLACEHOLDER}}`);
     assert.equal(await page.locator("h1").count(), 1, `${r} h1 count`);
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth), 0, `${r} overflow @${w}`);
   }
   assert.deepEqual(errors, []);
-  ok(`all ${ROUTES.length} routes: 200, visible server HTML, one h1, no errors, no horizontal scroll @${w}px`);
+  ok(`all ${ROUTES.length} routes: 200, visible server HTML, no placeholders, one h1, no errors, no horizontal scroll @${w}px`);
   await page.close();
 }
 
@@ -125,10 +128,10 @@ for (const w of [390, 1440]) {
   await page.locator("#pricing label", { hasText: "USD $" }).click();
   const usdBuild = await label();
   // USD is a labelled placeholder until confirmed (lib/billing USD_CONFIRMED)
-  const USD = /\$[\d,]+|\{\{USD_PRICE\}\}/;
+  const USD = /\$[\d,]+|price on request/;
   assert.match(usdBuild, USD);
   await page.locator("#pricing label", { hasText: "Monthly grow" }).click();
-  assert.match(await label(), /^Grow: from (\$[\d,]+|\{\{USD_PRICE\}\}) per month/);
+  assert.match(await label(), /^Grow: (from \$[\d,]+ per month|price on request)/);
   await page.keyboard.press("ArrowLeft");
   assert.equal(await label(), usdBuild);
   ok("live price switches region and plan by click and arrow keys");
