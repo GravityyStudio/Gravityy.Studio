@@ -51,7 +51,8 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
           alt={c.alt}
           fill
           priority={priority}
-          sizes="(min-width:1024px) 33vw, (min-width:640px) 50vw, 100vw"
+          sizes="(min-width:1280px) 400px, (min-width:1024px) 31vw, (min-width:640px) 46vw, calc(100vw - 32px)"
+          quality={60}
           placeholder="blur"
           className="object-cover object-top transition-transform duration-700 ease-brand group-hover:scale-[1.05]"
         />

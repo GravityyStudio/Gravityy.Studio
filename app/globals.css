@@ -196,7 +196,8 @@ html.lenis body {
   transform: translateY(0) scale(0.99);
 }
 
-/* LCP-safe entrance for first-screen headlines: transform only, so the text counts as painted from the first frame. */
+/* Small first-screen entrance (tagline, buttons). Never on LCP candidates: Chrome records LCP only after an element's
+   animation ends, even a transform-only one. */
 .home-rise {
   animation: home-rise 1s var(--ease) 0.1s both;
 }

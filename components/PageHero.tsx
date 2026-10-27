@@ -7,17 +7,17 @@ type Props = { title: string; lede: string; crumbs?: [string, string][]; childre
 /**
  * Inner-page header: the page's name at poster scale on the left, the lede (and on nested pages a link back to the
  * parent) on the right, both on the title's last baseline. Breadcrumb structured data is emitted by each page, so no
- * visible trail is needed. CSS-only entrance.
+ * visible trail is needed. Title and lede are static (LCP candidates: any animation on them delays LCP).
  */
 export default function PageHero({ title, lede, crumbs = [], children }: Props) {
   const parent = crumbs.length > 1 ? crumbs[crumbs.length - 2] : null;
   return (
     <section data-glow aria-labelledby="page-h" className="pb-[clamp(72px,10vw,140px)] pt-[clamp(140px,16vw,220px)]">
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:items-end lg:gap-x-8">
-        <h1 id="page-h" className="display home-rise lg:col-span-8">
+        <h1 id="page-h" className="display lg:col-span-8">
           {title}
         </h1>
-        <div className="home-rise flex flex-col gap-6 lg:col-span-4" style={{ animationDelay: "0.15s" }}>
+        <div className="flex flex-col gap-6 lg:col-span-4">
           <p className="max-w-[34rem] text-xl leading-snug">{lede}</p>
           {(parent || children) && (
             <div className="flex flex-wrap items-center gap-4">
