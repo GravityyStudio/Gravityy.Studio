@@ -84,8 +84,11 @@ for (const w of [360, 390, 768, 1440]) {
   await audit.getByRole("button", { name: "Send my free audit" }).click();
   await audit.getByText("Request received.").waitFor();
   ok("audit form: inline error focuses the field, then shows the success state");
+  // Back to the top; let Lenis's smoothing settle (it can drift after a programmatic jump), then wait for the full bar
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.waitForFunction(() => !document.querySelector("header nav")?.hasAttribute("inert"));
+  await sleep(1200);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.waitForFunction(() => scrollY === 0 && !document.querySelector("header nav")?.hasAttribute("inert"));
   await sleep(600);
 
   // Nav → Pricing page (client-side), active state

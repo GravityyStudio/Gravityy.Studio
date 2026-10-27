@@ -1,4 +1,6 @@
 import Button from "../ui/Button";
+import BgVideo from "../ui/BgVideo";
+import { VIDEOS } from "@/lib/pexels";
 
 // Copy lives here rather than in the CMS `pages.home` entry so the live entry stays untouched until launch.
 const HEADLINE = ["Websites & apps", "that convert."];
@@ -12,7 +14,8 @@ const SUB = "Gravityy Studio designs, builds and automates websites, apps and th
  */
 export default function HomeHero() {
   return (
-    <section id="top" data-glow aria-labelledby="hero-h" className="relative flex min-h-[100svh] flex-col justify-end pb-[clamp(56px,9vh,112px)] pt-36">
+    <section id="top" data-glow aria-labelledby="hero-h" className="relative flex min-h-[100svh] flex-col justify-end overflow-hidden pb-[clamp(56px,9vh,112px)] pt-36">
+      <BgVideo src={VIDEOS.hero} />
       <div className="container-x">
         <p className="home-rise mb-6 text-[clamp(20px,2vw,28px)] font-medium text-accent">{TAGLINE}</p>
         <h1 id="hero-h" className="display">
