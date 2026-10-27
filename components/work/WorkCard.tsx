@@ -53,10 +53,12 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
           priority={priority}
           sizes="(min-width:1280px) 400px, (min-width:1024px) 31vw, (min-width:640px) 46vw, calc(100vw - 32px)"
           quality={60}
-          placeholder="blur"
+          // No blur placeholder on above-the-fold cards: the blur paints first and the real image only replaces it
+          // after hydration, which Chrome records as a second, late LCP.
+          placeholder={priority ? "empty" : "blur"}
           className="object-cover object-top transition-transform duration-700 ease-brand group-hover:scale-[1.05]"
         />
-        {c.video && <LoopVideo name={c.slug} label={`${name} preview`} trigger="hover" poster={poster.src} className="absolute inset-0 h-full w-full object-cover" />}
+        {c.video && <LoopVideo name={c.slug} label={`${name} preview`} trigger="hover" className="absolute inset-0 h-full w-full object-cover" />}
         <span className="pointer-events-none absolute left-4 top-4 rounded-pill bg-bg/70 px-3 py-1 text-[13px] font-semibold backdrop-blur-sm">{c.sector}</span>
       </div>
 

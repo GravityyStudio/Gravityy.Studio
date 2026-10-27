@@ -26,7 +26,7 @@ export default function HomeReel() {
     <section ref={ref} aria-labelledby="reel-h" className="theme-dark relative h-[78svh] min-h-[480px] overflow-hidden bg-sunken">
       <div data-drift data-video-host className="absolute inset-[-8%_0]">
         <Image src={poster} alt="" fill sizes="100vw" placeholder="blur" className="object-cover" />
-        <LoopVideo name="showreel" label="Showreel" poster={poster.src} className="absolute inset-0 h-full w-full object-cover" controlClassName="right-4 top-4 sm:right-8 sm:top-8" />
+        <LoopVideo name="showreel" label="Showreel" className="absolute inset-0 h-full w-full object-cover" controlClassName="right-4 top-4 sm:right-8 sm:top-8" />
       </div>
       {/* Neutral scrim under the caption only (the allowed exception over a picture). */}
       <div aria-hidden="true" /* taste-skill-ignore: neutral scrim */ className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
