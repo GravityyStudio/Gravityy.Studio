@@ -62,7 +62,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
 
       <section aria-label="Project picture" className="container-x">
         <div data-panel className="relative aspect-[16/10] overflow-hidden rounded-xl bg-surface shadow-panel">
-          <Image src={posterFor(c.slug)} alt={c.alt} fill priority sizes="(min-width:1280px) 1216px, 100vw" placeholder="blur" className="object-cover object-top" />
+          <Image src={posterFor(c.slug)} alt={c.alt} fill priority sizes="(min-width:1280px) 1216px, 100vw" className="object-cover object-top" />
         </div>
       </section>
 

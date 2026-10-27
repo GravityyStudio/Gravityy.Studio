@@ -9,7 +9,7 @@ type Props = {
   trigger?: "view" | "hover"; // hover falls back to view on touch devices
   className?: string;
   controlClassName?: string;
-  poster?: string; // first frame shown by the <video> itself before playback
+  poster?: string; // only when nothing renders an optimised poster underneath: a raw poster URL downloads eagerly
 };
 
 /**
