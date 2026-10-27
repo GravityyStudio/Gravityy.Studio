@@ -43,7 +43,7 @@ export default function Markdown({ source }: { source: string }) {
     } else if (/^#{1,3} /.test(line)) {
       const level = line.indexOf(" ");
       const text = inline(line.slice(level + 1));
-      out.push(level === 1 ? <h2 key={k} className="mt-6 text-3xl font-medium tracking-[-0.03em]">{text}</h2> : level === 2 ? <h2 key={k} className="mt-6 text-2xl font-medium tracking-[-0.03em]">{text}</h2> : <h3 key={k} className="mt-4 text-xl font-medium">{text}</h3>);
+      out.push(level === 1 ? <h2 key={k} className="mt-6 text-3xl font-medium">{text}</h2> : level === 2 ? <h2 key={k} className="mt-6 text-2xl font-medium">{text}</h2> : <h3 key={k} className="mt-4 text-xl font-medium">{text}</h3>);
       i++;
     } else if (/^([-*]|\d+\.) /.test(line)) {
       const ordered = /^\d/.test(line);

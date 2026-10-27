@@ -22,11 +22,11 @@ export default async function Footer() {
   const { site } = await getContent();
   const socials = (site.social ?? []).filter((s) => isProfile(s.href));
   return (
-    <footer data-glow className="cv relative pt-[clamp(88px,12vw,160px)]">
+    <footer data-glow className="cv relative pt-[clamp(64px,8vw,112px)]">
       <div className="container-x">
         <AuditForm />
 
-        <div className="mt-[clamp(72px,10vw,140px)] grid gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
+        <div className="mt-[clamp(56px,7vw,96px)] grid gap-12 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">
           <div className="flex flex-col gap-4 sm:col-span-2 lg:col-span-4">
             <p className="max-w-[30ch] text-[20px] leading-snug">Design, engineering and automation for teams that want one partner for the whole system.</p>
             <div className="mt-2 max-w-[380px]">

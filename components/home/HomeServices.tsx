@@ -36,11 +36,11 @@ export default function HomeServices({
       return s ? [{ label, desc: s.desc, href: `/services/${sid}` }] : [];
     });
   const card =
-    "spotlight group relative flex h-full min-h-[220px] flex-col justify-between gap-8 overflow-hidden rounded-xl bg-surface p-7 shadow-hairline transition-[transform,box-shadow] duration-[400ms] ease-brand";
+    "spotlight group relative flex h-full flex-col justify-between gap-5 overflow-hidden sm:min-h-[220px] sm:gap-8 rounded-xl bg-surface p-7 shadow-hairline transition-[transform,box-shadow] duration-[400ms] ease-brand";
   const body = (r: PosterItem) => (
     <>
       <span className="flex items-start justify-between gap-4">
-        <span className="text-[clamp(22px,1.8vw,28px)] font-semibold leading-tight tracking-[-0.03em]">{r.label}</span>
+        <span className="text-[clamp(22px,1.8vw,28px)] font-semibold leading-tight">{r.label}</span>
         {r.href && (
           <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-pill shadow-hairline transition-[transform,background-color,color] duration-500 ease-brand group-hover:-rotate-45 group-hover:bg-accent group-hover:text-on-accent">
             →
@@ -52,7 +52,7 @@ export default function HomeServices({
   );
 
   return (
-    <section ref={ref} id={id} data-glow aria-labelledby={`${id}-h`} className="py-[clamp(88px,14vh,160px)]">
+    <section ref={ref} id={id} data-glow aria-labelledby={`${id}-h`} className="py-[clamp(64px,10vh,112px)]">
       <div className="container-x">
         <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(36px,5vw,80px)]">
           {heading}

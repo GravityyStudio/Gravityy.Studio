@@ -17,7 +17,7 @@ export default async function BlogPage() {
     <main id="main">
       <JsonLd data={breadcrumbLd([["Blog", "/blog"]])} />
       <PageHero crumbs={[["Blog", "/blog"]]} title={pages.blog.title} lede={pages.blog.lede} />
-      <section data-glow aria-labelledby="posts-h" className="py-[clamp(88px,12vw,160px)]">
+      <section data-glow aria-labelledby="posts-h" className="py-[clamp(64px,8vw,112px)]">
         <div className="container-x">
           <h2 id="posts-h" data-reveal className="display !text-[clamp(36px,5vw,80px)]">
             Latest notes
@@ -40,7 +40,7 @@ export default async function BlogPage() {
                     </span>
                     <span className="flex flex-1 flex-col gap-3 p-6 sm:p-7">
                       <span className="text-[14px] text-muted">{postDate(p)}</span>
-                      <span className="text-[clamp(22px,2vw,28px)] font-semibold leading-tight tracking-[-0.03em]">{p.title}</span>
+                      <span className="text-[clamp(22px,2vw,28px)] font-semibold leading-tight">{p.title}</span>
                       {p.excerpt && <span className="line-clamp-3 text-fg/80">{p.excerpt}</span>}
                       <span className="mt-auto inline-flex items-center gap-1 pt-2 font-semibold">
                         Read <ArrowUpRight size={16} aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

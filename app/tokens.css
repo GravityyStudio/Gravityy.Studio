@@ -30,8 +30,8 @@
   --line-height-base: 27.38px;
   --display-size: clamp(40px, 7vw, 120px);
   --display-weight: 650;
-  --display-tracking: -0.04em;
-  --display-leading: 0.95;
+  --display-tracking: -0.02em;
+  --display-leading: 1.05;
 
   /* radius */
   --r-sm: 18px;

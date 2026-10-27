@@ -93,6 +93,17 @@ for (const w of [390, 1440]) {
   assert.equal(await h1(page), "Pricing");
   assert.equal(await page.getByRole("navigation", { name: "Primary" }).first().getByRole("link", { name: "Pricing" }).getAttribute("aria-current"), "page");
   ok("nav link opens /pricing and marks it current");
+
+  // Nav dropdown: the chevron opens the Services panel (aria-expanded), Esc closes it and returns focus
+  const primary = page.getByRole("navigation", { name: "Primary" }).first();
+  const servicesBtn = primary.getByRole("button", { name: "Services menu" });
+  await servicesBtn.click();
+  assert.equal(await servicesBtn.getAttribute("aria-expanded"), "true");
+  await primary.getByRole("link", { name: "All services →" }).waitFor();
+  await page.keyboard.press("Escape");
+  assert.equal(await servicesBtn.getAttribute("aria-expanded"), "false");
+  assert.equal(await primary.getByRole("button", { name: "हिं (coming soon)" }).getAttribute("aria-disabled"), "true");
+  ok("nav dropdown opens and closes with Esc; Hindi is marked coming soon");
   await sleep(800);
 
   // Configurator → quote prefill
@@ -180,12 +191,27 @@ for (const w of [390, 1440]) {
   await page.close();
 }
 
+// ---------- Signed in: "Client login" becomes "Dashboard" with a profile initial ----------
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await ctx.addCookies([{ name: "sb-test-auth-token", value: "x", url: URL }]);
+  const page = await ctx.newPage();
+  await page.route("**/api/me", (r) => r.fulfill({ json: { signedIn: true, name: "Asha", href: "/portal" } }));
+  await page.goto(URL, { waitUntil: "networkidle" });
+  const dash = page.getByRole("navigation", { name: "Primary" }).first().getByRole("link", { name: /^Dashboard/ });
+  await dash.waitFor();
+  assert.equal(await dash.getAttribute("href"), "/portal");
+  assert.equal(await page.getByRole("navigation", { name: "Primary" }).first().getByRole("link", { name: "Client login" }).count(), 0);
+  ok("signed in: nav shows Dashboard with a profile initial instead of Client login");
+  await ctx.close();
+}
+
 // ---------- Mobile ----------
 {
   const page = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await page.goto(URL, { waitUntil: "networkidle" });
   await sleep(1200);
-  const burger = page.getByRole("button", { name: "Menu", exact: true });
+  const burger = page.getByRole("button", { name: "Open menu", exact: true });
   await burger.click();
   assert.equal(await burger.getAttribute("aria-expanded"), "true");
   const menu = page.getByRole("dialog", { name: "Menu" });

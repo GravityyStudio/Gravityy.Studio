@@ -63,7 +63,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
-        <h3 className="text-[clamp(22px,2vw,28px)] font-semibold leading-tight tracking-[-0.03em]">
+        <h3 className="text-[clamp(22px,2vw,28px)] font-semibold leading-tight">
           <Link href={`/work/${c.slug}`} className="after:absolute after:inset-0 after:content-[''] focus-visible:outline-none focus-visible:after:rounded-xl focus-visible:after:outline focus-visible:after:outline-2 focus-visible:after:outline-accent">
             {name}
           </Link>
@@ -83,7 +83,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
             {c.metrics.map((mt) => (
               <div key={mt.l} className="flex flex-col-reverse">
                 <dt className="mt-1 text-[14px] text-muted">{mt.l}</dt>
-                <dd className="text-[clamp(26px,2.4vw,36px)] font-bold leading-none tracking-[-0.04em]">
+                <dd className="text-[clamp(26px,2.4vw,36px)] font-bold leading-none tracking-[-0.02em]">
                   <Counter value={mt.v} />
                 </dd>
               </div>
