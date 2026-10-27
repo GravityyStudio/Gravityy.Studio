@@ -48,7 +48,7 @@ export default function HomeFaq({ heading = "Questions", allLink = true }: { hea
                     className="group flex min-h-[64px] w-full items-center justify-between gap-6 py-5 text-left text-[clamp(18px,1.6vw,22px)] font-semibold tracking-[-0.02em]"
                   >
                     {f.q}
-                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-pill hairline transition-[transform,background-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:bg-fg/[0.06] ${on ? "rotate-45 bg-accent text-bg group-hover:bg-accent" : ""}`}>
+                    <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-pill hairline transition-[transform,background-color] duration-500 ease-[cubic-bezier(.22,1,.36,1)] group-hover:bg-fg/[0.06] ${on ? "rotate-45 bg-accent text-on-accent group-hover:bg-accent" : ""}`}>
                       <Plus size={18} aria-hidden="true" />
                     </span>
                   </button>

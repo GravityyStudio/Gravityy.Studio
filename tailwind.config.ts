@@ -23,19 +23,33 @@ export default {
         hi: v("hi"),
         danger: v("danger"),
         glow: v("glow"),
+        soft: v("soft"),
+        "on-accent": v("on-accent"),
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         mono: ["ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
+        // Text scale from the brief: 11 / 12 / 12.48 / 13 / 14 / 17.66 (base) / 20.32 / 23.84px
+        // (named t-* so Tailwind's own text-sm/base/lg used by the admin keep their sizes)
+        "t-11": "11px",
+        "t-12": "12px",
+        "t-12.5": "12.48px",
+        "t-13": "13px",
+        "t-14": "14px",
+        "t-body": ["var(--font-size-base)", "var(--line-height-base)"],
+        "t-20": "20.32px",
+        "t-24": "23.84px",
         // Max size, weight and tracking are CMS-driven (Site CMS → Typography → CSS vars in app/layout.tsx).
         hero: ["clamp(44px, 9vw, var(--hero-max, 140px))", { lineHeight: "0.92", letterSpacing: "var(--tracking, -0.04em)", fontWeight: "var(--hero-weight, 600)" }],
         h2: ["clamp(34px, 5.2vw, var(--h2-max, 72px))", { lineHeight: "1.02", letterSpacing: "var(--tracking, -0.04em)", fontWeight: "var(--h2-weight, 500)" }],
         stat: ["clamp(56px, 7vw, 96px)", { lineHeight: "1", letterSpacing: "-0.04em" }],
       },
+      boxShadow: { hairline: "var(--shadow-hairline)", accent: "var(--shadow-accent)", "glow-card": "var(--shadow-glow-card)", panel: "var(--shadow-panel)" },
+      transitionTimingFunction: { brand: "var(--ease)" },
       maxWidth: { container: "1280px" },
-      borderRadius: { card: "var(--radius-card, 22px)", sm: "var(--r-sm)", md: "var(--r-md)", lg: "var(--r-lg)", xl: "var(--r-xl)", pill: "var(--r-pill)" },
+      borderRadius: { card: "var(--radius-card, 22px)", sm: "var(--r-sm)", md: "var(--r-md)", lg: "var(--r-lg)", xl: "var(--r-xl)", "2xl": "var(--r-2xl)", pill: "var(--r-pill)" },
       // 8pt rhythm: 56px (mobile) → 96px (desktop) per side, so sections sit 112–192px apart.
       spacing: { section: "clamp(56px, 6vw, 96px)" },
     },

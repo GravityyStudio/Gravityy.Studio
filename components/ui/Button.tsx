@@ -16,7 +16,7 @@ type Props = {
 
 const STYLES: Record<Variant, string> = {
   primary: "bg-fg text-bg hover:bg-fg/85",
-  accent: "bg-accent text-bg hover:brightness-110",
+  accent: "bg-accent text-on-accent hover:brightness-110",
   ghost: "text-fg hairline hover:bg-fg/[0.06]",
 };
 

@@ -13,14 +13,17 @@ const PAGES: [string, number][] = [
   ["/faq", 0.6],
   ["/contact", 0.8],
   ["/blog", 0.7],
+  ["/privacy", 0.2],
+  ["/terms", 0.2],
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [{ services }, posts] = await Promise.all([getContent(), getPosts()]);
+  const [{ services, cases }, posts] = await Promise.all([getContent(), getPosts()]);
   const lastModified = new Date();
   return [
     ...PAGES.map(([path, priority]) => ({ url: `${SITE}${path}`, lastModified, changeFrequency: "monthly" as const, priority })),
     ...services.map((s) => ({ url: `${SITE}/services/${s.id}`, lastModified, changeFrequency: "monthly" as const, priority: 0.7 })),
+    ...cases.map((c) => ({ url: `${SITE}/work/${c.slug}`, lastModified, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...posts.map((p) => ({ url: `${SITE}/blog/${p.slug}`, lastModified: new Date(p.updated_at), changeFrequency: "monthly" as const, priority: 0.6 })),
   ];
 }

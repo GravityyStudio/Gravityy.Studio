@@ -5,6 +5,7 @@ import FooterNewsletter from "./FooterNewsletter";
 import FooterWordmark from "./FooterWordmark";
 
 const linkCls = "inline-flex min-h-[44px] items-center text-fg/80 transition-colors hover:text-fg";
+const pillCls = "inline-flex min-h-[44px] items-center gap-1 rounded-pill px-4 text-[15px] text-fg/85 hairline transition-colors hover:bg-fg/[0.06] hover:text-fg";
 
 /** A social link is real only once it points at a profile: a bare domain or a {{PLACEHOLDER}} is shown as a labelled gap. */
 const isProfile = (href: string) => {
@@ -30,9 +31,29 @@ export default async function Footer() {
             <div className="mt-2 max-w-[380px]">
               <FooterNewsletter />
             </div>
+            {/* Social profiles: Site CMS → Site settings → social. */}
+            <nav aria-label="Social" className="mt-4">
+              <h2 className="mb-3 font-semibold">Follow</h2>
+              <ul className="flex flex-wrap gap-2">
+                {(site.social ?? []).map((s) => (
+                  <li key={s.label}>
+                    {isProfile(s.href) ? (
+                      <a href={s.href} target="_blank" rel="noopener noreferrer" className={pillCls}>
+                        {s.label}
+                        <span className="sr-only"> (opens in a new tab)</span>
+                      </a>
+                    ) : (
+                      <span className={`${pillCls} border border-dashed border-fg/20 text-muted shadow-none`}>
+                        {s.label} {`{{${s.label.toUpperCase()}_URL}}`}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </nav>
           </div>
           {site.FOOTER.map((c) => (
-            <nav key={c.title} aria-label={c.title} className="lg:col-span-2">
+            <nav key={c.title} aria-label={c.title} className="lg:col-span-2 lg:last:col-span-4">
               <h2 className="mb-2 font-semibold">{c.title}</h2>
               <ul className="flex flex-col">
                 {c.links.map((l) => (
@@ -51,31 +72,19 @@ export default async function Footer() {
               </ul>
             </nav>
           ))}
-          {/* Social profiles: Site CMS → Site settings → social. */}
-          <nav aria-label="Social" className="lg:col-span-2">
-            <h2 className="mb-2 font-semibold">Follow</h2>
-            <ul className="flex flex-col">
-              {(site.social ?? []).map((s) => (
-                <li key={s.label}>
-                  {isProfile(s.href) ? (
-                    <a href={s.href} target="_blank" rel="noopener noreferrer" className={linkCls}>
-                      {s.label}
-                      <span className="sr-only"> (opens in a new tab)</span>
-                    </a>
-                  ) : (
-                    <span className="inline-flex min-h-[44px] items-center text-muted">
-                      {s.label} {`{{${s.label.toUpperCase()}_URL}}`}
-                    </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </nav>
         </div>
 
         <FooterWordmark />
-        <p className="flex flex-wrap justify-between gap-x-6 gap-y-1 pb-8 pt-6 text-[15px] text-muted">
-          <span>© 2026 Gravityy Studio. All rights reserved.</span>
+        <p className="flex flex-wrap justify-between gap-x-6 gap-y-1 pb-24 pt-6 text-[15px] text-muted">
+          <span className="flex flex-wrap items-center gap-x-5">
+            <span>© 2026 Gravityy Studio. All rights reserved.</span>
+            <Link href="/privacy" className="inline-flex min-h-[44px] items-center hover:text-fg">
+              Privacy
+            </Link>
+            <Link href="/terms" className="inline-flex min-h-[44px] items-center hover:text-fg">
+              Terms
+            </Link>
+          </span>
           <span>Made in India, working worldwide.</span>
         </p>
       </div>

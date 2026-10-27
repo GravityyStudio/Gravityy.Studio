@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 import assert from "node:assert/strict";
 
 const URL = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
-const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact"];
+const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact", "/work/viara", "/privacy", "/terms"];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch();
 const ok = (m) => console.log("  ✓", m);
@@ -34,6 +34,31 @@ for (const w of [390, 1440]) {
   await page.keyboard.press("Tab");
   assert.equal(await page.evaluate(() => document.activeElement?.textContent?.trim()), "Skip to content");
   ok("first Tab focuses the skip link");
+
+  // Morphing nav: pill after scrolling down past 80px, full bar again on scroll up
+  const bar = page.locator("header nav").first();
+  await page.evaluate(() => window.scrollTo(0, 900));
+  await page.waitForFunction(() => document.querySelector("header nav")?.hasAttribute("inert"));
+  await page.evaluate(() => window.scrollTo(0, 600));
+  await page.waitForFunction(() => !document.querySelector("header nav")?.hasAttribute("inert"));
+  assert.ok(await bar.isVisible());
+  await page.evaluate(() => window.scrollTo(0, 0));
+  ok("nav morphs to the pill on scroll down and back to the bar on scroll up");
+
+  // Utility chips: sound is off by default and remembered; the theme button swaps the accent
+  const sound = page.getByRole("button", { name: /^Sound (on|off)$/ });
+  assert.equal(await sound.getAttribute("aria-pressed"), "false");
+  await sound.click();
+  assert.equal(await page.evaluate(() => localStorage.getItem("gs-sound")), "on");
+  await sound.click();
+  const accent = () => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--accent").trim());
+  const before = await accent();
+  await page.getByRole("button", { name: /^Theme: / }).click();
+  assert.notEqual(await accent(), before);
+  await page.reload({ waitUntil: "networkidle" });
+  assert.notEqual(await accent(), before, "theme preset survives a reload");
+  await page.evaluate(() => (localStorage.removeItem("gs-palette"), delete document.documentElement.dataset.palette));
+  ok("sound chip is off by default and persists; theme button swaps accent + glow and persists");
 
   // Hero: one primary and one secondary CTA; the primary goes to the audit form
   const hero = page.locator("#top");
@@ -97,9 +122,11 @@ for (const w of [390, 1440]) {
   assert.match(await label(), /₹[\d,]+/);
   await page.locator("#pricing label", { hasText: "USD $" }).click();
   const usdBuild = await label();
-  assert.match(usdBuild, /\$[\d,]+/);
+  // USD is a labelled placeholder until confirmed (lib/billing USD_CONFIRMED)
+  const USD = /\$[\d,]+|\{\{USD_PRICE\}\}/;
+  assert.match(usdBuild, USD);
   await page.locator("#pricing label", { hasText: "Monthly grow" }).click();
-  assert.match(await label(), /^Grow: from \$[\d,]+ per month/);
+  assert.match(await label(), /^Grow: from (\$[\d,]+|\{\{USD_PRICE\}\}) per month/);
   await page.keyboard.press("ArrowLeft");
   assert.equal(await label(), usdBuild);
   ok("live price switches region and plan by click and arrow keys");

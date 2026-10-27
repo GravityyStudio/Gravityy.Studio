@@ -77,12 +77,18 @@ export default function FooterWordmark() {
 
   return (
     <div ref={wrap} className="relative pt-16">
+      {/* purple glow behind the word */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 -bottom-10 top-0 -z-10 bg-[radial-gradient(50%_55%_at_50%_70%,rgb(var(--glow)/0.3),transparent_70%)]" />
       {/* a layer with the word's own aspect ratio: the ball rests on the x-height of the last "y" (≈27% down) */}
       <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 top-16 aspect-[1000/196]">
         <span
           ref={ball}
           className="absolute right-[4%] top-[calc(27%-clamp(18px,3.4vw,52px))] block h-[clamp(18px,3.4vw,52px)] w-[clamp(18px,3.4vw,52px)] origin-bottom rounded-full bg-accent shadow-[0_0_40px_rgb(var(--accent)/0.5)]"
         />
+        {/* small tilted label beside the ball */}
+        <span className="absolute right-[11%] top-[calc(27%-clamp(40px,6vw,92px))] hidden -rotate-[8deg] rounded-pill bg-fg px-3 py-1 text-[13px] font-semibold text-bg sm:block">
+          Made to land
+        </span>
       </div>
       <svg viewBox="0 0 1000 196" className="block w-full" role="img" aria-label="Gravityy">
         <text x="0" y="168" textLength="1000" lengthAdjust="spacingAndGlyphs" fill="currentColor" style={{ fontFamily: "var(--font-sans)", fontSize: 230, fontWeight: 800, letterSpacing: "-0.06em" }}>

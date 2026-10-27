@@ -4,23 +4,28 @@
 
 :root {
   /* colour */
-  --bg: 10 10 10; /* base #0A0A0A */
-  --sunken: 0 0 0; /* base #000 */
+  --bg: 0 0 0; /* surface.base #000 */
+  --sunken: 0 0 0;
   --surface: 17 17 17; /* strong #111 */
   --surface-2: 17 17 17;
   --raised: 26 26 26;
   --line: 38 38 38; /* solid hairline (tables, form fields) */
   --hairline: rgba(255, 255, 255, 0.08); /* inset card borders */
   --line-strong: 70 70 70;
-  --fg: 245 245 242; /* text #f5f5f2 */
-  --muted: 146 146 146; /* secondary #929292 */
+  --fg: 245 245 242; /* text.primary #f5f5f2 */
+  --muted: 146 146 146; /* text.secondary #929292 */
+  --soft: 201 194 218; /* text.soft #c9c2da (on the purple gradient) */
+  --on-accent: 8 8 8; /* text.on-accent #080808 */
   --accent: 205 251 80; /* lime #cdfb50 (CMS: Theme → accent) */
   --hi: 24 30 10;
   --danger: 255 156 138;
   --placeholder: 120 120 120;
   --glow: 189 108 247; /* purple glow, used only as light, never as a surface */
+  --grad-1: 42 15 107; /* section gradient #2a0f6b → #5b2bd1 → #000 */
+  --grad-2: 91 43 209;
+  /* To retheme, change only --accent and --glow (and the two gradient stops that tint the glow sections). */
 
-  /* type: Manrope Variable */
+  /* type: Manrope Variable. Scale: 11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-2xs … text-xl) */
   --font-size-base: 17.66px;
   --line-height-base: 27.38px;
   --display-size: clamp(40px, 7vw, 120px);
@@ -33,13 +38,46 @@
   --r-md: 22px;
   --r-lg: 30px;
   --r-xl: 32px;
+  --r-2xl: 50px;
   --r-pill: 999px;
   --radius-card: 22px; /* CMS: Theme → radius */
+
+  /* spacing (components) — sections use 32 / 48 / 64 / 96 / 160 */
+  --s-1: 8px;
+  --s-2: 12px;
+  --s-3: 14px;
+  --s-4: 16px;
+  --s-5: 19.2px;
+  --s-6: 20px;
+  --s-7: 22.4px;
+  --s-8: 24px;
+
+  /* shadows */
+  --shadow-hairline: inset 0 0 0 1px rgba(245, 245, 242, 0.08);
+  --shadow-accent: 0 0 22px rgb(var(--accent) / 0.2);
+  --shadow-glow-card: inset 0 0 0 1px rgb(var(--glow) / 0.35), 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+  --shadow-panel: inset 0 0 0 1px rgba(245, 245, 242, 0.1), 0 30px 80px -30px rgba(0, 0, 0, 0.9);
 
   /* motion */
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --dur-1: 200ms;
-  --dur-2: 400ms;
-  --dur-3: 600ms;
-  --dur-4: 900ms;
+  --dur-2: 250ms;
+  --dur-3: 350ms;
+  --dur-4: 400ms;
+  --dur-5: 700ms;
+  --dur-6: 900ms;
+}
+
+/* Theme presets (bottom-left theme button): each swaps only the accent and glow. */
+html[data-palette="ember"]:root {
+  --accent: 255 138 76;
+  --glow: 255 77 109;
+  --grad-1: 92 18 32;
+  --grad-2: 196 52 76;
+}
+html[data-palette="ice"]:root {
+  --accent: 120 230 255;
+  --glow: 76 110 255;
+  --grad-1: 12 28 92;
+  --grad-2: 40 82 210;
 }

@@ -1,6 +1,6 @@
 "use server";
 import { requireUser } from "@/lib/auth";
-import { providerFor, type Plan } from "@/lib/billing";
+import { isPlaceholderPrice, providerFor, type Plan } from "@/lib/billing";
 import { createRazorpayOrder, createStripeSession } from "@/lib/payments";
 
 export type CheckoutResult =
@@ -15,7 +15,7 @@ export type CheckoutResult =
 export async function startCheckout(planId: string): Promise<CheckoutResult> {
   const { supabase, user, profile } = await requireUser(`/pricing/checkout?plan=${encodeURIComponent(planId)}`);
   const { data: plan } = await supabase.from("plans").select("*").eq("id", planId).eq("active", true).maybeSingle<Plan>();
-  if (!plan) return { kind: "error", message: "That plan isn't available any more." };
+  if (!plan || isPlaceholderPrice(plan)) return { kind: "error", message: "That plan isn't available any more." };
   const email = profile.email || user.email || "";
   try {
     if (providerFor(plan.region) === "stripe") return { kind: "redirect", url: await createStripeSession(plan, { id: user.id, email }) };

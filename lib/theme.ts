@@ -1,7 +1,8 @@
 export const THEME_KEY = "theme";
 
 /** Inline, render-blocking snippet for <head>: flags JS (entrance pre-states). The site is dark only. */
-export const THEME_SCRIPT = `document.documentElement.classList.add('js','dark')`;
+// Also restores the visitor's theme preset (UtilityChips) before first paint, so there is no flash of the default accent.
+export const THEME_SCRIPT = `document.documentElement.classList.add('js','dark');try{var p=localStorage.getItem('gs-palette');if(p&&p!=='lime')document.documentElement.dataset.palette=p}catch(e){}`;
 
 type Theme = { accentDark?: string; accentLight?: string; radius?: number };
 type Typography = { heroMax?: number; h2Max?: number; heroWeight?: number; h2Weight?: number; tracking?: number };

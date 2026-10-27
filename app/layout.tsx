@@ -6,6 +6,7 @@ import Providers from "@/components/Providers";
 import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
 import CustomCursor from "@/components/CustomCursor";
+import UtilityChips from "@/components/UtilityChips";
 import ScrollChoreo from "@/components/motion/ScrollChoreo";
 import ScrollRail from "@/components/motion/ScrollRail";
 import Footer from "@/components/Footer";
@@ -54,7 +55,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <JsonLd data={siteLd(content)} />
       </head>
       <body>
-        <a href="#main" className="sr-only z-[100] rounded-lg bg-accent px-4 py-2 font-medium text-bg focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
+        <a href="#main" className="sr-only z-[100] rounded-lg bg-accent px-4 py-2 font-medium text-on-accent focus:not-sr-only focus:fixed focus:left-4 focus:top-4">
           Skip to content
         </a>
         <ContentProvider value={content}>
@@ -66,6 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <ScrollChoreo />
           <ScrollRail />
           <CustomCursor />
+          <UtilityChips />
         </Providers>
         </ContentProvider>
         <Analytics />

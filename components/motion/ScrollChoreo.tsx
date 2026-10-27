@@ -2,15 +2,17 @@
 import { useRef } from "react";
 import { usePathname } from "next/navigation";
 import { gsap, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
-import { MOTION_OK } from "@/lib/motion";
+import { DESKTOP, MOTION_OK, REDUCED_QUERY } from "@/lib/motion";
 import { onNear } from "@/lib/onNear";
 
 /**
  * Page-wide scroll choreography, re-run on every route:
- * - [data-glow] sections cross-fade the fixed purple glow in (black → glow → black) while they hold the viewport centre.
- * - [data-reveal] headings reveal line by line: rising from 0.6em below and a 10px blur to clear.
- * - [data-panel] elements scale in from 0.94 with a fade.
- * Opacity, transform and a short blur only. Nothing runs under reduced motion, so everything stays visible and static.
+ * - [data-glow] sections cross-fade the page from black to the purple section gradient (#2a0f6b → #5b2bd1 → #000)
+ *   while they hold the viewport centre, and back to black between them.
+ * - [data-reveal] headings reveal line by line: rising from 0.6em below and a 12px blur to clear (phones and tablets
+ *   skip the blur: a filter on every line costs frames on mid-range phones).
+ * - [data-panel] elements scale in from 0.96 with a fade.
+ * Opacity, transform and a short blur only. Under reduced motion panels only fade (no movement, blur or splitting).
  * Headlines are split only as they near the viewport, so far-off sections cost nothing at load.
  */
 export default function ScrollChoreo() {
@@ -32,6 +34,7 @@ export default function ScrollChoreo() {
           }),
         );
 
+        const blur = window.matchMedia(DESKTOP).matches ? { filter: "blur(12px)" } : {};
         const reveal = contextSafe!((el: HTMLElement) => {
           SplitText.create(el, {
             type: "lines",
@@ -41,7 +44,7 @@ export default function ScrollChoreo() {
               gsap.from(self.lines, {
                 yPercent: 60,
                 opacity: 0,
-                filter: "blur(10px)",
+                ...blur,
                 duration: 0.9,
                 ease: "expo.out",
                 stagger: 0.08,
@@ -55,7 +58,7 @@ export default function ScrollChoreo() {
           .toArray<HTMLElement>("[data-panel]")
           .forEach((el) =>
             gsap.from(el, {
-              scale: 0.94,
+              scale: 0.96,
               opacity: 0,
               duration: 0.9,
               ease: "expo.out",
@@ -63,6 +66,12 @@ export default function ScrollChoreo() {
               scrollTrigger: { trigger: el, start: "top 88%", once: true },
             }),
           );
+      });
+      // Reduced motion: keep a plain fade for panels, nothing else.
+      mm.add(REDUCED_QUERY, () => {
+        gsap.utils
+          .toArray<HTMLElement>("[data-panel]")
+          .forEach((el) => gsap.from(el, { opacity: 0, duration: 0.4, clearProps: "opacity", scrollTrigger: { trigger: el, start: "top 92%", once: true } }));
       });
       return () => {
         stops.forEach((stop) => stop());
@@ -80,7 +89,7 @@ export default function ScrollChoreo() {
       // taste-skill-ignore: the glow is the brief's signature light, drawn behind content only
       style={{
         background:
-          "radial-gradient(60% 55% at 70% 40%, rgb(var(--glow) / 0.28), transparent 70%), radial-gradient(45% 40% at 15% 85%, rgb(var(--accent) / 0.08), transparent 70%)",
+          "radial-gradient(70% 55% at 72% 30%, rgb(var(--glow) / 0.22), transparent 70%), linear-gradient(180deg, rgb(var(--grad-1) / 0.55) 0%, rgb(var(--grad-2) / 0.35) 45%, rgb(0 0 0) 100%)",
       }}
     />
   );

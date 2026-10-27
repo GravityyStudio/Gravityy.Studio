@@ -31,7 +31,7 @@ export default function FooterNewsletter() {
           type="submit"
           disabled={status.pending}
           aria-label="Subscribe"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-bg transition-transform duration-200 hover:scale-105 disabled:opacity-50 motion-reduce:hover:scale-100"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-on-accent transition-transform duration-200 hover:scale-105 disabled:opacity-50 motion-reduce:hover:scale-100"
         >
           <ArrowRight size={18} aria-hidden="true" />
         </button>

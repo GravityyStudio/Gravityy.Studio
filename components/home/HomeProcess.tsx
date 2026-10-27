@@ -4,6 +4,7 @@ import Link from "@/components/ui/SmartLink";
 import { LOCAL } from "@/lib/content";
 import { useEnter } from "@/hooks/useEnter";
 import { useContent } from "../ContentProvider";
+import MockPanel from "./MockPanel";
 
 // Each stage starts two columns further right, so the block descends as a staircase. The first line is the heading.
 const START = ["lg:col-start-1", "lg:col-start-3", "lg:col-start-5", "lg:col-start-7"];
@@ -31,6 +32,10 @@ export default function HomeProcess() {
             </li>
           );
         })}
+        {/* Fills the space the staircase leaves on the left (desktop only, decorative) */}
+        <li aria-hidden="true" className="hidden lg:col-span-4 lg:col-start-1 lg:row-span-2 lg:row-start-3 lg:block">
+          <MockPanel className="max-w-[360px]" />
+        </li>
         <li data-enter className={`${INDENT[3]} lg:col-start-7 lg:col-end-13 lg:pl-0`}>
           <Link href="/process" className="text-[17px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
             The full eight-step process

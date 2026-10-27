@@ -3,17 +3,39 @@ import { useEffect, useRef, useState } from "react";
 import { prefersReduced } from "@/lib/motion";
 
 const TRAIL = 8;
+const LERP = 0.15; // dot follow speed (brief: lerp 0.15)
+const INTERACTIVE = "a,button,input,select,textarea,label,[role='button'],[role='radio']";
+
+/** Touch screens: a short accent ripple where a link or button is tapped, in place of the cursor. Transform/opacity only. */
+function useTapRipple() {
+  useEffect(() => {
+    if (window.matchMedia("(hover: hover) and (pointer: fine)").matches || prefersReduced()) return;
+    const down = (e: PointerEvent) => {
+      if (e.pointerType === "mouse" || !(e.target as Element | null)?.closest?.(INTERACTIVE)) return;
+      const r = document.createElement("span");
+      r.setAttribute("aria-hidden", "true");
+      r.className = "pointer-events-none fixed z-[300] -ml-6 -mt-6 block h-12 w-12 rounded-full bg-accent/30";
+      r.style.left = `${e.clientX}px`;
+      r.style.top = `${e.clientY}px`;
+      document.body.appendChild(r);
+      r.animate([{ transform: "scale(0.2)", opacity: 1 }, { transform: "scale(1.6)", opacity: 0 }], { duration: 500, easing: "cubic-bezier(.22,1,.36,1)" }).onfinish = () => r.remove();
+    };
+    document.addEventListener("pointerdown", down, { passive: true });
+    return () => document.removeEventListener("pointerdown", down);
+  }, []);
+}
 
 /**
  * Accent dot with a dotted trail. Each trail dot eases toward the one ahead of it, so the trail lags and tapers.
  * Over links, buttons and form controls the dot grows into a ring. Only for a fine pointer with motion allowed:
- * never on touch, never under reduced motion. The native cursor is hidden only while this one is drawn.
+ * never on touch (touch gets a tap ripple instead), never under reduced motion. The native cursor is hidden only while this one is drawn.
  */
 export default function CustomCursor() {
   const dot = useRef<HTMLDivElement>(null);
   const trail = useRef<(HTMLSpanElement | null)[]>([]);
   const [on, setOn] = useState(false);
   const [big, setBig] = useState(false);
+  useTapRipple();
 
   useEffect(() => {
     if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches || prefersReduced()) return;
@@ -25,8 +47,8 @@ export default function CustomCursor() {
     let visible = false;
 
     const tick = () => {
-      pts[0].x += (target.x - pts[0].x) * 0.45;
-      pts[0].y += (target.y - pts[0].y) * 0.45;
+      pts[0].x += (target.x - pts[0].x) * LERP;
+      pts[0].y += (target.y - pts[0].y) * LERP;
       for (let i = 1; i < pts.length; i++) {
         pts[i].x += (pts[i - 1].x - pts[i].x) * 0.35;
         pts[i].y += (pts[i - 1].y - pts[i].y) * 0.35;
@@ -46,7 +68,7 @@ export default function CustomCursor() {
         pts.forEach((p) => ((p.x = e.clientX), (p.y = e.clientY)));
         document.documentElement.dataset.cursor = "on";
       }
-      setBig(!!(e.target as Element | null)?.closest("a,button,input,select,textarea,label,[role='button'],[role='radio']"));
+      setBig(!!(e.target as Element | null)?.closest(INTERACTIVE));
     };
     const leave = () => {
       visible = false;
@@ -73,7 +95,8 @@ export default function CustomCursor() {
           ref={(el) => {
             trail.current[i] = el;
           }}
-          className="absolute left-0 top-0 -ml-[2px] -mt-[2px] block h-1 w-1 rounded-full bg-accent/70"
+          className="absolute left-0 top-0 -ml-[2px] -mt-[2px] block h-1 w-1 rounded-full bg-accent"
+          style={{ opacity: 0.7 * (1 - i / TRAIL) }}
         />
       ))}
       <div ref={dot} className="absolute left-0 top-0">
