@@ -129,7 +129,7 @@ for (const w of [360, 390, 768, 1440]) {
   await page.locator("#configurator").getByRole("button", { name: "Talk to us first" }).click();
   const dialog = page.getByRole("dialog", { name: "Start a Project" });
   await dialog.waitFor();
-  assert.match(await dialog.locator("textarea").inputValue(), /Configurator estimate: ₹2,09,999 \(≈ \$2,210\)/);
+  assert.match(await dialog.locator("textarea").inputValue(), /Configurator estimate: ₹2,09,999 \(≈ \$[\d,]+\)/); // USD follows the live daily rate
   ok("'Talk to us first' opens the contact modal with the estimate prefilled");
   await dialog.getByRole("button", { name: "Send brief" }).click();
   await dialog.getByText("Tell us your name.").waitFor();

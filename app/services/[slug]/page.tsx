@@ -24,18 +24,18 @@ export const generateStaticParams = async () => (await getContent()).services.ma
 export async function generateMetadata({ params }: Params) {
   const s = await find((await params).slug);
   if (!s) return {};
-  return pageMeta(`/services/${s.id}`, s.name, `${s.desc} Built with ${s.tags.join(", ")}. Prices from ${fmtINR(s.prices.lean)} (≈ ${fmtUSD(toUSD(s.prices.lean))}).`);
+  return pageMeta(`/services/${s.id}`, s.name, `${s.desc} Built with ${s.tags.join(", ")}. Prices from ${fmtINR(s.prices.lean)} (≈ ${fmtUSD(toUSD(s.prices.lean, (await getContent()).usdRate))}).`);
 }
 
 export default async function ServicePage({ params }: Params) {
   const { slug } = await params;
-  const { services, configurator: cfg } = await getContent();
+  const { services, configurator: cfg, usdRate } = await getContent();
   const s = services.find((x) => x.id === slug);
   if (!s) notFound();
 
   const standard = s.prices.standard;
   const others = services.filter((o) => o.id !== s.id);
-  const prefill = `Hi Gravityy team,\n\nI'm interested in ${s.name} (estimate from ${fmtINR(standard)}, ≈ ${fmtUSD(toUSD(standard))}).\n\nAbout the project:\n`;
+  const prefill = `Hi Gravityy team,\n\nI'm interested in ${s.name} (estimate from ${fmtINR(standard)}, ≈ ${fmtUSD(toUSD(standard, usdRate))}).\n\nAbout the project:\n`;
 
   return (
     <main id="main">
@@ -69,13 +69,13 @@ export default async function ServicePage({ params }: Params) {
           <aside aria-label="Estimate" className="flex flex-col gap-5 lg:col-span-5 lg:col-start-8">
             <p className="text-[15px] text-muted">Standard scope, standard timeline</p>
             <p className="text-[clamp(42px,4.9vw,73px)] font-semibold leading-[1.05] tracking-[-0.02em] tabular-nums">{fmtINR(standard)}</p>
-            <p className="text-[18px] text-muted">≈ {fmtUSD(toUSD(standard))}</p>
+            <p className="text-[18px] text-muted">≈ {fmtUSD(toUSD(standard, usdRate))}</p>
             <dl className="divide-y divide-fg/10 text-[16px]">
               {cfg.SCOPES.map((o) => (
                 <div key={o.id} className="flex items-baseline justify-between gap-4 py-2.5">
                   <dt>{o.label}</dt>
                   <dd className="tabular-nums">
-                    {fmtINR(s.prices[o.id as Scope])} <span className="text-muted">≈ {fmtUSD(toUSD(s.prices[o.id as Scope]))}</span>
+                    {fmtINR(s.prices[o.id as Scope])} <span className="text-muted">≈ {fmtUSD(toUSD(s.prices[o.id as Scope], usdRate))}</span>
                   </dd>
                 </div>
               ))}

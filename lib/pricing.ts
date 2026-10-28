@@ -2,7 +2,7 @@
 // list); the estimate is the sum of the chosen services' prices × the timeline factor, kept on a ₹…,999 price point.
 // Pure functions (data passed in) so scripts/check-pricing.mts can run them without the bundler.
 
-// Mid-market USD/INR on 28 Oct 2026 (valuta.exchange, xe.com ≈ 95.1). Update when the rupee moves a lot.
+// Fallback USD/INR (28 Oct 2026). The live rate comes from lib/content.ts (refreshed daily) and is passed in.
 export const USD_RATE = 95.13;
 
 export type Option = { id: string; label: string; hint: string; m: number };
@@ -35,8 +35,8 @@ export function recommend(sel: string[], inr: number): Plan {
 export const fmtINR = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
 // Under $1,000 to the dollar ($96), above it to the nearest $10 ($2,530).
 export const fmtUSD = (n: number) => "$" + (n < 1000 ? Math.round(n) : Math.round(n / 10) * 10).toLocaleString("en-US");
-export const toUSD = (inr: number) => inr / USD_RATE;
+export const toUSD = (inr: number, rate = USD_RATE) => inr / rate;
 
-export function quoteMessage(o: { services: string[]; scope: string; timeline: string; inr: number; plan: string }) {
-  return `Hi Gravityy team,\n\nI'd like a quote for:\n- Services: ${o.services.join(", ")}\n- Scope: ${o.scope}\n- Timeline: ${o.timeline}\n- Configurator estimate: ${fmtINR(o.inr)} (≈ ${fmtUSD(toUSD(o.inr))})\n- Suggested plan: ${o.plan}\n\nAbout the project:\n`;
+export function quoteMessage(o: { services: string[]; scope: string; timeline: string; inr: number; plan: string; rate: number }) {
+  return `Hi Gravityy team,\n\nI'd like a quote for:\n- Services: ${o.services.join(", ")}\n- Scope: ${o.scope}\n- Timeline: ${o.timeline}\n- Configurator estimate: ${fmtINR(o.inr)} (≈ ${fmtUSD(toUSD(o.inr, o.rate))})\n- Suggested plan: ${o.plan}\n\nAbout the project:\n`;
 }
