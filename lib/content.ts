@@ -20,12 +20,14 @@ import addons from "@/data/addons.json";
 import { SUPABASE_ANON_KEY, SUPABASE_URL, supabaseConfigured } from "./supabase/env";
 import type { Addon, Plan } from "./billing";
 import { pageMeta } from "./seo";
+import { USD_RATE } from "./pricing";
 
 /** Local data/*.json = the shape of every CMS entry and the fallback when Supabase isn't configured or is down. */
 export const LOCAL = {
   site, services, configurator, solutions, cases, process: steps, stack, funnel, testimonials, pricing, faq, charts, pages, theme, typography,
   plans: plans as Plan[],
   addons: addons as Addon[],
+  usdRate: USD_RATE,
 };
 export type Content = typeof LOCAL;
 export const CMS_KEYS = ["site", "services", "configurator", "solutions", "cases", "process", "stack", "funnel", "testimonials", "pricing", "faq", "charts", "pages", "theme", "typography"] as const;
@@ -46,7 +48,24 @@ export const publicClient = () =>
  * admin edits revalidate instantly via revalidateTag; otherwise refreshed every 5 minutes.
  * Missing/unpublished keys fall back to the local JSON so a half-filled CMS never breaks a page.
  */
+/** Today's USD → INR (European Central Bank reference rate via Frankfurter: free, no key), cached for a day. */
+async function usdRate(): Promise<number> {
+  try {
+    const res = await fetch("https://api.frankfurter.dev/v1/latest?from=USD&to=INR", { next: { revalidate: 86400 }, signal: AbortSignal.timeout(5000) });
+    const r = Number((await res.json())?.rates?.INR);
+    if (r > 50 && r < 200) return r; // sanity bounds: a bad response never reaches the prices
+  } catch (e) {
+    console.error("[fx] using the fallback rate:", e);
+  }
+  return USD_RATE;
+}
+
 export const getContent = cache(async (): Promise<Content> => {
+  const [content, rate] = await Promise.all([cmsContent(), usdRate()]);
+  return { ...content, usdRate: rate };
+});
+
+async function cmsContent(): Promise<Content> {
   if (!supabaseConfigured) return LOCAL;
   try {
     const { data, error } = await publicClient().rpc("cms_published_all");
@@ -62,7 +81,7 @@ export const getContent = cache(async (): Promise<Content> => {
     console.error("[cms] falling back to local content:", e);
     return LOCAL;
   }
-});
+}
 
 type PageCopy = { title: string; metaDescription: string };
 

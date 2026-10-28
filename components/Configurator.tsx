@@ -8,8 +8,6 @@ import { useUI } from "./Providers";
 import AnimatedNumber from "./ui/AnimatedNumber";
 import Button from "./ui/Button";
 
-const usd = (n: number) => "≈ " + fmtUSD(toUSD(n));
-
 function Options({ legend, opts, value, onPick }: { legend: string; opts: Option[]; value: string; onPick: (id: string) => void }) {
   return (
     <fieldset>
@@ -38,7 +36,8 @@ function Options({ legend, opts, value, onPick }: { legend: string; opts: Option
 
 /** Live estimate: pick services, scope and timeline; the figure updates and becomes the quote. Same math as proposals. */
 export default function Configurator() {
-  const { services, configurator: cfg } = useContent();
+  const { services, configurator: cfg, usdRate } = useContent();
+  const usd = (n: number) => "≈ " + fmtUSD(toUSD(n, usdRate));
   const ref = useRef<HTMLElement>(null);
   const { openContact } = useUI();
   const [sel, setSel] = useState<string[]>(cfg.defaults.sel);
@@ -53,7 +52,7 @@ export default function Configurator() {
   const plan = recommend(sel, inr);
   const toggle = (id: string) => setSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
-  const quote = () => openContact(quoteMessage({ services: chosen.map((s) => s.name), scope: scopeO.label, timeline: tlO.label, inr, plan: plan.name }));
+  const quote = () => openContact(quoteMessage({ services: chosen.map((s) => s.name), scope: scopeO.label, timeline: tlO.label, inr, plan: plan.name, rate: usdRate }));
 
   return (
     <section ref={ref} id="configurator" aria-labelledby="config-h" className="bg-surface py-[clamp(56px,8vh,96px)]">
