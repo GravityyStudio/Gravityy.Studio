@@ -1,6 +1,10 @@
 import { Suspense, type ReactNode } from "react";
 import HomeHero from "@/components/home/HomeHero";
 import Team from "@/components/home/Team";
+import TrustedBy from "@/components/home/TrustedBy";
+import About from "@/components/home/About";
+import Stats from "@/components/home/Stats";
+import Contact from "@/components/home/Contact";
 import ServiceRows from "@/components/home/ServiceRows";
 import NodeNetwork from "@/components/home/NodeNetwork";
 import WorkGrid from "@/components/work/WorkGrid";
@@ -16,22 +20,26 @@ import { faqLd } from "@/lib/seo";
 // interruptibly instead of in one long main-thread task.
 const Lazy = ({ children }: { children: ReactNode }) => <Suspense fallback={null}>{children}</Suspense>;
 
-// Home: promise → who we've shipped for → what we build → how it fits → proof → how we work → voices → team → price →
-// questions. The free audit (the primary CTA) is the footer's form, #audit, on every page.
+// Home, in order: hero → trusted by → about → services → why us → stats → process → portfolio → team → testimonials →
+// pricing → FAQ → contact. The free audit form (the primary CTA) is in the footer (#audit) on every page.
 export default async function Home() {
   const content = await getContent();
   return (
     <main id="main">
       <JsonLd data={faqLd(content)} />
       <HomeHero />
+      <TrustedBy />
+      <About />
       <Lazy><ServiceRows /></Lazy>
       <Lazy><NodeNetwork /></Lazy>
-      <Lazy><WorkGrid title="Selected work" limit={3} /></Lazy>
+      <Stats />
       <Lazy><HomeProcess /></Lazy>
-      <Lazy><Testimonials /></Lazy>
+      <Lazy><WorkGrid title="Portfolio" limit={3} /></Lazy>
       <Team limit={4} />
+      <Lazy><Testimonials /></Lazy>
       <Lazy><HomePricing /></Lazy>
       <Lazy><HomeFaq /></Lazy>
+      <Lazy><Contact /></Lazy>
     </main>
   );
 }
