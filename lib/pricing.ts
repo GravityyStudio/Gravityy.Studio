@@ -2,7 +2,8 @@
 // list); the estimate is the sum of the chosen services' prices × the timeline factor, kept on a ₹…,999 price point.
 // Pure functions (data passed in) so scripts/check-pricing.mts can run them without the bundler.
 
-export const USD_RATE = 83;
+// Mid-market USD/INR on 28 Oct 2026 (valuta.exchange, xe.com ≈ 95.1). Update when the rupee moves a lot.
+export const USD_RATE = 95.13;
 
 export type Option = { id: string; label: string; hint: string; m: number };
 export type Plan = { name: string; why: string };
