@@ -17,7 +17,7 @@ export default function HomeHero() {
     <section id="top" data-glow aria-labelledby="hero-h" className="relative flex flex-col justify-end overflow-hidden pb-[clamp(48px,9vh,112px)] pt-32 sm:min-h-[70svh] lg:min-h-[100svh] lg:pt-36">
       <BgVideo src={VIDEOS.hero} />
       <div className="container-x">
-        <p className="home-rise mb-6 text-[clamp(20px,2vw,28px)] font-medium text-accent">{TAGLINE}</p>
+        <p className="home-rise mb-6 font-mono text-[clamp(15px,1.4vw,18px)] font-medium text-accent">{TAGLINE}</p>
         <h1 id="hero-h" className="display">
           {HEADLINE.map((l) => (
             <span key={l} className="block">

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/Providers";
@@ -17,8 +17,24 @@ import { ContentProvider } from "@/components/ContentProvider";
 import "./tokens.css";
 import "./globals.css";
 
-// Manrope Variable (one file, every weight), swapped in so text paints immediately.
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+// The studio's own font files (app/fonts, SIL Open Font License): Funnel Sans variable (all weights, one file, ₹ included)
+// for all text, JetBrains Mono variable for small labels and code. next/font self-hosts them and builds metric-matched
+// fallbacks ("Funnel Sans Fallback"). Mono is not preloaded: it is only used for small labels.
+const funnel = localFont({
+  src: "./fonts/FunnelSans-VariableFont_wght.ttf",
+  weight: "300 800",
+  variable: "--font-sans",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+const mono = localFont({
+  src: "./fonts/JetBrainsMono-VariableFont_wght.ttf",
+  weight: "100 800",
+  variable: "--font-mono",
+  display: "swap",
+  preload: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "monospace"],
+});
 
 const GA = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -46,7 +62,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const content = await getContent();
   return (
-    <html lang="en-IN" className={manrope.variable} suppressHydrationWarning>
+    <html lang="en-IN" className={`${funnel.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         {/* Before first paint: flag JS (hero intro pre-states) and apply the saved/OS theme, so neither flashes. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />

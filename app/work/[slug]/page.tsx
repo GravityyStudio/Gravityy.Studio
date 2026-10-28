@@ -122,7 +122,7 @@ export default async function CaseStudy({ params }: { params: Params }) {
         <section aria-label="Next project" className="container-x">
           <Link href={`/work/${next.slug}`} className="group flex items-center justify-between gap-6 rounded-xl bg-surface p-8 hairline transition-colors hover:bg-raised">
             <span className="flex flex-col gap-2">
-              <span className="text-[15px] text-muted">Next project</span>
+              <span className="font-mono text-[13px] text-muted">Next project</span>
               <span className="display !text-[clamp(21px,2.8vw,42px)]">{next.title.split(":")[0]}</span>
             </span>
             <span aria-hidden="true" className="grid h-12 w-12 shrink-0 place-items-center rounded-pill hairline transition-transform duration-500 group-hover:-rotate-45">

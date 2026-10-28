@@ -52,7 +52,7 @@ function Burger({ open }: { open: boolean }) {
 /** Language pill. English is the only translation so far; Hindi is shown as coming soon (not selectable). */
 function LangPill({ className = "" }: { className?: string }) {
   return (
-    <div role="group" aria-label="Language" className={`inline-flex items-center rounded-pill p-1 hairline ${className}`}>
+    <div role="group" aria-label="Language" className={`inline-flex items-center rounded-pill p-1 font-mono hairline ${className}`}>
       <button type="button" aria-pressed="true" className="min-h-[36px] rounded-pill bg-fg px-3 text-[13px] font-semibold text-bg">
         EN
       </button>

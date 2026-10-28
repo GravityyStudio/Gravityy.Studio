@@ -18,7 +18,7 @@ export default function Team({ limit = 0, empty }: { limit?: number; empty?: Rea
     <section data-glow aria-labelledby="team-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <h2 id="team-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
+          <h2 id="team-h" data-reveal className="display !text-[clamp(30px,4vw,56px)]">
             The people who build it
           </h2>
           {limit > 0 && MEMBERS.length > limit && (

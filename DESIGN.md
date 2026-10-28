@@ -1,7 +1,7 @@
 ---
 version: 4
 name: Gravityy-Studio
-description: "Award-style dark studio site. Black ground (#000 / #111), warm off-white ink (#f5f5f2), one electric lime (#cdfb50) for actions, and a purple glow (rgba(189,108,247)) used only as light behind sections. Manrope Variable throughout; display headings uppercase at poster scale. Cards and pills are drawn with inset hairlines. Motion is a set of ten named signatures, all transform/opacity, all off under reduced motion."
+description: "Award-style dark studio site. Black ground (#000 / #111), warm off-white ink (#f5f5f2), one electric lime (#cdfb50) for actions, and a purple glow (rgba(189,108,247)) used only as light behind sections. Funnel Sans throughout (JetBrains Mono for small labels); display headings in sentence case, 56/56, weight 400. Cards and pills are drawn with inset hairlines. Motion is a set of ten named signatures, all transform/opacity, all off under reduced motion."
 
 # Source of truth: app/tokens.css (every value below), app/globals.css (utilities), tailwind.config.ts (maps tokens to
 # classes), lib/theme.ts (CMS overrides for accent + radius). The home page (components/home/*) is the reference build.
@@ -21,13 +21,13 @@ colors:
   danger: "#ff9c8a"
 
 typography:
-  family: "Manrope Variable (next/font, --font-sans)"
+  family: "Funnel Sans (variable, next/font, --font-sans) for all text; JetBrains Mono (variable, --font-mono) for small labels and code"
   base: "16px / 26px"
-  display: "uppercase, weight 650, tracking -0.02em, leading 1.05, clamp(32px, 5vw, 72px) — class .display"
-  section-display: "clamp(27px, 3.5vw, 52px) for section titles that use .display"
+  display: "Funnel Sans 400, sentence case, 56px / 56px (line-height 1), letter-spacing -0.01em (-0.56px), #fff; clamp(36px, 5vw, 56px) — class .display"
+  section-display: "clamp(30px, 4vw, 56px) for section titles that use .display"
   scale: "11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-t-11 … text-t-24)"
   small: 15px                # captions, legends, meta (13px legal only)
-  case: "display headings uppercase; everything else sentence case"
+  case: "sentence case everywhere"
 
 rounded:
   sm: 18px
@@ -61,7 +61,7 @@ spacing:
 ## Overview
 
 Gravityy Studio designs, builds and automates websites, apps and the systems behind them. v3 is a dark, award-style
-site: big uppercase type, a lime that only ever means "act", and a purple glow that drifts in behind sections as you
+site: large, light sentence-case type, a lime that only ever means "act", and a purple glow that drifts in behind sections as you
 read. Every claim on the page is either real (confirmed by the owner) or a visible `{{PLACEHOLDER}}`.
 
 ## Colour
@@ -78,7 +78,7 @@ read. Every claim on the page is either real (confirmed by the owner) or a visib
 
 ## Typography
 
-`.display` is the only headline style: uppercase, 650, -0.02em, leading 1.05. Body and UI text use normal letter spacing. Body text is 16/26 in full ink;
+`.display` is the only headline style: Funnel Sans 400, 56/56, -0.01em, white, sentence case. Body and UI text use normal letter spacing. Body text is 16/26 in full ink;
 muted ink is for secondary lines only. Keep headlines to two or three lines at every width. Cut words before
 shrinking type. First-screen widths are set in `rem`, not `ch`, so the font swap doesn't shift layout.
 

@@ -59,7 +59,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
           className="object-cover object-top transition-transform duration-700 ease-brand group-hover:scale-[1.05]"
         />
         {c.video && <LoopVideo name={c.slug} label={`${name} preview`} trigger="hover" className="absolute inset-0 h-full w-full object-cover" />}
-        <span className="pointer-events-none absolute left-4 top-4 rounded-pill bg-bg/70 px-3 py-1 text-[13px] font-semibold backdrop-blur-sm">{c.sector}</span>
+        <span className="pointer-events-none absolute left-4 top-4 rounded-pill bg-bg/70 px-3 py-1 font-mono text-[12px] font-medium backdrop-blur-sm">{c.sector}</span>
       </div>
 
       <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
@@ -72,7 +72,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
         {!!c.tags?.length && (
           <ul aria-label="Scope" className="flex flex-wrap gap-2">
             {c.tags.slice(0, 3).map((t) => (
-              <li key={t} className="rounded-pill px-3 py-1 text-[13px] text-fg/80 shadow-hairline">
+              <li key={t} className="rounded-pill px-3 py-1 font-mono text-[12px] text-fg/80 shadow-hairline">
                 {t}
               </li>
             ))}

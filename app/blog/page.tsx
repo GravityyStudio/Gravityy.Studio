@@ -19,7 +19,7 @@ export default async function BlogPage() {
       <PageHero crumbs={[["Blog", "/blog"]]} title={pages.blog.title} lede={pages.blog.lede} />
       <section data-glow aria-labelledby="posts-h" className="py-[clamp(64px,8vw,112px)]">
         <div className="container-x">
-          <h2 id="posts-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
+          <h2 id="posts-h" data-reveal className="display !text-[clamp(30px,4vw,56px)]">
             Latest notes
           </h2>
           {posts.length ? (

@@ -22,7 +22,7 @@ export default function Testimonials({ title = "In their words", more = true }: 
     <section id="voices" data-glow aria-labelledby="voices-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div className="flex flex-wrap items-end justify-between gap-6">
-          <h2 id="voices-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
+          <h2 id="voices-h" data-reveal className="display !text-[clamp(30px,4vw,56px)]">
             {title}
           </h2>
           <div className="flex items-center gap-2">
@@ -59,7 +59,7 @@ export default function Testimonials({ title = "In their words", more = true }: 
                 )}
                 <figcaption className="flex flex-col text-[15px]">
                   <span className="font-semibold">{t.name}</span>
-                  <span className="text-muted">{t.role}</span>
+                  <span className="font-mono text-[13px] text-muted">{t.role}</span>
                 </figcaption>
               </figure>
             </li>

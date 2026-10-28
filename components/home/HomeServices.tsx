@@ -69,7 +69,7 @@ export default function HomeServices({
   return (
     <section ref={ref} id={id} data-glow aria-labelledby={`${id}-h`} className="py-[clamp(64px,10vh,112px)]">
       <div className="container-x">
-        <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
+        <h2 id={`${id}-h`} data-reveal className="display !text-[clamp(30px,4vw,56px)]">
           {heading}
         </h2>
         <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">
