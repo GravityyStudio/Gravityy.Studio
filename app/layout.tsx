@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Manrope } from "next/font/google";
+import { Funnel_Sans, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/Providers";
@@ -17,8 +17,10 @@ import { ContentProvider } from "@/components/ContentProvider";
 import "./tokens.css";
 import "./globals.css";
 
-// Manrope Variable (one file, every weight), swapped in so text paints immediately.
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+// Funnel Sans (variable, every weight) for all text; JetBrains Mono (variable) for small labels and code. Both are
+// self-hosted by next/font as compressed Latin subsets, with a metric-matched fallback ("Funnel Sans Fallback").
+const funnel = Funnel_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
+const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap", preload: false });
 
 const GA = process.env.NEXT_PUBLIC_GA_ID;
 
@@ -46,7 +48,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const content = await getContent();
   return (
-    <html lang="en-IN" className={manrope.variable} suppressHydrationWarning>
+    <html lang="en-IN" className={`${funnel.variable} ${mono.variable}`} suppressHydrationWarning>
       <head>
         {/* Before first paint: flag JS (hero intro pre-states) and apply the saved/OS theme, so neither flashes. */}
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />

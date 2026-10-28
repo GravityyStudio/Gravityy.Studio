@@ -18,7 +18,7 @@ export default function HomeFaq({ heading = "Questions", allLink = true }: { hea
     <section id="faq" data-glow aria-labelledby="faq-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x grid gap-10 lg:grid-cols-12 lg:gap-x-8">
         <div className="flex flex-col gap-5 lg:col-span-4">
-          <h2 id="faq-h" data-reveal className="display !text-[clamp(27px,3.5vw,52px)]">
+          <h2 id="faq-h" data-reveal className="display !text-[clamp(30px,4vw,56px)]">
             {heading}
           </h2>
           <p className="text-muted">

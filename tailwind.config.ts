@@ -28,7 +28,7 @@ export default {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        mono: ["ui-monospace", "SFMono-Regular", "monospace"],
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       fontSize: {
         // Text scale from the brief: 11 / 12 / 12.48 / 13 / 14 / 17.66 (base) / 20.32 / 23.84px

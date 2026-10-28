@@ -25,13 +25,13 @@
   --grad-2: 91 43 209;
   /* To retheme, change only --accent and --glow (and the two gradient stops that tint the glow sections). */
 
-  /* type: Manrope Variable. Scale: 11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-2xs … text-xl) */
+  /* type: Funnel Sans (text, headings) + JetBrains Mono (labels, code). Scale: 11 / 12 / 12.48 / 13 / 14 / 17.66 / 20.32 / 23.84px (Tailwind text-2xs … text-xl) */
   --font-size-base: 16px;
   --line-height-base: 26px;
-  --display-size: clamp(32px, 5vw, 72px);
-  --display-weight: 650;
-  --display-tracking: -0.02em;
-  --display-leading: 1.05;
+  --display-size: clamp(36px, 5vw, 56px); /* headings: 56px / 56px, 400, -0.56px at full size */
+  --display-weight: 400;
+  --display-tracking: -0.01em;
+  --display-leading: 1;
 
   /* radius */
   --r-sm: 18px;

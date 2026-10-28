@@ -16,7 +16,7 @@ export default function ServiceRows() {
   return (
     <section id="services" data-glow aria-labelledby="services-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
-        <h2 id="services-h" data-reveal className="display mb-10 !text-[clamp(27px,3.5vw,52px)] lg:mb-14">
+        <h2 id="services-h" data-reveal className="display mb-10 !text-[clamp(30px,4vw,56px)] lg:mb-14">
           What we build
         </h2>
         <ul className="flex flex-col">
