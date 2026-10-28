@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { after, NextResponse } from "next/server";
 import type { ZodType } from "zod";
 import { sendEmail } from "./email";
 import { allow, clientIp, hashKey } from "./rate-limit";
@@ -12,6 +12,7 @@ const TOO_MANY = "Too many submissions. Please wait a few minutes and try again,
 /**
  * Shared POST handler: JSON body → zod → honeypot → rate limit → CRM intake → email. Always answers JSON.
  * Intake failures never block the reply: the enquiry still goes out by email and the error is logged.
+ * `onAccepted` runs after the response has been sent (next/server `after`), only for real, accepted submissions.
  */
 export async function handleForm<T extends { website?: string; email?: string }>(
   req: Request,
@@ -19,6 +20,7 @@ export async function handleForm<T extends { website?: string; email?: string }>
   subject: string,
   ok: string,
   intake?: (fields: Omit<T, "website">) => IntakeInput,
+  onAccepted?: (fields: Omit<T, "website">) => Promise<void>,
 ) {
   let body: unknown;
   try {
@@ -60,5 +62,9 @@ export async function handleForm<T extends { website?: string; email?: string }>
     console.error(e);
     return NextResponse.json({ ok: false, error: "We couldn't send that right now. Email hello@gravityystudio.com." }, { status: 502 });
   }
+  if (onAccepted)
+    after(() =>
+      onAccepted(fields).catch((e) => console.error(`[forms] ${form} follow-up failed:`, e instanceof Error ? e.message : e)),
+    );
   return NextResponse.json({ ok: true, message: ok });
 }

@@ -4,7 +4,7 @@ import { useFormSubmit } from "@/hooks/useFormSubmit";
 import Button from "./ui/Button";
 import Honeypot from "./ui/Honeypot";
 
-const STEPS = ["Send your website and work email.", "We review its speed, SEO and conversion path.", "You get a written report within 3 working days. No call needed."];
+const STEPS = ["Send your website and work email.", "We test its speed, Core Web Vitals, accessibility, SEO and on-page basics.", "Your report arrives by email in a few minutes. No call needed."];
 
 /**
  * The free audit (POST /api/audit, same zod schema client and server). The one audit form on every page: #audit.
@@ -44,7 +44,7 @@ export default function AuditForm() {
         {done ? (
           <div role="status" className="flex flex-col items-start gap-4 rounded-xl bg-surface p-7 hairline sm:p-9">
             <p className="text-[clamp(22px,2vw,28px)] font-semibold">Request received.</p>
-            <p className="text-fg/85">{audit.status.msg || "Your audit will arrive within 3 working days."}</p>
+            <p className="text-fg/85">{audit.status.msg || "Your audit is running: the report arrives by email in a few minutes."}</p>
             <Button variant="ghost" onClick={() => setDone(false)}>
               Audit another site
             </Button>
