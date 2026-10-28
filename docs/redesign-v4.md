@@ -34,8 +34,7 @@ content is added:
 
 | Content | Where to add it | Shows |
 |---|---|---|
-| Client names / logos | `CLIENTS` in `components/home/Trust.tsx` | "Recently shipped for" strip |
-| Founder name, role, bio, photo | `FOUNDER` in `components/home/Trust.tsx` | Team block on home |
+| Team members (name, designation, photo) | `data/team.json` | Team section on home and the `/team` page |
 | Results for Viara / ATHLEX | `metrics` on the case in CMS → cases | Card and case-page metrics |
 | Case write-ups | `brief`, `approach`, `outcome` on each case in CMS → cases | Case-study story sections |
 | Testimonials | CMS → testimonials | "In their words" |

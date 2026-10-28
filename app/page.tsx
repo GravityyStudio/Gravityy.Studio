@@ -1,7 +1,5 @@
 import { Suspense, type ReactNode } from "react";
 import HomeHero from "@/components/home/HomeHero";
-import { LogoStrip } from "@/components/home/Trust";
-import Marquee from "@/components/home/Marquee";
 import Team from "@/components/home/Team";
 import ServiceRows from "@/components/home/ServiceRows";
 import NodeNetwork from "@/components/home/NodeNetwork";
@@ -26,9 +24,7 @@ export default async function Home() {
     <main id="main">
       <JsonLd data={faqLd(content)} />
       <HomeHero />
-      <LogoStrip />
       <Lazy><ServiceRows /></Lazy>
-      <Marquee />
       <Lazy><NodeNetwork /></Lazy>
       <Lazy><WorkGrid title="Selected work" limit={3} /></Lazy>
       <Lazy><HomeProcess /></Lazy>

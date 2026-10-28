@@ -6,6 +6,16 @@ const URL = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
 const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact", "/work/viara", "/privacy", "/terms", "/team", "/testimonials"];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch();
+// Pexels background videos hold a streaming connection open for as long as the page lives, so "networkidle" would never
+// fire; they're decorative and third-party, so every page in this test runs without them.
+for (const make of ["newPage", "newContext"]) {
+  const orig = browser[make].bind(browser);
+  browser[make] = async (...args) => {
+    const o = await orig(...args);
+    await (make === "newPage" ? o.context() : o).route("**/videos.pexels.com/**", (r) => r.abort());
+    return o;
+  };
+}
 const ok = (m) => console.log("  ✓", m);
 const h1 = async (page) => (await page.locator("h1").first().textContent())?.trim(); // real text, not the CSS-uppercased render
 
