@@ -9,13 +9,12 @@ import QuoteButton from "@/components/QuoteButton";
 import HomeProcess from "@/components/home/HomeProcess";
 import HomeServices from "@/components/home/HomeServices";
 import JsonLd from "@/components/JsonLd";
-import { estimateINR, fmtINR, fmtUSD, toUSD } from "@/lib/pricing";
+import { fmtINR, fmtUSD, toUSD, type Scope } from "@/lib/pricing";
 import { breadcrumbLd, pageMeta, serviceLd } from "@/lib/seo";
-import { getContent, type Content } from "@/lib/content";
+import { getContent } from "@/lib/content";
 
 type Params = { params: Promise<{ slug: string }> };
 const find = async (slug: string) => (await getContent()).services.find((s) => s.id === slug);
-const m = (list: Content["configurator"]["SCOPES"], id: string) => list.find((o) => o.id === id)!.m;
 
 // ISR: known services prerender at build; services added later in the CMS render on first request.
 export const revalidate = 300;
@@ -25,7 +24,7 @@ export const generateStaticParams = async () => (await getContent()).services.ma
 export async function generateMetadata({ params }: Params) {
   const s = await find((await params).slug);
   if (!s) return {};
-  return pageMeta(`/services/${s.id}`, s.name, `${s.desc} Built with ${s.tags.join(", ")}. Estimates from ${fmtINR(estimateINR([s.base], 1, 1))}.`);
+  return pageMeta(`/services/${s.id}`, s.name, `${s.desc} Built with ${s.tags.join(", ")}. Prices from ${fmtINR(s.prices.lean)} (≈ ${fmtUSD(toUSD(s.prices.lean))}).`);
 }
 
 export default async function ServicePage({ params }: Params) {
@@ -34,10 +33,7 @@ export default async function ServicePage({ params }: Params) {
   const s = services.find((x) => x.id === slug);
   if (!s) notFound();
 
-  // Same math as the configurator: base × scope × timeline.
-  const standard = estimateINR([s.base], m(cfg.SCOPES, "standard"), m(cfg.TIMELINES, "standard"));
-  const low = estimateINR([s.base], m(cfg.SCOPES, "lean"), m(cfg.TIMELINES, "flexible"));
-  const high = estimateINR([s.base], m(cfg.SCOPES, "advanced"), m(cfg.TIMELINES, "rush"));
+  const standard = s.prices.standard;
   const others = services.filter((o) => o.id !== s.id);
   const prefill = `Hi Gravityy team,\n\nI'm interested in ${s.name} (estimate from ${fmtINR(standard)}, ≈ ${fmtUSD(toUSD(standard))}).\n\nAbout the project:\n`;
 
@@ -71,12 +67,19 @@ export default async function ServicePage({ params }: Params) {
           </div>
 
           <aside aria-label="Estimate" className="flex flex-col gap-5 lg:col-span-5 lg:col-start-8">
-            <p className="text-[15px] text-muted">Starting estimate, standard scope and timeline</p>
+            <p className="text-[15px] text-muted">Standard scope, standard timeline</p>
             <p className="text-[clamp(42px,4.9vw,73px)] font-semibold leading-[1.05] tracking-[-0.02em] tabular-nums">{fmtINR(standard)}</p>
             <p className="text-[18px] text-muted">≈ {fmtUSD(toUSD(standard))}</p>
-            <p className="max-w-[44ch] text-[16px] leading-relaxed">
-              From {fmtINR(low)} for a lean scope on a flexible timeline, up to {fmtINR(high)} for an advanced scope on a rush timeline.
-            </p>
+            <dl className="divide-y divide-fg/10 text-[16px]">
+              {cfg.SCOPES.map((o) => (
+                <div key={o.id} className="flex items-baseline justify-between gap-4 py-2.5">
+                  <dt>{o.label}</dt>
+                  <dd className="tabular-nums">
+                    {fmtINR(s.prices[o.id as Scope])} <span className="text-muted">≈ {fmtUSD(toUSD(s.prices[o.id as Scope]))}</span>
+                  </dd>
+                </div>
+              ))}
+            </dl>
             <div className="mt-2 flex flex-wrap items-center gap-3">
               <QuoteButton prefill={prefill} label="Talk to us first" />
               <Link href="/pricing#configurator" className="group inline-flex min-h-[48px] items-center gap-2 px-2 text-[16px] font-medium underline decoration-fg/30 underline-offset-4 hover:decoration-accent">
