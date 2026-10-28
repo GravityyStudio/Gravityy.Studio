@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Funnel_Sans, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import Providers from "@/components/Providers";
@@ -17,10 +17,24 @@ import { ContentProvider } from "@/components/ContentProvider";
 import "./tokens.css";
 import "./globals.css";
 
-// Funnel Sans (variable, every weight) for all text; JetBrains Mono (variable) for small labels and code. Both are
-// self-hosted by next/font as compressed Latin subsets, with a metric-matched fallback ("Funnel Sans Fallback").
-const funnel = Funnel_Sans({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
-const mono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-mono", display: "swap", preload: false });
+// The studio's own font files (app/fonts, SIL Open Font License): Funnel Sans variable (all weights, one file, ₹ included)
+// for all text, JetBrains Mono variable for small labels and code. next/font self-hosts them and builds metric-matched
+// fallbacks ("Funnel Sans Fallback"). Mono is not preloaded: it is only used for small labels.
+const funnel = localFont({
+  src: "./fonts/FunnelSans-VariableFont_wght.ttf",
+  weight: "300 800",
+  variable: "--font-sans",
+  display: "swap",
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
+});
+const mono = localFont({
+  src: "./fonts/JetBrainsMono-VariableFont_wght.ttf",
+  weight: "100 800",
+  variable: "--font-mono",
+  display: "swap",
+  preload: false,
+  fallback: ["ui-monospace", "SFMono-Regular", "monospace"],
+});
 
 const GA = process.env.NEXT_PUBLIC_GA_ID;
 
