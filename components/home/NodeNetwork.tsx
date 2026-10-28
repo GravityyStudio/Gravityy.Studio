@@ -13,10 +13,17 @@ const NODES: { label: string; x: number; y: number }[] = [
   { label: "Performance", x: 870, y: 500 },
 ];
 const C = { x: 500, y: 300 };
+// Why us: each reason is a promise already made in the FAQ / process page.
+const REASONS: [string, string][] = [
+  ["One team, every layer", "Design, engineering, automation, analytics, SEO and performance under one roof, so nothing is handed between agencies."],
+  ["A dated, fixed plan first", "Scope, price and success metrics are agreed and signed off before any build starts."],
+  ["Weekly releases", "You see progress every week on a staging link you can click through."],
+  ["You own everything", "Code, design files and accounts transfer to you on final payment, plus 30 days of support after launch."],
+];
 const curve = (n: { x: number; y: number }) => `M${C.x} ${C.y} C ${(C.x + n.x) / 2} ${C.y}, ${(C.x + n.x) / 2} ${n.y}, ${n.x} ${n.y}`;
 
 /**
- * "Your product" at the centre, linked to six disciplines. The curves draw as the section scrolls through (on desktop
+ * Why us: "Your product" at the centre, linked to six disciplines. The curves draw as the section scrolls through (on desktop
  * the section pins while they draw), the pills float gently, and hovering a pill lights up its connection.
  */
 export default function NodeNetwork() {
@@ -42,11 +49,11 @@ export default function NodeNetwork() {
 
   const pill = "rounded-pill bg-surface px-5 py-3 text-[15px] font-semibold hairline";
   return (
-    <section ref={ref} data-glow aria-labelledby="net-h" className="py-[clamp(56px,8vh,96px)]">
+    <section ref={ref} id="why" data-glow aria-labelledby="net-h" className="py-[clamp(56px,8vh,96px)]">
       <div className="container-x">
         <div className="grid gap-6 lg:grid-cols-12 lg:items-end lg:gap-x-8">
           <h2 id="net-h" data-reveal className="display !text-[clamp(30px,4vw,56px)] lg:col-span-7">
-            One team, every layer
+            Why us
           </h2>
           <p className="max-w-[46ch] text-fg/85 lg:col-span-5">
             Design, engineering, automation, analytics, SEO and performance are planned around one product, so nothing is handed over between agencies.
@@ -107,6 +114,14 @@ export default function NodeNetwork() {
             ))}
           </ul>
         </div>
+        <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {REASONS.map(([t, d]) => (
+            <li key={t} data-panel className="spotlight relative overflow-hidden rounded-xl bg-surface p-6 shadow-hairline">
+              <h3 className="text-[18px] font-semibold">{t}</h3>
+              <p className="mt-2 text-[15px] text-fg/75">{d}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
