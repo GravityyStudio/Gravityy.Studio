@@ -26,7 +26,7 @@ export default function Privacy() {
         [
           "Who processes it",
           [
-            "Data is stored with Supabase. Emails are delivered through Resend. The site is hosted on Vercel, which also provides privacy-friendly analytics. Payments are handled by Razorpay or Stripe; we never see or store full card details.",
+            "Data is stored with Supabase. Emails are delivered through Resend. For a free audit, Google PageSpeed Insights tests the website address you submit (never your email). The site is hosted on Vercel, which also provides privacy-friendly analytics. Payments are handled by Razorpay or Stripe; we never see or store full card details.",
             "Each provider processes data only to run its part of the service.",
           ],
         ],

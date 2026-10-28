@@ -1302,6 +1302,48 @@ export type Database = {
           },
         ]
       }
+      site_audits: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          email: string
+          emailed_at: string | null
+          error: string | null
+          findings: Json | null
+          id: string
+          psi: Json | null
+          status: string
+          token: string
+          url: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          email: string
+          emailed_at?: string | null
+          error?: string | null
+          findings?: Json | null
+          id?: string
+          psi?: Json | null
+          status?: string
+          token: string
+          url: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          email?: string
+          emailed_at?: string | null
+          error?: string | null
+          findings?: Json | null
+          id?: string
+          psi?: Json | null
+          status?: string
+          token?: string
+          url?: string
+        }
+        Relationships: []
+      }
       subscriptions: {
         Row: {
           amount_minor: number

@@ -3,7 +3,7 @@ import Counter from "@/components/ui/Counter";
 // Every figure is a commitment already published on the site (services list, FAQ, audit form), not a result claim.
 const STATS = [
   { v: "11", l: "Services under one roof" },
-  { v: "3", l: "Working days to your free audit report" },
+  { v: "4", l: "Areas tested in your free audit: speed, accessibility, SEO, on-page" },
   { v: "4–6", l: "Weeks for a typical marketing website" },
   { v: "30", l: "Days of support included after launch" },
 ];

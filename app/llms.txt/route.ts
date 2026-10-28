@@ -39,7 +39,7 @@ export async function GET() {
     `- [Process](${SITE}/process)`,
     `- [Solutions](${SITE}/solutions)`,
     `- [FAQ](${SITE}/faq)`,
-    `- [Contact](${SITE}/contact): ${site.email}. Free audit: send a website URL and work email for a written report within 3 working days.`,
+    `- [Contact](${SITE}/contact): ${site.email}. Free audit: send a website URL and work email; an automated report (PageSpeed scores, Core Web Vitals, accessibility, SEO and on-page checks) arrives by email in a few minutes.`,
     "",
   ];
   return new Response(lines.join("\n"), { headers: { "Content-Type": "text/plain; charset=utf-8" } });
