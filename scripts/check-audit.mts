@@ -15,6 +15,15 @@ const lhr = {
     "not-an-opportunity": { title: "Diagnostic", details: { type: "table" } },
   },
 };
+// Lighthouse 13 (current PSI): insights carry metricSavings instead of details.type "opportunity"
+const lh13 = {
+  audits: {
+    "render-blocking-insight": { title: "Render blocking requests", displayValue: "Est savings of 450 ms", score: 0, metricSavings: { FCP: 450, LCP: 450 }, details: { type: "table" } },
+    "image-delivery-insight": { title: "Improve image delivery", displayValue: "Est savings of 42 KiB", score: 0.5, metricSavings: { LCP: 150 }, details: { type: "table" } },
+    "passing-insight": { title: "Already passing", score: 1, metricSavings: { LCP: 0 }, details: { type: "table" } },
+    "passed-but-savings": { title: "Passed with a tiny saving", score: 0.95, metricSavings: { LCP: 20 }, details: { type: "table" } },
+  },
+};
 
 const s = summarize(lhr);
 assert.deepEqual(s.scores, { performance: 87, accessibility: 100, bestPractices: null, seo: 92 });
@@ -26,4 +35,8 @@ assert.deepEqual(s.opportunities, [
   { title: "Reduce unused JavaScript", savings: "Est savings of 36 KiB" },
 ]);
 assert.deepEqual(summarize({}).opportunities, []); // empty report doesn't throw
+assert.deepEqual(summarize(lh13).opportunities, [
+  { title: "Render blocking requests", savings: "Est savings of 450 ms" },
+  { title: "Improve image delivery", savings: "Est savings of 42 KiB" },
+]);
 console.log("audit checks ok");

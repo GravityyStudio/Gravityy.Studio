@@ -15,16 +15,23 @@ const score = (v: unknown) => (typeof v === "number" ? Math.round(v * 100) : nul
 /** Lighthouse JSON → the few numbers a client can act on (pure, so it can be checked offline). */
 export function summarize(lhr: {
   categories?: Record<string, { score?: number | null }>;
-  audits?: Record<string, { title?: string; displayValue?: string; details?: { type?: string; overallSavingsMs?: number } }>;
+  audits?: Record<
+    string,
+    { title?: string; displayValue?: string; score?: number | null; metricSavings?: Record<string, number>; details?: { type?: string; overallSavingsMs?: number } }
+  >;
 }): PsiSummary {
   const c = lhr.categories ?? {};
   const a = lhr.audits ?? {};
   const dv = (id: string) => a[id]?.displayValue ?? null;
+  // Lighthouse ≤12 marks fixes as `details.type: "opportunity"` with overallSavingsMs; Lighthouse 13 (current PSI) uses
+  // "insights" that report `metricSavings` (ms saved on LCP / FCP) instead. Read both; failing ones only.
+  const saving = (x: (typeof a)[string]) =>
+    x.details?.type === "opportunity" ? (x.details.overallSavingsMs ?? 0) : Math.max(x.metricSavings?.LCP ?? 0, x.metricSavings?.FCP ?? 0);
   const opportunities = Object.values(a)
-    .filter((x) => x.details?.type === "opportunity" && (x.details.overallSavingsMs ?? 0) > 0)
-    .sort((x, y) => (y.details?.overallSavingsMs ?? 0) - (x.details?.overallSavingsMs ?? 0))
+    .filter((x) => saving(x) > 0 && (x.details?.type === "opportunity" || (x.score ?? 0) < 0.9))
+    .sort((x, y) => saving(y) - saving(x))
     .slice(0, 5)
-    .map((x) => ({ title: x.title ?? "", savings: x.displayValue ?? `${Math.round((x.details?.overallSavingsMs ?? 0) / 100) / 10} s` }));
+    .map((x) => ({ title: x.title ?? "", savings: x.displayValue ?? `${Math.round(saving(x) / 100) / 10} s` }));
   return {
     scores: {
       performance: score(c.performance?.score),
