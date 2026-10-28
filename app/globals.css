@@ -241,36 +241,6 @@ html.lenis body {
   }
 }
 
-/* Marquee (skills and tools): each track slides its own width; two copies make the loop seamless. */
-@media (prefers-reduced-motion: no-preference) {
-  .marquee-track {
-    animation: marquee 40s linear infinite;
-  }
-  .marquee-reverse {
-    animation-direction: reverse;
-  }
-  .marquee:hover .marquee-track {
-    animation-play-state: paused;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquee {
-    flex-wrap: wrap;
-  }
-  .marquee-track[aria-hidden] {
-    display: none;
-  }
-  .marquee-track {
-    flex-wrap: wrap;
-    padding-inline: 16px;
-  }
-}
-@keyframes marquee {
-  to {
-    transform: translateX(-100%);
-  }
-}
-
 /* Cursor spotlight for cards: a soft accent light follows the pointer (--mx/--my set by one listener in Providers). */
 .spotlight::before {
   content: "";

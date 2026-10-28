@@ -125,7 +125,6 @@ ripple feedback, 44px targets.
 | 9 | Left scroll-progress rail with ticks and a lime dot (lg+) | `motion/ScrollRail.tsx` |
 | 10 | Footer: giant wordmark, bouncing lime ball (spring physics), tilted label, glow, link columns, social pills, audit form | `Footer.tsx`, `FooterWordmark.tsx` |
 | 11 | Utility chips: bottom-right Sound off/on (off by default, remembered), bottom-left theme button | `UtilityChips.tsx` |
-| 13 | Skills marquee: two rows of tools and skills drifting in opposite directions (CSS), pause on hover | `home/Marquee.tsx` |
 | 14 | Testimonial slider (scroll-snap, arrows, swipe) and team grid (staggered portraits, monochrome to colour on hover) | `home/Testimonials.tsx`, `home/Team.tsx` |
 | 12 | Reduced motion: no Lenis, cursor, trail, pin, float, loops or line splitting; panels keep a plain fade | `lib/motion.ts`, `gsap.matchMedia` |
 

@@ -4,7 +4,9 @@
 
 type Photo = { id: number; alt: string };
 const photo = (id: number, alt: string): Photo => ({ id, alt });
-export const pexelsImage = (p: Photo) => `https://images.pexels.com/photos/${p.id}/pexels-photo-${p.id}.jpeg`;
+// Always ask Pexels for its own 1280px, compressed rendition: without these parameters Next's optimizer would download the
+// original (some are 6+ MB, 10-17 s on a cold request) before shrinking it.
+export const pexelsImage = (p: Photo) => `https://images.pexels.com/photos/${p.id}/pexels-photo-${p.id}.jpeg?auto=compress&cs=tinysrgb&w=1280`;
 
 /** One photo per service (CMS service id). */
 export const SERVICE_PHOTOS: Record<string, Photo> = {
