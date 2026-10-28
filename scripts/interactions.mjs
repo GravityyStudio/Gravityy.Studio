@@ -124,12 +124,12 @@ for (const w of [360, 390, 768, 1440]) {
   await page.locator("#configurator").scrollIntoViewIfNeeded();
   await page.getByRole("button", { name: "Mobile Apps" }).click();
   await sleep(800);
-  assert.match(await page.locator("#configurator aside").innerText(), /₹2,70,000/); // (60k+30k+180k) × 1 × 1
-  ok("estimate updates when a service is toggled (₹2,70,000)");
+  assert.match(await page.locator("#configurator aside").innerText(), /₹2,09,999/); // 39,999 + 19,999 + 1,49,999 (standard)
+  ok("estimate updates when a service is toggled (₹2,09,999)");
   await page.locator("#configurator").getByRole("button", { name: "Talk to us first" }).click();
   const dialog = page.getByRole("dialog", { name: "Start a Project" });
   await dialog.waitFor();
-  assert.match(await dialog.locator("textarea").inputValue(), /Configurator estimate: ₹2,70,000 \(≈ \$3,250\)/);
+  assert.match(await dialog.locator("textarea").inputValue(), /Configurator estimate: ₹2,09,999 \(≈ \$2,210\)/);
   ok("'Talk to us first' opens the contact modal with the estimate prefilled");
   await dialog.getByRole("button", { name: "Send brief" }).click();
   await dialog.getByText("Tell us your name.").waitFor();
@@ -196,8 +196,8 @@ for (const w of [360, 390, 768, 1440]) {
   await page.locator("#services").getByRole("link", { name: "Website Development" }).click();
   await page.waitForURL(URL + "/services/web");
   assert.equal(await h1(page), "Website Development");
-  assert.match(await page.locator("aside").innerText(), /₹60,000/);
-  ok("service card opens /services/web with its estimate (₹60,000)");
+  assert.match(await page.locator("aside").innerText(), /₹39,999/);
+  ok("service card opens /services/web with its estimate (₹39,999)");
   await page.locator("footer").getByRole("link", { name: "Analytics" }).click();
   await page.waitForURL(URL + "/services/data");
   assert.equal(await h1(page), "Analytics & Dashboards");

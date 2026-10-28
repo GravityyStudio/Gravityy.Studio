@@ -1,7 +1,9 @@
-// Configurator math, ported 1:1 from the prototype: sum(base) × scope × timeline, rounded to ₹1,000.
+// Configurator math: each service has a set price per scope (Lean / Standard / Advanced, from the studio's price
+// list); the estimate is the sum of the chosen services' prices × the timeline factor, kept on a ₹…,999 price point.
 // Pure functions (data passed in) so scripts/check-pricing.mts can run them without the bundler.
 
-export const USD_RATE = 83;
+// Mid-market USD/INR on 28 Oct 2026 (valuta.exchange, xe.com ≈ 95.1). Update when the rupee moves a lot.
+export const USD_RATE = 95.13;
 
 export type Option = { id: string; label: string; hint: string; m: number };
 export type Plan = { name: string; why: string };
@@ -9,9 +11,13 @@ export type Plan = { name: string; why: string };
 const GROW_IDS = ["auto", "seo", "data"];
 const BUILD_IDS = ["web", "ecom", "app", "mobile", "brand", "uiux"];
 
-export function estimateINR(bases: number[], scopeM: number, timelineM: number): number {
-  const base = bases.reduce((a, b) => a + b, 0);
-  return Math.round((base * scopeM * timelineM) / 1000) * 1000;
+export type Scope = "lean" | "standard" | "advanced";
+export type Prices = Record<Scope, number>;
+
+/** Sum of the services' prices for `scope`, × timeline, on the nearest ₹…,999 point (₹39,999 + ₹19,999 → ₹59,999). */
+export function estimateINR(prices: Prices[], scope: Scope, timelineM = 1): number {
+  const sum = prices.reduce((a, p) => a + p[scope], 0);
+  return sum ? Math.round((sum * timelineM) / 1000) * 1000 - 1 : 0;
 }
 
 export function recommend(sel: string[], inr: number): Plan {
@@ -27,7 +33,8 @@ export function recommend(sel: string[], inr: number): Plan {
 }
 
 export const fmtINR = (n: number) => "₹" + Math.round(n).toLocaleString("en-IN");
-export const fmtUSD = (n: number) => "$" + (Math.round(n / 10) * 10).toLocaleString("en-US");
+// Under $1,000 to the dollar ($96), above it to the nearest $10 ($2,530).
+export const fmtUSD = (n: number) => "$" + (n < 1000 ? Math.round(n) : Math.round(n / 10) * 10).toLocaleString("en-US");
 export const toUSD = (inr: number) => inr / USD_RATE;
 
 export function quoteMessage(o: { services: string[]; scope: string; timeline: string; inr: number; plan: string }) {

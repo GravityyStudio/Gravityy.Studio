@@ -1,6 +1,6 @@
 [
   { "q": "How long does a typical project take?", "a": "A marketing website takes 4–6 weeks. Web apps and mobile apps usually take 8–14 weeks depending on scope. You get a dated plan before we start." },
-  { "q": "How is pricing calculated?", "a": "Each service has a base price, adjusted for scope and timeline. The pricing configurator uses the same logic we use for proposals, so the estimate is a reliable starting point." },
+  { "q": "How is pricing calculated?", "a": "Each service has a set price for a Lean, Standard or Advanced scope; a rush timeline adds 30% and a flexible one takes 10% off. The pricing configurator uses the same logic we use for proposals, so the estimate is a reliable starting point." },
   { "q": "Do you work with clients outside India?", "a": "Yes. Around half our clients are in the US, UK, Europe and Southeast Asia. We bill in USD and overlap at least four hours with your working day." },
   { "q": "Who owns the code and designs?", "a": "You do. Full ownership of code, design files and accounts transfers to you on final payment." },
   { "q": "What happens after launch?", "a": "Every build includes 30 days of support. After that you can move to a Grow plan or a flexible maintenance retainer." },

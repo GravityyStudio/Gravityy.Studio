@@ -2,7 +2,7 @@
 import { useMemo, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import { useContent } from "./ContentProvider";
-import { estimateINR, fmtINR, fmtUSD, quoteMessage, recommend, toUSD, type Option } from "@/lib/pricing";
+import { estimateINR, fmtINR, fmtUSD, quoteMessage, recommend, toUSD, type Option, type Scope } from "@/lib/pricing";
 import { useEnter } from "@/hooks/useEnter";
 import { useUI } from "./Providers";
 import AnimatedNumber from "./ui/AnimatedNumber";
@@ -49,7 +49,7 @@ export default function Configurator() {
   const scopeO = cfg.SCOPES.find((s) => s.id === scope)!;
   const tlO = cfg.TIMELINES.find((t) => t.id === timeline)!;
   const chosen = useMemo(() => services.filter((s) => sel.includes(s.id)), [sel, services]);
-  const inr = estimateINR(chosen.map((s) => s.base), scopeO.m, tlO.m);
+  const inr = estimateINR(chosen.map((s) => s.prices), scope as Scope, tlO.m);
   const plan = recommend(sel, inr);
   const toggle = (id: string) => setSel((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
 
