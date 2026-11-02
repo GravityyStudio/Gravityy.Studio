@@ -83,10 +83,10 @@ async function cmsContent(): Promise<Content> {
   }
 }
 
-type PageCopy = { title: string; metaDescription: string };
+type PageCopy = { title: string; seoTitle?: string; metaDescription: string };
 
 /** generateMetadata for a marketing page: title + description from the `pages` CMS entry. */
 export async function cmsPageMeta(key: keyof Content["pages"], path: string) {
   const p = (await getContent()).pages[key] as PageCopy;
-  return pageMeta(path, p.title, p.metaDescription);
+  return pageMeta(path, p.seoTitle ?? p.title, p.metaDescription);
 }

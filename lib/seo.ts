@@ -8,7 +8,7 @@ const vercelProd = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 export const SITE = (process.env.NEXT_PUBLIC_SITE_URL || (vercelProd ? `https://${vercelProd}` : "https://gravityystudio.com")).replace(/\/$/, "");
 export const TITLE = "Gravityy Studio — Websites & apps that convert";
 export const DESC =
-  "Gravityy Studio is an India-based digital studio that designs, builds and automates websites, web and mobile apps, automation and analytics for growing teams worldwide.";
+  "Gravityy Studio is an India-based digital studio that designs, builds and automates websites, web and mobile apps and analytics for growing teams worldwide.";
 export const ORG = `${SITE}/#org`;
 
 /** Per-page metadata: canonical, OG and Twitter all follow the page. Title uses the root template. */
