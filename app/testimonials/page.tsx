@@ -4,7 +4,7 @@ import Testimonials from "@/components/home/Testimonials";
 import WorkGrid from "@/components/work/WorkGrid";
 import { breadcrumbLd, pageMeta } from "@/lib/seo";
 
-export const metadata = pageMeta("/testimonials", "Testimonials", "What clients say about working with Gravityy Studio on websites, apps and automation.");
+export const metadata = pageMeta("/testimonials", "Client Testimonials", "What clients say about working with Gravityy Studio on websites, apps and automation.");
 
 export default function TestimonialsPage() {
   return (

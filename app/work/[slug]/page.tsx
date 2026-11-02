@@ -19,7 +19,10 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: { params: Params }) {
   const c = await findCase((await params).slug);
-  return c ? pageMeta(`/work/${c.slug}`, `${c.title.split(":")[0]}: case study`, c.summary) : {};
+  if (!c) return {};
+  const name = c.title.split(":")[0];
+  // ": case study" only where the full title (with " — Gravityy Studio") stays within 60 characters.
+  return pageMeta(`/work/${c.slug}`, name.length <= 30 ? `${name}: case study` : name, c.summary);
 }
 
 /** Case study template: hero, key picture, facts (sector, scope, results), the story, and the next project.
