@@ -197,6 +197,7 @@ for (const w of [360, 390, 768, 1440]) {
   await page.waitForURL(URL + "/services/web");
   assert.equal(await h1(page), "Website Development");
   assert.match(await page.locator("aside").innerText(), /₹39,999/);
+  assert.match(await page.locator("main").innerText(), /Who it's for[\s\S]*What each scope includes[\s\S]*Common questions/);
   ok("service card opens /services/web with its estimate (₹39,999)");
   await page.locator("footer").getByRole("link", { name: "Analytics" }).click();
   await page.waitForURL(URL + "/services/data");

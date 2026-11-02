@@ -12,8 +12,11 @@ import JsonLd from "@/components/JsonLd";
 import { fmtINR, fmtUSD, toUSD, type Scope } from "@/lib/pricing";
 import { breadcrumbLd, pageMeta, serviceLd } from "@/lib/seo";
 import { getContent } from "@/lib/content";
+import serviceCopy from "@/data/service-copy.json";
 
 type Params = { params: Promise<{ slug: string }> };
+// Long-form page copy, imported here only so it isn't sent to every page with the CMS content.
+const COPY: Record<string, (typeof serviceCopy)["web"] | undefined> = serviceCopy;
 const find = async (slug: string) => (await getContent()).services.find((s) => s.id === slug);
 
 // ISR: known services prerender at build; services added later in the CMS render on first request.
@@ -24,7 +27,8 @@ export const generateStaticParams = async () => (await getContent()).services.ma
 export async function generateMetadata({ params }: Params) {
   const s = await find((await params).slug);
   if (!s) return {};
-  return pageMeta(`/services/${s.id}`, s.name, `${s.desc} Built with ${s.tags.join(", ")}. Prices from ${fmtINR(s.prices.lean)} (≈ ${fmtUSD(toUSD(s.prices.lean, (await getContent()).usdRate))}).`);
+  const c = COPY[s.id];
+  return pageMeta(`/services/${s.id}`, c?.seoTitle ?? s.name, c?.metaDescription ?? s.desc);
 }
 
 export default async function ServicePage({ params }: Params) {
@@ -34,6 +38,7 @@ export default async function ServicePage({ params }: Params) {
   if (!s) notFound();
 
   const standard = s.prices.standard;
+  const copy = COPY[s.id];
   const others = services.filter((o) => o.id !== s.id);
   const prefill = `Hi Gravityy team,\n\nI'm interested in ${s.name} (estimate from ${fmtINR(standard)}, ≈ ${fmtUSD(toUSD(standard, usdRate))}).\n\nAbout the project:\n`;
 
@@ -47,6 +52,25 @@ export default async function ServicePage({ params }: Params) {
             <Image src={pexelsImage(SERVICE_PHOTOS[s.id])} alt={SERVICE_PHOTOS[s.id].alt} fill priority sizes="(min-width:1280px) 1216px, 100vw" quality={65} className="object-cover" />
           </div>
         </div>
+      )}
+
+      {copy && (
+        <section aria-labelledby="about-h" className="container-x grid gap-10 pb-[clamp(48px,7vw,96px)] lg:grid-cols-12 lg:gap-x-8">
+          <div className="flex flex-col gap-5 lg:col-span-7">
+            <h2 id="about-h" className="text-[clamp(24px,2.5vw,34px)] font-medium leading-tight">
+              How we approach it
+            </h2>
+            {copy.intro.map((p) => (
+              <p key={p} className="max-w-[62ch] text-[17px] leading-relaxed text-fg/85">
+                {p}
+              </p>
+            ))}
+          </div>
+          <div className="flex flex-col gap-3 lg:col-span-4 lg:col-start-9">
+            <h3 className="text-[18px] font-semibold">Who it&apos;s for</h3>
+            <p className="text-[16px] leading-relaxed text-muted">{copy.audience}</p>
+          </div>
+        </section>
       )}
 
       <section aria-labelledby="tools-h" className="bg-surface py-[clamp(64px,8vw,112px)]">
@@ -89,6 +113,36 @@ export default async function ServicePage({ params }: Params) {
           </aside>
         </div>
       </section>
+
+      {copy && (
+        <section aria-labelledby="scope-h" className="container-x flex flex-col gap-[clamp(48px,6vw,80px)] py-[clamp(64px,8vw,112px)]">
+          <div>
+            <h2 id="scope-h" className="text-[clamp(24px,2.5vw,34px)] font-medium leading-tight">
+              What each scope includes
+            </h2>
+            <ul className="mt-8 grid gap-4 md:grid-cols-3">
+              {cfg.SCOPES.map((o) => (
+                <li key={o.id} className="rounded-xl bg-surface p-6 shadow-hairline">
+                  <p className="font-semibold">{o.label}</p>
+                  <p className="mt-1 text-[14px] tabular-nums text-muted">{fmtINR(s.prices[o.id as Scope])}</p>
+                  <p className="mt-4 text-[16px] leading-relaxed">{copy.scopes[o.id as Scope]}</p>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h2 className="text-[clamp(24px,2.5vw,34px)] font-medium leading-tight">Common questions</h2>
+            <dl className="mt-6 grid gap-8 md:grid-cols-2">
+              {copy.faqs.map((f) => (
+                <div key={f.q}>
+                  <dt className="font-semibold">{f.q}</dt>
+                  <dd className="mt-2 text-[16px] leading-relaxed text-muted">{f.a}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+      )}
 
       <HomeProcess />
       <WorkGrid id="recent" title="Recent work" limit={3} />
