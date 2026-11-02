@@ -1,0 +1,267 @@
+{
+  "brand": {
+    "seoTitle": "Brand Identity Design Services",
+    "metaDescription": "Logo systems, type, colour and brand guidelines that work from favicon to billboard. You own every source file. Lean, Standard and Advanced scopes.",
+    "intro": [
+      "A brand has to survive contact with real life: a tiny favicon, a WhatsApp profile picture, a pitch deck, a shopfront. We design identities as systems rather than single logos, so whoever picks up the files next can use them correctly without asking us.",
+      "We start by working out what your brand needs to say and who needs to hear it. Then we explore directions, refine one with you, and test it at the sizes and in the places you'll actually use it."
+    ],
+    "audience": "New businesses that need an identity before launch, and growing teams that have outgrown a logo made in a hurry.",
+    "scopes": {
+      "lean": "A primary logo with variations, a colour palette, type choices and a one-page style sheet.",
+      "standard": "Everything in Lean, plus full guidelines and templates for social posts and documents.",
+      "advanced": "Everything in Standard, plus a wider brand toolkit such as illustration or icon style and motion for the logo."
+    },
+    "faqs": [
+      {
+        "q": "Do we get the source files?",
+        "a": "Yes. Figma and Illustrator files and all exports transfer to you on final payment."
+      },
+      {
+        "q": "Can you refresh a logo we already have?",
+        "a": "Yes. We can keep what people already recognise and rebuild the system around it."
+      }
+    ]
+  },
+  "uiux": {
+    "seoTitle": "UI/UX Design Services for Web and Mobile",
+    "metaDescription": "Research, user flows and high-fidelity interfaces, tested with real users before development starts. Figma files you own and a clean handoff to developers.",
+    "intro": [
+      "Changing a screen in Figma takes minutes. Changing it after it's built can take weeks. That's why we test design decisions before any code is written, while they're still cheap to change.",
+      "We map the journeys that matter, wireframe them, then build clickable prototypes and put them in front of real users with tools like Maze. You see what confused people and what we changed as a result, so decisions rest on evidence instead of opinion."
+    ],
+    "audience": "Teams planning a new product, and teams whose existing product works but is hard to use.",
+    "scopes": {
+      "lean": "One core user flow, from wireframes to high-fidelity screens.",
+      "standard": "The full product flows, a clickable prototype, a round of user testing and a reusable component library.",
+      "advanced": "Everything in Standard, plus deeper user research, extra testing rounds and a documented design system."
+    },
+    "faqs": [
+      {
+        "q": "Can you design for our existing developers?",
+        "a": "Yes. We hand over organised Figma files and work alongside your team during the build."
+      },
+      {
+        "q": "Do you redesign existing products?",
+        "a": "Yes. We usually start by reviewing where people get stuck today."
+      }
+    ]
+  },
+  "web": {
+    "seoTitle": "Website Development Services",
+    "metaDescription": "Fast, accessible marketing websites built with Next.js, with a CMS your team can edit. Typical delivery in 4–6 weeks, and you own the code.",
+    "intro": [
+      "Your website shouldn't need a developer every time a headline changes. We build marketing sites that load quickly, work for everyone who visits and come with a CMS your team can actually use.",
+      "Most sites are built with Next.js and Tailwind, with Sanity for content. You get a staging link with weekly releases, so you see real progress rather than waiting for a big reveal. Before launch we run QA, performance and SEO checks, and tracking is in place from day one.",
+      "A typical marketing website takes 4–6 weeks, and every build includes 30 days of support after launch."
+    ],
+    "audience": "Businesses whose current site is slow, hard to update or not bringing in enquiries.",
+    "scopes": {
+      "lean": "A focused site covering your core pages, with contact forms and basic SEO.",
+      "standard": "A full marketing site with CMS, analytics and on-page SEO.",
+      "advanced": "Everything in Standard, plus custom interactions and integrations with your CRM or other tools."
+    },
+    "faqs": [
+      {
+        "q": "Can we edit the site ourselves?",
+        "a": "Yes. Your team updates text, images and pages in the CMS without touching code."
+      },
+      {
+        "q": "Can you move our existing site?",
+        "a": "Yes. We plan the content move and redirects so existing links keep working."
+      }
+    ]
+  },
+  "app": {
+    "seoTitle": "Web App and SaaS Development Services",
+    "metaDescription": "Custom dashboards, client portals and SaaS products with login, billing and user roles built in. React, Node.js and PostgreSQL, and you own the code.",
+    "intro": [
+      "When spreadsheets and off-the-shelf tools stop fitting how your business works, a custom application can. We build dashboards, client portals and SaaS products on React, Node.js and PostgreSQL, with the unglamorous essentials handled from the start: login, user roles and billing.",
+      "We agree a dated plan first, then release to a staging link every week, so you can click through the product as it grows and change direction early. Most web apps take 8–14 weeks depending on scope."
+    ],
+    "audience": "Founders building a first version of a product, and companies replacing manual processes with an internal tool or portal.",
+    "scopes": {
+      "lean": "A first version built around one core workflow, with login.",
+      "standard": "A complete application with user roles, an admin area and billing or payments if you need them.",
+      "advanced": "Everything in Standard, plus custom integrations and more complex permissions and reporting."
+    },
+    "faqs": [
+      {
+        "q": "Who owns the code?",
+        "a": "You do. Code, accounts and design files transfer to you on final payment."
+      },
+      {
+        "q": "Can you work in our existing codebase?",
+        "a": "Yes. We follow your conventions and work inside your repos and tools."
+      }
+    ]
+  },
+  "mobile": {
+    "seoTitle": "Mobile App Development for iOS and Android",
+    "metaDescription": "Cross-platform iOS and Android apps built from one React Native codebase and shipped to both app stores. Most projects take 8–14 weeks, and you own the code.",
+    "intro": [
+      "Building separate iOS and Android apps means paying for much of the same work twice. We build with React Native and Expo, so one codebase serves both platforms and new features reach both at once.",
+      "We handle more than the screens: backend services with tools like Firebase, push notifications where you need them, and the App Store and Google Play submission process. You test real builds on your own phone throughout the project. Most apps take 8–14 weeks depending on scope."
+    ],
+    "audience": "Businesses launching an app for customers or field teams, and web products that need a mobile companion.",
+    "scopes": {
+      "lean": "A first version built around your core user flow, ready for testing on real devices.",
+      "standard": "A full app with accounts, a backend and submission to both stores.",
+      "advanced": "Everything in Standard, plus custom integrations and more complex features such as offline use or payments."
+    },
+    "faqs": [
+      {
+        "q": "Will it feel like a native app?",
+        "a": "For most business apps, yes. If yours depends on something React Native handles poorly, we'll tell you before you commit."
+      },
+      {
+        "q": "Who owns the store listings?",
+        "a": "You do. Apps are published under your own developer accounts."
+      }
+    ]
+  },
+  "ecom": {
+    "seoTitle": "E-commerce Website Development",
+    "metaDescription": "Online stores, checkout and inventory flows built for conversion and repeat orders, using Shopify, Stripe and Razorpay for customers in India and abroad.",
+    "intro": [
+      "Getting a first order is expensive. Stores grow when customers can check out without friction and come back without being chased. We design storefronts, checkout and inventory flows with both of those in mind.",
+      "We usually build on Shopify, and take payments through Razorpay for Indian customers and Stripe for international ones. Analytics goes in from day one, so you can see where shoppers drop off and what's worth fixing next."
+    ],
+    "audience": "Brands launching online, and existing stores that have traffic but lose people at checkout.",
+    "scopes": {
+      "lean": "A clean storefront set up with your products, payments and shipping.",
+      "standard": "A customised store design with tuned checkout, analytics and basic order emails.",
+      "advanced": "Everything in Standard, plus custom features, repeat-order automations and integrations with your inventory or other systems."
+    },
+    "faqs": [
+      {
+        "q": "Can you improve our current store instead of rebuilding it?",
+        "a": "Often, yes. We'd review it first and tell you honestly which one makes more sense."
+      },
+      {
+        "q": "Can we sell in more than one currency?",
+        "a": "Yes. We set up payments and pricing for the markets you sell in."
+      }
+    ]
+  },
+  "auto": {
+    "seoTitle": "Marketing Automation Services",
+    "metaDescription": "Lead capture, nurture sequences and follow-ups that run without anyone pressing send. Set up in HubSpot, Mailchimp or n8n and connected to your existing tools.",
+    "intro": [
+      "Most leads don't go cold because they lost interest. They go cold because nobody replied in time. We set up the systems that capture each enquiry, send it to the right place and keep the conversation going until someone on your team takes over.",
+      "We work with HubSpot and Mailchimp for campaigns and n8n for custom workflows, and connect them to your website forms and CRM. You approve the messages and the rules before anything goes out, so nothing sends that you haven't seen."
+    ],
+    "audience": "Teams that follow up by hand, lose track of enquiries or send one-off campaigns with no follow-up.",
+    "scopes": {
+      "lean": "One lead capture flow connected to a welcome or follow-up sequence.",
+      "standard": "Several nurture sequences, lead routing and reporting.",
+      "advanced": "Everything in Standard, plus custom workflows across your tools and lead scoring."
+    },
+    "faqs": [
+      {
+        "q": "Do we need to buy HubSpot?",
+        "a": "Not always. We'll recommend the simplest setup that does the job, including tools you already pay for."
+      },
+      {
+        "q": "Who writes the emails?",
+        "a": "We can draft them for your approval, or set up the sequences using your own copy."
+      }
+    ]
+  },
+  "crm": {
+    "seoTitle": "CRM Setup and Integration Services",
+    "metaDescription": "Connect forms, payments, sales and support so data moves on its own. CRM setup and integrations with Zoho, Zapier and REST APIs, with less copying and pasting.",
+    "intro": [
+      "If someone on your team copies details from one system into another, that's a job software should be doing. It's slow, and every copy is a chance for a mistake. We connect your forms, payments, sales and support tools so information reaches the right place by itself.",
+      "We start by mapping how data moves through your business today. Then we set up your CRM, often Zoho, and join everything together with Zapier or custom work against REST APIs. If a connection fails, the right person is told instead of the data quietly going missing."
+    ],
+    "audience": "Teams working across several disconnected tools, or who've bought a CRM that nobody keeps up to date.",
+    "scopes": {
+      "lean": "One key integration, such as website forms into your CRM.",
+      "standard": "CRM setup with your sales pipeline and connections between your main tools.",
+      "advanced": "Everything in Standard, plus custom API integrations and more complex multi-step workflows."
+    },
+    "faqs": [
+      {
+        "q": "Can you work with the CRM we already have?",
+        "a": "Yes, in most cases. We usually start by fixing what's there before suggesting a switch."
+      },
+      {
+        "q": "Can you move our existing data?",
+        "a": "Yes. We clean and import it as part of the setup when that's in scope."
+      }
+    ]
+  },
+  "cloud": {
+    "seoTitle": "Cloud and DevOps Services",
+    "metaDescription": "Hosting, CI/CD, monitoring and backups set up so releases are uneventful. Cloud and DevOps on Vercel, AWS and Docker, in accounts you own and control.",
+    "intro": [
+      "A release should be a non-event. If deploying means a nervous evening and a manual checklist, the setup is the problem. We put in place the hosting, automated deployments, monitoring and backups that make shipping routine.",
+      "We work with Vercel, AWS and Docker, choosing the simplest option that fits your product rather than the most impressive one. Everything lives in accounts you own, and it's documented so your team can run it without us."
+    ],
+    "audience": "Teams that deploy by hand, have no alerts when something breaks, or aren't sure their backups would actually work.",
+    "scopes": {
+      "lean": "Hosting setup with automated deployments for one application.",
+      "standard": "Staging and production environments, CI/CD, monitoring and backups.",
+      "advanced": "Everything in Standard, plus more complex infrastructure such as containers, multiple services or a move from your current host."
+    },
+    "faqs": [
+      {
+        "q": "Can you move us from our current host?",
+        "a": "Yes. We plan the move to keep downtime as low as possible."
+      },
+      {
+        "q": "Will we be locked in to you?",
+        "a": "No. The accounts are yours and the setup is documented."
+      }
+    ]
+  },
+  "seo": {
+    "seoTitle": "Technical SEO and Content Services",
+    "metaDescription": "Technical SEO, content plans and on-page work that build month after month. We fix what stops search engines reading your site, then plan what to publish.",
+    "intro": [
+      "Good content can't rank on a site search engines struggle to read, and a technically perfect site won't rank without anything worth finding. We work on both, starting with whichever is holding you back.",
+      "We begin with a technical audit, using Search Console and Ahrefs to find crawl problems, weak pages and the searches your customers actually make. That becomes a prioritised plan of what to fix and what to publish. SEO takes time, so we won't promise rankings or quick wins. We'll show you what changed and what it's doing."
+    ],
+    "audience": "Businesses with a decent website that few people find, and teams publishing content without a clear plan.",
+    "scopes": {
+      "lean": "A technical audit with a prioritised list of fixes.",
+      "standard": "The audit, plus on-page improvements to key pages and a content plan.",
+      "advanced": "Everything in Standard, plus deeper keyword research and help producing content."
+    },
+    "faqs": [
+      {
+        "q": "Can you guarantee a first-page ranking?",
+        "a": "No, and be wary of anyone who does. We can fix what's in your control and report honestly on results."
+      },
+      {
+        "q": "Does this work if you didn't build our site?",
+        "a": "Yes. We can work on most platforms, or give your developers a clear list of changes."
+      }
+    ]
+  },
+  "data": {
+    "seoTitle": "Analytics and Dashboard Services",
+    "metaDescription": "Event tracking and live dashboards so every decision has a number behind it. GA4, Mixpanel and Looker Studio, set up around the questions your team asks.",
+    "intro": [
+      "Most companies have plenty of data and still argue about what's working. Usually that's because the tracking grew by accident, and nobody trusts the numbers. We begin with the questions you need answered, then track what answers them.",
+      "We set up event tracking with GA4 or Mixpanel, check that it records what really happens, and build live dashboards in Looker Studio that your team can read without help. You stop waiting for someone to pull a report, because the answer is already on the page."
+    ],
+    "audience": "Teams spending on marketing or product without clear numbers, and businesses whose reports don't agree with each other.",
+    "scopes": {
+      "lean": "A tracking setup for your key actions and one simple dashboard.",
+      "standard": "A full tracking plan, GA4 or Mixpanel setup and dashboards for your main teams.",
+      "advanced": "Everything in Standard, plus data from your other tools, such as your CRM or payments, in one place."
+    },
+    "faqs": [
+      {
+        "q": "Will this work with the tools we already have?",
+        "a": "Usually, yes. We review your current setup first and keep what's reliable."
+      },
+      {
+        "q": "Can our team maintain the dashboards?",
+        "a": "Yes. We build them to be edited, and show your team how they work."
+      }
+    ]
+  }
+}
