@@ -39,12 +39,12 @@ export default async function ServicePage({ params }: Params) {
 
   return (
     <main id="main">
-      <JsonLd data={[breadcrumbLd([["Services", "/services"], [s.name, `/services/${s.id}`]]), serviceLd(s, standard)]} />
+      <JsonLd data={[breadcrumbLd([["Services", "/services"], [s.name, `/services/${s.id}`]]), serviceLd(s, s.prices.lean)]} />
       <PageHero crumbs={[["Services", "/services"], [s.name, `/services/${s.id}`]]} title={s.name} lede={s.desc} />
       {SERVICE_PHOTOS[s.id] && (
         <div className="container-x pb-[clamp(48px,7vw,96px)]">
           <div data-panel className="relative aspect-[21/9] overflow-hidden rounded-xl bg-surface">
-            <Image src={pexelsImage(SERVICE_PHOTOS[s.id])} alt={SERVICE_PHOTOS[s.id].alt} fill sizes="(min-width:1280px) 1216px, 100vw" quality={65} className="object-cover" />
+            <Image src={pexelsImage(SERVICE_PHOTOS[s.id])} alt={SERVICE_PHOTOS[s.id].alt} fill priority sizes="(min-width:1280px) 1216px, 100vw" quality={65} className="object-cover" />
           </div>
         </div>
       )}

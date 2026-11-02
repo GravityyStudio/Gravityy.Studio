@@ -17,8 +17,8 @@ export function pageMeta(path: string, title: string, description: string): Meta
     title,
     description,
     alternates: { canonical: path },
-    openGraph: { type: "website", url: path, siteName: "Gravityy Studio", title: `${title} — Gravityy Studio`, description, locale: "en_IN" },
-    twitter: { card: "summary_large_image", title: `${title} — Gravityy Studio`, description },
+    openGraph: { type: "website", url: path, siteName: "Gravityy Studio", title: `${title} — Gravityy Studio`, description, locale: "en_IN", images: ["/opengraph-image"] },
+    twitter: { card: "summary_large_image", title: `${title} — Gravityy Studio`, description, images: ["/opengraph-image"] },
   };
 }
 
@@ -83,7 +83,7 @@ export const serviceLd = (s: Content["services"][number], fromINR: number) => ({
   url: `${SITE}/services/${s.id}`,
   provider: { "@id": ORG },
   areaServed: "Worldwide",
-  offers: { "@type": "Offer", priceCurrency: "INR", price: fromINR, description: "Starting estimate (standard scope and timeline)" },
+  offers: { "@type": "Offer", priceCurrency: "INR", price: fromINR, description: "Starting price (Lean scope, standard timeline)" },
 });
 
 /** Pricing page: one Offer per active plan, priced from the same rows checkout charges (GST noted for INR). */
