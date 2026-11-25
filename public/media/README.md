@@ -3,8 +3,8 @@
 Videos and posters come from **Pexels** (free to use under the [Pexels license](https://www.pexels.com/license/);
 attribution is not required but is listed here). They were trimmed, colour-graded slightly darker and desaturated
 for consistency, and encoded with `npm run media -- <folder-of-raw-clips>` (`scripts/encode-media.mjs`, uses the
-bundled `ffmpeg-static`). The two live-project images are screenshots of the client sites
-(`node scripts/capture-work.mjs`).
+bundled `ffmpeg-static`). The project images are screenshots of the live sites
+(`node scripts/capture-work.mjs`); the `-full` ones load only when a /work card is hovered, which then pans down the page.
 
 Rules for all video: muted (no audio track), **< 6 s** loops (the showreel is 10 s because it plays in a modal),
 **< 3 MB each**, H.264 `.mp4` (`+faststart`) **and** VP9 `.webm`. Posters are JPG. `next/image` converts them
@@ -14,11 +14,11 @@ to AVIF/WebP, resizes them and makes blur placeholders.
 |---|---|---|---|
 
 | Showreel | `showreel.webm` / `.mp4` (~2.2 MB) / poster (frame at 4 s) | 1920×1080, 10 s | Pexels #29755925 “Abstract shimmering crystals in darkness” |
-| Work: MORSIQO | `work-morsiqo.jpg` | 1440×3240 | Screenshot of https://morsiqo.vercel.app/ |
-| Work: ReelOrbit | `work-reelorbit.jpg` | 1440×3240 | Screenshot of https://reelorbit.vercel.app/ |
+| Work: MORSIQO | `work-morsiqo.jpg` (1440×1080) + `work-morsiqo-full.jpg` | 1440×3240 | Screenshot of https://morsiqo.vercel.app/ |
+| Work: ReelOrbit | `work-reelorbit.jpg` (1440×1080) + `work-reelorbit-full.jpg` | 1440×3240 | Screenshot of https://reelorbit.vercel.app/ |
 | Work: Stadiora Park | `work-stadiora.jpg` | 1440×1080 | Screenshot of https://stadiora.vercel.app/ |
 | Work: Viara Studios | `work-viara.jpg` | 1440×900 | Screenshot of https://viara-studios.vercel.app/ (kept by hand) |
-| Work: ATHLEX | `work-athlex.jpg` | 1440×3240 | Screenshot of https://athlex-delta.vercel.app/ |
+| Work: ATHLEX | `work-athlex.jpg` (1440×1080) + `work-athlex-full.jpg` | 1440×3240 | Screenshot of https://athlex-delta.vercel.app/ |
 
 ## Replacing footage
 
