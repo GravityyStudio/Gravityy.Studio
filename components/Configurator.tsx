@@ -12,7 +12,7 @@ function Options({ legend, opts, value, onPick }: { legend: string; opts: Option
   return (
     <fieldset>
       <legend className="mb-4 text-[16px] font-medium">{legend}</legend>
-      <div role="radiogroup" aria-label={legend} className="grid grid-cols-3 gap-2">
+      <div role="radiogroup" aria-label={legend} className="grid gap-2 sm:grid-cols-3">
         {opts.map((o) => {
           const on = value === o.id;
           return (
@@ -22,10 +22,10 @@ function Options({ legend, opts, value, onPick }: { legend: string; opts: Option
               role="radio"
               aria-checked={on}
               onClick={() => onPick(o.id)}
-              className={`min-h-[64px] rounded-2xl p-3 text-left transition-colors duration-200 sm:p-4 ${on ? "bg-fg text-bg" : "bg-bg hover:bg-raised"}`}
+              className={`flex min-h-[52px] items-baseline justify-between gap-3 rounded-2xl px-4 py-3 text-left transition-colors duration-200 sm:block sm:min-h-[64px] sm:p-4 ${on ? "bg-fg text-bg" : "bg-bg hover:bg-raised"}`}
             >
               <span className="block text-[15px] font-medium">{o.label}</span>
-              <span className={`mt-1 block text-[13px] ${on ? "text-bg/70" : "text-muted"}`}>{o.hint}</span>
+              <span className={`block text-[13px] sm:mt-1 ${on ? "text-bg/70" : "text-muted"}`}>{o.hint}</span>
             </button>
           );
         })}

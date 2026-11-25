@@ -12,10 +12,6 @@ const CLIPS = [
   ["hero", "1920x1080", 5, ["0x0a0a0a", "0x1a2a06", "0x0d0d0d", "0x2c4410"], "radial"],
   ["hero-mobile", "720x1280", 5, ["0x0a0a0a", "0x1a2a06", "0x0d0d0d", "0x2c4410"], "radial"], // portrait, cheap to decode on phones
   ["showreel", "1920x1080", 6, ["0x0a0a0a", "0x22320c", "0x141414", "0x0a0a0a"], "spiral"],
-  ["case-1", "1280x720", 4, ["0x0b0b0b", "0x2a1d16", "0x121212", "0x3a2a1e"], "radial"],
-  ["case-2", "1280x720", 4, ["0x0b0b0b", "0x10202a", "0x121212", "0x173040"], "linear"],
-  ["case-3", "1280x720", 4, ["0x0b0b0b", "0x1d2a10", "0x121212", "0x2c4410"], "circular"],
-  ["case-4", "1280x720", 4, ["0x0b0b0b", "0x221830", "0x121212", "0x302244"], "radial"],
   ["process", "1280x720", 5, ["0x0a0a0a", "0x161f0a", "0x0f0f0f", "0x1a1a1a"], "linear"],
   ["solutions", "1280x720", 5, ["0x0a0a0a", "0x1a1a1a", "0x10180a", "0x0f0f0f"], "circular"],
 ];

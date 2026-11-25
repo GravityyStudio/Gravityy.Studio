@@ -14,17 +14,16 @@ to AVIF/WebP, resizes them and makes blur placeholders.
 |---|---|---|---|
 
 | Showreel | `showreel.webm` / `.mp4` (~2.2 MB) / poster (frame at 4 s) | 1920×1080, 10 s | Pexels #29755925 “Abstract shimmering crystals in darkness” |
-| Case 1 (D2C skincare) | `case-1.*` + poster | 1280×720 | Pexels #5210530 “Collection of beauty products” |
-| Case 2 (B2B logistics) | `case-2.*` + poster | 1280×720 | Pexels #14910119 “Man working in a warehouse” |
-| Case 3 (EdTech) | `case-3.*` + poster | 1280×720 | Pexels #11025562 “Two boys using laptop in school” |
-| Case 4 (Fintech) | `case-4.*` + poster | 1280×720 | Pexels #7535106 “Man using a smartphone while holding a bank card” |
-| Work: Viara Studios | `work-viara.jpg` | 1440×900 | Screenshot of https://viara-studios.vercel.app/ |
-| Work: ATHLEX | `work-athlex.jpg` | 1440×900 | Screenshot of https://athlex-delta.vercel.app/ |
+| Work: MORSIQO | `work-morsiqo.jpg` | 1440×3240 | Screenshot of https://morsiqo.vercel.app/ |
+| Work: ReelOrbit | `work-reelorbit.jpg` | 1440×3240 | Screenshot of https://reelorbit.vercel.app/ |
+| Work: Stadiora Park | `work-stadiora.jpg` | 1440×1080 | Screenshot of https://stadiora.vercel.app/ |
+| Work: Viara Studios | `work-viara.jpg` | 1440×900 | Screenshot of https://viara-studios.vercel.app/ (kept by hand) |
+| Work: ATHLEX | `work-athlex.jpg` | 1440×3240 | Screenshot of https://athlex-delta.vercel.app/ |
 
 ## Replacing footage
 
 1. Put raw clips in a folder, named after the slot: `hero.mp4`, `showreel.mp4`, `solutions.mp4`, `process.mp4`,
-   `case-1.mp4` … `case-4.mp4` (any subset).
+   (any subset).
 2. Adjust start/duration/width in `SLOTS` at the top of `scripts/encode-media.mjs` if needed.
 3. `npm run media -- path/to/folder`. It writes the webm, mp4 and poster for each slot (plus the portrait
    `hero-mobile.*`), then prints sizes. Keep each file under 3 MB (raise that slot's extra-CRF value if not).

@@ -55,7 +55,8 @@ export default function HomeServices({
         </span>
       )}
       <span className="flex items-start justify-between gap-4">
-        <span className="text-[clamp(22px,1.8vw,28px)] font-semibold leading-tight">{r.label}</span>
+        {/* two lines reserved, so the descriptions start at the same height across a row whether or not the name wraps */}
+        <span className="text-[clamp(22px,1.8vw,28px)] font-semibold leading-tight sm:min-h-[2.5em]">{r.label}</span>
         {r.href && (
           <span aria-hidden="true" className="grid h-10 w-10 shrink-0 place-items-center rounded-pill shadow-hairline transition-[transform,background-color,color] duration-500 ease-brand group-hover:-rotate-45 group-hover:bg-accent group-hover:text-on-accent">
             →
