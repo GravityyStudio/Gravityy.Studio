@@ -173,7 +173,7 @@ function NavItem({ label, href, items, path }: { label: string; href: string; it
  * opens a full-screen overlay with staggered links (focus trapped, Esc closes, aria-expanded on the toggle).
  */
 export default function Navbar() {
-  const { site, services, cases } = useContent();
+  const { site, services, cases, testimonials } = useContent();
   const { lockScroll } = useUI();
   const path = usePathname();
   const viewer = useViewer(path);
@@ -183,7 +183,8 @@ export default function Navbar() {
   const panel = useRef<HTMLDivElement>(null);
   const close = () => setOpen(false);
   const links = site.NAV.filter((l) => l.href !== "/").slice(0, 5);
-  const menu = [...site.NAV, ...EXTRA.filter((e) => !site.NAV.some((l) => l.href === e.href))];
+  // /testimonials 404s until the CMS has some, so it only appears in the menu then.
+  const menu = [...site.NAV, ...EXTRA.filter((e) => !site.NAV.some((l) => l.href === e.href))].filter((l) => l.href !== "/testimonials" || testimonials.length);
   const dropdowns: Record<string, SubLink[]> = {
     "/services": services.slice(0, 8).map((s) => ({ label: s.name, href: `/services/${s.id}` })),
     "/work": (cases as Case[]).slice(0, 6).map((c) => ({ label: c.title.split(":")[0], href: `/work/${c.slug}`, hint: c.sector })),

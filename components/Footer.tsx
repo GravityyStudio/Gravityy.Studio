@@ -25,7 +25,7 @@ export default async function Footer() {
             <SocialIcons social={site.social ?? []} email={site.email} className="mt-2" />
           </div>
           {site.FOOTER.map((c) => (
-            <nav key={c.title} aria-label={c.title} className="lg:col-span-2 lg:last:col-span-4">
+            <nav key={c.title} aria-label={c.title} className="lg:col-span-2 lg:first-of-type:col-span-3 lg:last:col-span-3">
               <h2 className="mb-2 font-semibold">{c.title}</h2>
               <ul className="flex flex-col">
                 {c.links.map((l) => (
@@ -47,9 +47,10 @@ export default async function Footer() {
         </div>
 
         <FooterWordmark />
-        <p className="flex flex-wrap justify-between gap-x-6 gap-y-1 pb-24 pt-6 text-[15px] text-muted">
+        {/* Phones: one item group per line (copyright, legal links, credits) instead of words wrapping mid-row */}
+        <p className="flex flex-col gap-y-1 pb-24 pt-6 text-[15px] text-muted lg:flex-row lg:flex-wrap lg:justify-between lg:gap-x-6">
           <span className="flex flex-wrap items-center gap-x-5">
-            <span>© 2026 Gravityy Studio. All rights reserved.</span>
+            <span className="w-full sm:w-auto">© 2026 Gravityy Studio. All rights reserved.</span>
             <Link href="/privacy" className="inline-flex min-h-[44px] items-center hover:text-fg">
               Privacy
             </Link>
@@ -57,7 +58,7 @@ export default async function Footer() {
               Terms
             </Link>
           </span>
-          <span className="flex flex-wrap items-center gap-x-5">
+          <span className="flex flex-col gap-x-5 sm:flex-row sm:flex-wrap sm:items-center">
             <span>
               Stock photos and video:{" "}
               <a href="https://www.pexels.com" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[44px] items-center underline decoration-fg/30 underline-offset-4 hover:text-fg">

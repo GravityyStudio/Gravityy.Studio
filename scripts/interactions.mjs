@@ -3,7 +3,7 @@ import { chromium } from "playwright";
 import assert from "node:assert/strict";
 
 const URL = (process.argv[2] ?? "http://localhost:3000").replace(/\/$/, "");
-const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact", "/work/viara", "/privacy", "/terms", "/team", "/testimonials"];
+const ROUTES = ["/", "/services", "/services/web", "/solutions", "/work", "/process", "/pricing", "/faq", "/contact", "/work/viara", "/work/morsiqo", "/work/stadiora", "/privacy", "/terms", "/team"];
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const browser = await chromium.launch();
 // Pexels background videos hold a streaming connection open for as long as the page lives, so "networkidle" would never
@@ -170,10 +170,10 @@ for (const w of [360, 390, 768, 1440]) {
   assert.ok(await page.getByRole("region", { name: "How is pricing calculated?" }).isVisible());
   ok("/faq lists all 6 questions; accordion toggles aria-expanded and shows the answer");
 
-  // Work page: every project, client letters, showreel
+  // Work page: every project, no placeholder testimonials, showreel
   await page.goto(URL + "/work", { waitUntil: "networkidle" });
-  assert.equal(await page.locator("#work [data-case]").count(), 6);
-  assert.equal(await page.locator("#voices blockquote").count(), 3);
+  assert.equal(await page.locator("#work [data-case]").count(), 5);
+  assert.equal(await page.locator("#voices").count(), 0);
   await page.getByRole("button", { name: "Play the showreel" }).click();
   const reel = page.getByRole("dialog", { name: "Gravityy Studio showreel" });
   await reel.waitFor();
@@ -181,15 +181,15 @@ for (const w of [360, 390, 768, 1440]) {
   assert.ok(await page.evaluate(() => !!document.activeElement?.closest('[role="dialog"]')));
   await page.keyboard.press("Escape");
   await reel.waitFor({ state: "detached" });
-  ok("/work shows all 6 projects and 3 client letters; showreel modal traps focus, Esc closes");
+  ok("/work shows all 5 projects and no testimonials section; showreel modal traps focus, Esc closes");
 
   // Work filters: chips narrow the card grid and announce the count
-  await page.getByRole("button", { name: "Mobile app", exact: true }).click();
-  await page.waitForFunction(() => document.querySelectorAll("#work [data-case]").length === 1);
-  assert.equal(await page.getByRole("button", { name: "Mobile app", exact: true }).getAttribute("aria-pressed"), "true");
+  await page.getByRole("button", { name: "Web app", exact: true }).click();
+  await page.waitForFunction(() => document.querySelectorAll("#work [data-case]").length === 2);
+  assert.equal(await page.getByRole("button", { name: "Web app", exact: true }).getAttribute("aria-pressed"), "true");
   await page.getByRole("button", { name: "All", exact: true }).click();
-  await page.waitForFunction(() => document.querySelectorAll("#work [data-case]").length === 6);
-  ok("work filters narrow the grid (Mobile app → 1) and All restores 6");
+  await page.waitForFunction(() => document.querySelectorAll("#work [data-case]").length === 5);
+  ok("work filters narrow the grid (Web app → 2) and All restores 5");
 
   // Services → detail page, footer link
   await page.goto(URL + "/services", { waitUntil: "networkidle" });
@@ -221,15 +221,15 @@ for (const w of [360, 390, 768, 1440]) {
   await ctx.close();
 }
 
-// ---------- Testimonial slider: Next moves the track ----------
+// ---------- Work: removed placeholder cases redirect; testimonials stay hidden while there are none ----------
 {
   const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
-  await page.goto(URL + "/testimonials", { waitUntil: "networkidle" });
-  const track = page.getByRole("list", { name: "Testimonials" });
-  await page.getByRole("button", { name: "Next testimonial" }).click();
-  await page.waitForFunction(() => (document.querySelector('[aria-label="Testimonials"]')?.scrollLeft ?? 0) > 0);
-  assert.ok((await track.locator("figcaption").count()) >= 1);
-  ok("testimonial slider: Next scrolls to the next card; each card has a name");
+  const res = await page.goto(URL + "/work/case-2", { waitUntil: "domcontentloaded" });
+  assert.equal(res.url(), URL + "/work", "/work/case-2 redirects to /work");
+  assert.equal(await page.locator("[data-case]").count() >= 5, true);
+  const t = await page.request.get(URL + "/testimonials");
+  assert.equal(t.status(), 404);
+  ok("removed case studies redirect to /work, which lists the real projects; /testimonials is hidden");
   await page.close();
 }
 

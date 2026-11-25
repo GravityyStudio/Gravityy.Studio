@@ -38,7 +38,7 @@ function Segmented<T extends string | number>({
         {options.map(([v, label]) => (
           <label
             key={String(v)}
-            className={`relative z-10 inline-flex min-h-[44px] cursor-pointer items-center justify-center rounded-pill px-4 text-center text-[15px] font-semibold transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${v === value ? "text-on-accent" : "text-fg/80 hover:text-fg"}`}
+            className={`relative z-10 inline-flex min-h-[44px] cursor-pointer items-center justify-center whitespace-nowrap rounded-pill px-2 text-center text-[14px] font-semibold sm:px-4 sm:text-[15px] transition-colors duration-300 has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent ${v === value ? "text-on-accent" : "text-fg/80 hover:text-fg"}`}
           >
             <input type="radio" name={name} className="sr-only" checked={v === value} onChange={() => onChange(v)} />
             {label}

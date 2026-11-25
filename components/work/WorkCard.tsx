@@ -11,8 +11,9 @@ import { posterFor, type Case } from "@/lib/casePosters";
 const SPRING = { stiffness: 220, damping: 22, mass: 0.6 };
 
 /**
- * Project card. On a fine pointer it tilts toward the cursor (Framer springs, transform only) and lifts with a glow;
- * where a clip exists its reel plays on hover. Metrics count up as the card enters view; projects without measured
+ * Project card. On a fine pointer it tilts toward the cursor (Framer springs, transform only) and lifts with a glow.
+ * A full-page screenshot (taller than the frame) scrolls down the site on hover; a single-screen one zooms in.
+ * Where a clip exists its reel plays on hover. Metrics count up as the card enters view; projects without measured
  * results simply omit them. The whole card links to the case study (stretched link); "Live site" sits above it.
  */
 export default function WorkCard({ c, priority = false }: { c: Case; priority?: boolean }) {
@@ -23,6 +24,7 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
   const rotateY = useSpring(useTransform(px, [0, 1], [-6, 6]), SPRING);
   const rotateX = useSpring(useTransform(py, [0, 1], [5, -5]), SPRING);
   const poster = posterFor(c.slug);
+  const tall = poster.height > poster.width * 1.2;
   const name = c.title.split(":")[0];
   const live = c.url && !c.url.includes("gravityystudio.com");
 
@@ -56,7 +58,11 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
           // No blur placeholder on above-the-fold cards: the blur paints first and the real image only replaces it
           // after hydration, which Chrome records as a second, late LCP.
           placeholder={priority ? "empty" : "blur"}
-          className="object-cover object-top transition-transform duration-700 ease-brand group-hover:scale-[1.05]"
+          className={
+            tall
+              ? "object-cover object-top transition-[object-position] duration-[1200ms] ease-brand group-hover:object-bottom group-hover:duration-[7000ms] group-hover:ease-in-out motion-reduce:transition-none motion-reduce:group-hover:object-top"
+              : "object-cover object-top transition-transform duration-700 ease-brand group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          }
         />
         {c.video && <LoopVideo name={c.slug} label={`${name} preview`} trigger="hover" className="absolute inset-0 h-full w-full object-cover" />}
         <span className="pointer-events-none absolute left-4 top-4 rounded-pill bg-bg/70 px-3 py-1 font-mono text-[12px] font-medium backdrop-blur-sm">{c.sector}</span>

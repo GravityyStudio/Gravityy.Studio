@@ -1,6 +1,6 @@
 // Encodes source footage (e.g. Pexels downloads) into the site's media set.
 // Usage: node scripts/encode-media.mjs <dir-with-raw-mp4s>
-// Each raw file is named after its slot (hero.mp4, case-1.mp4 …). Output → public/media/<slot>.{webm,mp4} + <slot>-poster.jpg
+// Each raw file is named after its slot (hero.mp4, showreel.mp4 …). Output → public/media/<slot>.{webm,mp4} + <slot>-poster.jpg
 import { execFileSync } from "node:child_process";
 import { existsSync, statSync } from "node:fs";
 import { join } from "node:path";
@@ -20,10 +20,6 @@ const SLOTS = {
   showreel: [0, 10, 1920, 3],
   solutions: [0, 4.8, 1280],
   process: [3, 5, 1280],
-  "case-1": [0, 5, 1280],
-  "case-2": [0, 5, 1280],
-  "case-3": [1, 5, 1280],
-  "case-4": [2, 5, 1280],
 };
 
 // Slightly desaturated, darker grade so stock footage sits consistently in the dark UI.

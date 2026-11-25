@@ -3,20 +3,25 @@ import { useRef } from "react";
 import { usePathname } from "next/navigation";
 import { gsap, useGSAP } from "@/lib/gsap";
 
-/** Scroll progress: a thin rail with ticks on the left edge and an accent dot travelling down it. Desktop only, decorative. */
+/**
+ * Scroll progress: a thin rail with ticks on the left edge and an accent dot travelling down it. Desktop only, decorative.
+ * Fades out over the footer, where it would cut across the link columns and wordmark.
+ */
 export default function ScrollRail() {
+  const rail = useRef<HTMLDivElement>(null);
   const dot = useRef<HTMLSpanElement>(null);
   const path = usePathname();
 
   useGSAP(
     () => {
       gsap.fromTo(dot.current, { yPercent: 0 }, { yPercent: 100, ease: "none", scrollTrigger: { start: 0, end: "max", scrub: true } });
+      gsap.to(rail.current, { autoAlpha: 0, duration: 0.3, scrollTrigger: { trigger: "footer", start: "top 85%", toggleActions: "play none none reverse" } });
     },
     { dependencies: [path], revertOnUpdate: true },
   );
 
   return (
-    <div aria-hidden="true" className="pointer-events-none fixed left-4 top-1/2 z-40 hidden h-[36vh] -translate-y-1/2 lg:block xl:left-6">
+    <div ref={rail} aria-hidden="true" className="pointer-events-none fixed left-4 top-1/2 z-40 hidden h-[36vh] -translate-y-1/2 lg:block xl:left-6">
       <span className="absolute inset-y-0 left-1/2 w-px -translate-x-1/2 bg-fg/15" />
       {/* ticks every 10% */}
       {Array.from({ length: 11 }, (_, i) => (

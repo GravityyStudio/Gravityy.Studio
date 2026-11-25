@@ -14,16 +14,16 @@ const PAGES: [string, number][] = [
   ["/contact", 0.8],
   ["/blog", 0.7],
   ["/team", 0.5],
-  ["/testimonials", 0.5],
   ["/privacy", 0.2],
   ["/terms", 0.2],
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [{ services, cases }, posts] = await Promise.all([getContent(), getPosts()]);
+  const [{ services, cases, testimonials }, posts] = await Promise.all([getContent(), getPosts()]);
   // Only posts have a real edit date; a generated "now" on every URL would teach crawlers to ignore lastmod.
   return [
     ...PAGES.map(([path, priority]) => ({ url: `${SITE}${path}`, changeFrequency: "monthly" as const, priority })),
+    ...(testimonials.length ? [{ url: `${SITE}/testimonials`, changeFrequency: "monthly" as const, priority: 0.5 }] : []),
     ...services.map((s) => ({ url: `${SITE}/services/${s.id}`, changeFrequency: "monthly" as const, priority: 0.7 })),
     ...cases.map((c) => ({ url: `${SITE}/work/${c.slug}`, changeFrequency: "monthly" as const, priority: 0.6 })),
     ...posts.map((p) => ({ url: `${SITE}/blog/${p.slug}`, lastModified: new Date(p.updated_at), changeFrequency: "monthly" as const, priority: 0.6 })),
