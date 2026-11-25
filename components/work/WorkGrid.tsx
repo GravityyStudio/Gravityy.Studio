@@ -73,7 +73,8 @@ export default function WorkGrid({ title, id = "work", limit = 0, filters = fals
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                 className="h-full"
               >
-                <WorkCard c={c} priority={filters && i < 2} />
+                {/* the first row (three across on desktop) loads eagerly; any of them can be the LCP image */}
+                <WorkCard c={c} priority={filters && i < 3} />
               </m.li>
             ))}
           </AnimatePresence>

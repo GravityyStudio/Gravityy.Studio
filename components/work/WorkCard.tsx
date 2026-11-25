@@ -1,18 +1,19 @@
 "use client";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Image from "next/image";
 import { m, useMotionValue, useReducedMotion, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import Link from "@/components/ui/SmartLink";
 import Counter from "@/components/ui/Counter";
 import LoopVideo from "@/components/ui/LoopVideo";
-import { posterFor, type Case } from "@/lib/casePosters";
+import { fullFor, posterFor, type Case } from "@/lib/casePosters";
 
 const SPRING = { stiffness: 220, damping: 22, mass: 0.6 };
 
 /**
  * Project card. On a fine pointer it tilts toward the cursor (Framer springs, transform only) and lifts with a glow.
- * A full-page screenshot (taller than the frame) scrolls down the site on hover; a single-screen one zooms in.
+ * Where a full-page capture exists, it loads on the first mouse hover (never on touch, so phones only fetch the
+ * first-screen poster) and scrolls down the site inside the frame; otherwise the poster zooms in.
  * Where a clip exists its reel plays on hover. Metrics count up as the card enters view; projects without measured
  * results simply omit them. The whole card links to the case study (stretched link); "Live site" sits above it.
  */
@@ -24,7 +25,10 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
   const rotateY = useSpring(useTransform(px, [0, 1], [-6, 6]), SPRING);
   const rotateX = useSpring(useTransform(py, [0, 1], [5, -5]), SPRING);
   const poster = posterFor(c.slug);
-  const tall = poster.height > poster.width * 1.2;
+  const full = fullFor(c.slug);
+  const [hover, setHover] = useState(false);
+  const [wantFull, setWantFull] = useState(false);
+  const [fullReady, setFullReady] = useState(false);
   const name = c.title.split(":")[0];
   const live = c.url && !c.url.includes("gravityystudio.com");
 
@@ -34,12 +38,18 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
     px.set((e.clientX - r.left) / r.width);
     py.set((e.clientY - r.top) / r.height);
   };
-  const leave = () => (px.set(0.5), py.set(0.5));
+  const enter = (e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    setHover(true);
+    if (full && !reduce) setWantFull(true);
+  };
+  const leave = () => (px.set(0.5), py.set(0.5), setHover(false));
 
   return (
     <m.article
       ref={ref}
       data-video-host
+      onPointerEnter={enter}
       onPointerMove={move}
       onPointerLeave={leave}
       style={reduce ? undefined : { rotateX, rotateY, transformPerspective: 1100 }}
@@ -58,12 +68,22 @@ export default function WorkCard({ c, priority = false }: { c: Case; priority?: 
           // No blur placeholder on above-the-fold cards: the blur paints first and the real image only replaces it
           // after hydration, which Chrome records as a second, late LCP.
           placeholder={priority ? "empty" : "blur"}
-          className={
-            tall
-              ? "object-cover object-top transition-[object-position] duration-[1200ms] ease-brand group-hover:object-bottom group-hover:duration-[7000ms] group-hover:ease-in-out motion-reduce:transition-none motion-reduce:group-hover:object-top"
-              : "object-cover object-top transition-transform duration-700 ease-brand group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-          }
+          className={`object-cover object-top ${full ? "" : "transition-transform duration-700 ease-brand group-hover:scale-[1.05] motion-reduce:transition-none motion-reduce:group-hover:scale-100"}`}
         />
+        {wantFull && full && (
+          // Fades in once loaded, then eases down the page while hovered and back up when the pointer leaves.
+          <Image
+            src={full}
+            alt=""
+            aria-hidden="true"
+            fill
+            sizes="(min-width:1280px) 400px, (min-width:1024px) 31vw, (min-width:640px) 46vw, calc(100vw - 32px)"
+            quality={60}
+            onLoad={() => setFullReady(true)}
+            className={`object-cover transition-[opacity,object-position] ease-in-out ${fullReady ? "opacity-100" : "opacity-0"}`}
+            style={{ objectPosition: hover && fullReady ? "50% 100%" : "50% 0%", transitionDuration: hover ? "300ms, 7000ms" : "300ms, 1200ms" }}
+          />
+        )}
         {c.video && <LoopVideo name={c.slug} label={`${name} preview`} trigger="hover" className="absolute inset-0 h-full w-full object-cover" />}
         <span className="pointer-events-none absolute left-4 top-4 rounded-pill bg-bg/70 px-3 py-1 font-mono text-[12px] font-medium backdrop-blur-sm">{c.sector}</span>
       </div>
